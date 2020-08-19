@@ -581,7 +581,7 @@ function StreamProcessor(config) {
             return null;
         }
 
-        if (type === Constants.VIDEO || type === Constants.AUDIO) {
+        if (type === Constants.VIDEO || type === Constants.AUDIO || type === Constants.MESH) {
             controller = BufferController(context).create({
                 streamInfo: streamInfo,
                 type: type,

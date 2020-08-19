@@ -95,6 +95,13 @@ class Constants {
         this.IMAGE = 'image';
 
         /**
+         *  @constant {string} MESH Mesh media type
+         *  @memberof Constants#
+         *  @static
+         */
+        this.MESH = 'mesh';
+
+        /**
          *  @constant {string} STPP STTP Subtitles format
          *  @memberof Constants#
          *  @static

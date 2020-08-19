@@ -319,7 +319,7 @@ function MediaController() {
      */
     function isMultiTrackSupportedByType(type) {
         return (type === Constants.AUDIO || type === Constants.VIDEO || type === Constants.TEXT ||
-            type === Constants.FRAGMENTED_TEXT || type === Constants.IMAGE);
+            type === Constants.FRAGMENTED_TEXT || type === Constants.IMAGE || type === Constants.MESH);
     }
 
     /**
@@ -530,6 +530,11 @@ function MediaController() {
                 current: null
             },
             image: {
+                list: [],
+                storeLastSettings: true,
+                current: null
+            },
+            mesh: {
                 list: [],
                 storeLastSettings: true,
                 current: null

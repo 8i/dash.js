@@ -356,6 +356,12 @@ function Stream(config) {
         if (type === Constants.TEXT || type === Constants.FRAGMENTED_TEXT || type === Constants.EMBEDDED_TEXT || type === Constants.IMAGE) {
             return true;
         }
+
+        if (type === Constants.MESH) {
+            // TODO: Validate the mime-type to make sure we actually support it
+            return true;
+        }
+
         codec = mediaInfo.codec;
         logger.debug(type + ' codec: ' + codec);
 
@@ -550,6 +556,7 @@ function Stream(config) {
         initializeMediaForType(Constants.EMBEDDED_TEXT, mediaSource);
         initializeMediaForType(Constants.MUXED, mediaSource);
         initializeMediaForType(Constants.IMAGE, mediaSource);
+        initializeMediaForType(Constants.MESH, mediaSource);
 
         //TODO. Consider initialization of TextSourceBuffer here if embeddedText, but no sideloadedText.
         const buffers = createBuffers(previousBuffers);

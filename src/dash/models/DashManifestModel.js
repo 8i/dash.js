@@ -161,6 +161,10 @@ function DashManifestModel() {
         return (type === 'text/vtt' || type === 'application/ttml+xml');
     }
 
+    function getIsMesh(adaptation) {
+        return getIsTypeOf(adaptation, Constants.MESH);
+    }
+
     function getLanguageForAdaptation(adaptation) {
         let lang = '';
 
@@ -593,6 +597,8 @@ function DashManifestModel() {
                     voAdaptationSet.type = Constants.FRAGMENTED_TEXT;
                 } else if (getIsImage(realAdaptationSet)) {
                     voAdaptationSet.type = Constants.IMAGE;
+                } else if (getIsMesh(realAdaptationSet)) {
+                    voAdaptationSet.type = Constants.MESH;
                 } else {
                     voAdaptationSet.type = Constants.TEXT;
                 }

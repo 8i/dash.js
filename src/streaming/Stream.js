@@ -624,6 +624,34 @@ function Stream(config) {
             }
             return true;
         });
+
+        // HACK HACK: Remove higest-framerate variants until we support seamless switching FPS
+        if (type === Constants.VIDEO) {
+            const framerates = realAdaptation.Representation_asArray.reduce((acc, rep) => {
+                const field = rep.framerate || rep.frameRate; // ugh...
+                let fps;
+                if (typeof field === 'number')
+                    fps = field;
+                else if (typeof field === 'string')
+                    fps = parseInt(field.split('/')[0]);
+                acc.add(fps);
+                return acc;
+            }, new Set());
+            if (framerates.size > 1) {
+                const target = framerates.values().next().value;
+                realAdaptation.Representation_asArray = realAdaptation.Representation_asArray.filter((rep) => {
+                    const field = rep.framerate || rep.frameRate; // ugh...
+                    if (typeof field === 'number') {
+                        return target === field;
+                    } else if (typeof field === 'string') {
+                        const fps = parseInt(field.split('/')[0]);
+                        return target === fps;
+                    } else {
+                        return false;
+                    }
+                });
+            }
+        }
     }
 
     function checkIfInitializationCompleted() {

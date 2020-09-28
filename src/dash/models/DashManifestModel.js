@@ -549,7 +549,7 @@ function DashManifestModel() {
                 }
 
                 voRepresentation.MSETimeOffset = calcMSETimeOffset(voRepresentation);
-                voRepresentation.path = [voAdaptation.period.index, voAdaptation.index, i];
+                voRepresentation.path = [voAdaptation.period.index, voAdaptation.index, realRepresentation.index];
                 voRepresentations.push(voRepresentation);
             }
         }

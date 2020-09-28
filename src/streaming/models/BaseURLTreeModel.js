@@ -102,6 +102,7 @@ function BaseURLTreeModel() {
                             a.Representation_asArray.sort(
                                 adapter.getRepresentationSortFunction()
                             ).forEach((r, ri) => {
+                                r.index = ri;
                                 updateChildData(
                                     root.children[pi].children[ai].children,
                                     ri,

@@ -561,6 +561,7 @@ function Stream(config) {
 
         filterCodecs(Constants.VIDEO);
         filterCodecs(Constants.AUDIO);
+        filterCodecs(Constants.MESH);
 
         if (!element || (element && (/^VIDEO$/i).test(element.nodeName))) {
             initializeMediaForType(Constants.VIDEO, mediaSource);
@@ -595,6 +596,7 @@ function Stream(config) {
         checkConfig();
         filterCodecs(Constants.VIDEO);
         filterCodecs(Constants.AUDIO);
+        filterCodecs(Constants.MESH);
 
         isMediaInitialized = true;
         isUpdating = false;
@@ -626,7 +628,7 @@ function Stream(config) {
         });
 
         // HACK HACK: Remove higest-framerate variants until we support seamless switching FPS
-        if (type === Constants.VIDEO) {
+        if (type === Constants.VIDEO || type === Constants.MESH) {
             const framerates = realAdaptation.Representation_asArray.reduce((acc, rep) => {
                 const field = rep.framerate || rep.frameRate; // ugh...
                 let fps;
@@ -811,6 +813,7 @@ function Stream(config) {
 
         filterCodecs(Constants.VIDEO);
         filterCodecs(Constants.AUDIO);
+        filterCodecs(Constants.MESH);
 
         for (let i = 0, ln = streamProcessors.length; i < ln; i++) {
             let streamProcessor = streamProcessors[i];

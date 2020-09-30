@@ -629,7 +629,7 @@ function Stream(config) {
 
         // HACK HACK: Remove higest-framerate variants until we support seamless switching FPS
         if (type === Constants.VIDEO || type === Constants.MESH) {
-            const framerates = realAdaptation.Representation_asArray.reduce((acc, rep) => {
+            let framerates = realAdaptation.Representation_asArray.reduce((acc, rep) => {
                 const field = rep.framerate || rep.frameRate; // ugh...
                 let fps;
                 if (typeof field === 'number')
@@ -639,8 +639,9 @@ function Stream(config) {
                 acc.add(fps);
                 return acc;
             }, new Set());
-            if (framerates.size > 1) {
-                const target = framerates.values().next().value;
+            framerates = Array.from(framerates).sort();
+            if (framerates.length > 1) {
+                const target = framerates[0];
                 realAdaptation.Representation_asArray = realAdaptation.Representation_asArray.filter((rep) => {
                     const field = rep.framerate || rep.frameRate; // ugh...
                     if (typeof field === 'number') {

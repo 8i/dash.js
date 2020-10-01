@@ -616,9 +616,6 @@ function Stream(config) {
 
         // Filter codecs that are not supported
         realAdaptation.Representation_asArray = realAdaptation.Representation_asArray.filter((_, i) => {
-            // keep at least codec from lowest representation
-            if (i === 0) return true;
-
             const codec = adapter.getCodec(realAdaptation, i, true);
             if (!capabilities.supportsCodec(codec)) {
                 logger.error('[Stream] codec not supported: ' + codec);

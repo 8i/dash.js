@@ -638,7 +638,10 @@ function Stream(config) {
             }, new Set());
             framerates = Array.from(framerates).sort();
             if (framerates.length > 1) {
-                const target = framerates[0];
+                // Try to use the preferred framerate
+                const framerate = settings.get().streaming.abr.framerate;
+                logger.info(`[Stream] Preferred framerate: ${framerate}`);
+                const target = (framerate !== -1 && framerates.includes(framerate)) ? framerate : framerates[0];
                 realAdaptation.Representation_asArray = realAdaptation.Representation_asArray.filter((rep) => {
                     const field = rep.framerate || rep.frameRate; // ugh...
                     if (typeof field === 'number') {

@@ -451,7 +451,8 @@ function Settings() {
                 maxRepresentationRatio: {audio: 1, video: 1},
                 initialBitrate: {audio: -1, video: -1},
                 initialRepresentationRatio: {audio: -1, video: -1},
-                autoSwitchBitrate: {audio: true, video: true}
+                autoSwitchBitrate: {audio: true, video: true},
+                framerate: -1
             },
             cmcd: {
                 enabled: false,

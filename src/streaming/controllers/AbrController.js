@@ -246,7 +246,7 @@ function AbrController() {
 
         if (configBitrate === -1) {
             if (configRatio > -1) {
-                const representation = adapter.getAdaptationForType(0, type).Representation;
+                const representation = adapter.getAdaptationForType(0, type).Representation_asArray;
                 if (Array.isArray(representation)) {
                     const repIdx = Math.max(Math.round(representation.length * configRatio) - 1, 0);
                     configBitrate = representation[repIdx].bandwidth;

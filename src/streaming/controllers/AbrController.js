@@ -249,7 +249,7 @@ function AbrController() {
                 const representation = adapter.getAdaptationForType(0, type).Representation_asArray;
                 if (Array.isArray(representation)) {
                     const repIdx = Math.max(Math.round(representation.length * configRatio) - 1, 0);
-                    configBitrate = representation[repIdx].bandwidth;
+                    configBitrate = representation[repIdx].bandwidth / 1000;
                 } else {
                     configBitrate = 0;
                 }

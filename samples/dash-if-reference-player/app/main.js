@@ -35,7 +35,7 @@ angular.module('DashIFTestVectorsService', ['ngResource']).factory('dashifTestVe
 
 app.controller('DashController', ['$scope', '$window', 'sources', 'contributors', 'dashifTestVectors', function ($scope, $window, sources, contributors, dashifTestVectors) {
     $scope.selectedItem = {
-        url: 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd'
+        url: 'https://assets.8i.com/8IPROMOEXPERIENCE20210204_S02_T01_20210205_141236/manifest.mpd'
     };
 
     sources.query(function (data) {
@@ -330,6 +330,26 @@ app.controller('DashController', ['$scope', '$window', 'sources', 'contributors'
         }
     }, $scope);
 
+    const addSourceBuffer = window.MediaSource.prototype.addSourceBuffer;
+    window.MediaSource.prototype.addSourceBuffer = function(...varArgs) {
+        let mimeType = varArgs[0];
+        if (mimeType === "mesh/fb;codecs=\"draco.514\"") {
+            let meshSourceBuffer = new MeshSourceBuffer(varArgs);
+            if (typeof sourceAddedCb === 'function') sourceAddedCb(meshSourceBuffer);
+            return meshSourceBuffer;
+        } else {
+            return addSourceBuffer.apply(this, varArgs);
+        }
+    }
+
+    const isTypeSupported = window.MediaSource.isTypeSupported;
+    window.MediaSource.isTypeSupported = function(codec) {
+        if (codec === "mesh/fb;codecs=\"draco.514\"") {
+            return true;
+        } else {
+            return isTypeSupported(codec);
+        }
+    }
 
     $scope.player.initialize($scope.video, null, $scope.autoPlaySelected);
 

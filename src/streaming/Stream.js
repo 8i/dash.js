@@ -628,6 +628,7 @@ function Stream(config) {
         if (type === Constants.VIDEO || type === Constants.MESH) {
             let framerates = realAdaptation.Representation_asArray.reduce((acc, rep) => {
                 const field = rep.framerate || rep.frameRate; // ugh...
+                if (field === undefined) return acc;
                 let fps;
                 if (typeof field === 'number')
                     fps = field;

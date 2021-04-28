@@ -96,6 +96,7 @@ function BaseURLTreeModel() {
 
                 if (p.AdaptationSet_asArray) {
                     p.AdaptationSet_asArray.forEach((a, ai) => {
+                        a.index = ai;
                         updateChildData(root.children[pi].children, ai, a);
 
                         if (a.Representation_asArray) {

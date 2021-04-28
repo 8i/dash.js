@@ -605,7 +605,7 @@ function DashManifestModel() {
                 if (realAdaptationSet.hasOwnProperty(DashConstants.ID)) {
                     voAdaptationSet.id = realAdaptationSet.id;
                 }
-                voAdaptationSet.index = i;
+                voAdaptationSet.index = realAdaptationSet.index;
                 voAdaptationSet.period = voPeriod;
 
                 if (getIsMuxed(realAdaptationSet)) {

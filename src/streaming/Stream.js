@@ -283,6 +283,7 @@ function Stream(config) {
         // or audio if no video stream
         for (let i = 0; i < streamProcessors.length; i++) {
             if (streamProcessors[i].getType() === Constants.AUDIO ||
+                streamProcessors[i].getType() === Constants.MESH ||
                 streamProcessors[i].getType() === Constants.VIDEO) {
                 return streamProcessors[i].getLiveStartTime();
             }

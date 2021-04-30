@@ -38,7 +38,6 @@ import UTCTiming from '../vo/UTCTiming';
 import Event from '../vo/Event';
 import BaseURL from '../vo/BaseURL';
 import EventStream from '../vo/EventStream';
-import ObjectUtils from '../../streaming/utils/ObjectUtils';
 import URLUtils from '../../streaming/utils/URLUtils';
 import FactoryMaker from '../../core/FactoryMaker';
 import Debug from '../../core/Debug';
@@ -248,21 +247,12 @@ function DashManifestModel() {
         }
     }
 
-    function getIndexForAdaptation(realAdaptation, manifest, periodIndex) {
+    function getIndexForAdaptation(realAdaptation) {
         if (!realAdaptation) {
             return -1;
         }
 
-        const realAdaptations = getRealAdaptations(manifest, periodIndex);
-
-        for (let i = 0; i < realAdaptations.length; i++) {
-            let objectUtils = ObjectUtils(context).getInstance();
-            if (objectUtils.areEqual(realAdaptations[i], realAdaptation)) {
-                return i;
-            }
-        }
-
-        return -1;
+        return realAdaptation.index;
     }
 
     function getAdaptationsForType(manifest, periodIndex, type) {

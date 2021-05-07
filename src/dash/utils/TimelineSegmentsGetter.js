@@ -49,10 +49,11 @@ function TimelineSegmentsGetter(config, isDynamic) {
     }
 
     function iterateSegments(representation, iterFunc) {
-        const base = representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].
-            AdaptationSet_asArray[representation.adaptation.index].Representation_asArray[representation.index].SegmentTemplate ||
-            representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].
-                AdaptationSet_asArray[representation.adaptation.index].Representation_asArray[representation.index].SegmentList;
+        const period = representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.id];
+        const adaptationSet = period.AdaptationSet_asArray.find((as) => as.index === representation.adaptation.index);
+        const rep = adaptationSet.Representation_asArray.find((rep) => rep.id === representation.id);
+
+        const base = rep.SegmentTemplate || rep.SegmentList;
         const timeline = base.SegmentTimeline;
         const list = base.SegmentURL_asArray;
 

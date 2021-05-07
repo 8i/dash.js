@@ -104,7 +104,7 @@ function DashAdapter() {
     function convertRepresentationToRepresentationInfo(voRepresentation) {
         if (voRepresentation) {
             let representationInfo = new RepresentationInfo();
-            const realAdaptation = voRepresentation.adaptation.period.mpd.manifest.Period_asArray[voRepresentation.adaptation.period.index].AdaptationSet_asArray[voRepresentation.adaptation.index];
+            const realAdaptation = voRepresentation.adaptation.period.mpd.manifest.Period_asArray[voRepresentation.adaptation.period.index].AdaptationSet_asArray.find((as) => as.index == voRepresentation.adaptation.index);
             const realRepresentation = dashManifestModel.getRepresentationFor(voRepresentation.index, realAdaptation);
 
             representationInfo.id = voRepresentation.id;
@@ -262,7 +262,8 @@ function DashAdapter() {
         for (i = 0, ln = adaptationsForType.length; i < ln; i++) {
             data = adaptationsForType[i];
             idx = dashManifestModel.getIndexForAdaptation(data, manifest, streamInfo.index);
-            media = convertAdaptationToMediaInfo(voAdaptations[periodId][idx]);
+            let voAdaptation = voAdaptations[periodId].find((voa) => voa.index === idx);
+            media = convertAdaptationToMediaInfo(voAdaptation);
 
             if (type === constants.EMBEDDED_TEXT) {
                 let accessibilityLength = media.accessibility.length;
@@ -367,15 +368,12 @@ function DashAdapter() {
      * @instance
      */
     function getRealAdaptation(streamInfo, mediaInfo) {
-        let id,
-            realAdaptation;
+        let realAdaptation;
 
         const selectedVoPeriod = getPeriodForStreamInfo(streamInfo, voPeriods);
 
-        id = mediaInfo ? mediaInfo.id : null;
-
         if (voPeriods.length > 0 && selectedVoPeriod) {
-            realAdaptation = id ? dashManifestModel.getAdaptationForId(id, voPeriods[0].mpd.manifest, selectedVoPeriod.index) : dashManifestModel.getAdaptationForIndex(mediaInfo ? mediaInfo.index : null, voPeriods[0].mpd.manifest, selectedVoPeriod.index);
+            realAdaptation = dashManifestModel.getAdaptationForIndex(mediaInfo ? mediaInfo.index : null, voPeriods[0].mpd.manifest, selectedVoPeriod.index);
         }
 
         return realAdaptation;
@@ -946,7 +944,7 @@ function DashAdapter() {
 
     function getAdaptationForMediaInfo(mediaInfo) {
         if (!mediaInfo || !mediaInfo.streamInfo || mediaInfo.streamInfo.id === undefined || !voAdaptations[mediaInfo.streamInfo.id]) return null;
-        return voAdaptations[mediaInfo.streamInfo.id][mediaInfo.index];
+        return voAdaptations[mediaInfo.streamInfo.id].find((a) => a.index == mediaInfo.index);
     }
 
     function getPeriodForStreamInfo(streamInfo, voPeriodsArray) {
@@ -967,7 +965,7 @@ function DashAdapter() {
         }
 
         let mediaInfo = new MediaInfo();
-        const realAdaptation = adaptation.period.mpd.manifest.Period_asArray[adaptation.period.index].AdaptationSet_asArray[adaptation.index];
+        const realAdaptation = adaptation.period.mpd.manifest.Period_asArray[adaptation.period.index].AdaptationSet_asArray.find((as) => as.index == adaptation.index);
         let viewpoint;
 
         mediaInfo.id = adaptation.id;

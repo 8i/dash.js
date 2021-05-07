@@ -240,11 +240,7 @@ function DashManifestModel() {
 
     function getAdaptationForIndex(index, manifest, periodIndex) {
         const realAdaptations = getRealAdaptations(manifest, periodIndex);
-        if (realAdaptations.length > 0 && isInteger(index)) {
-            return realAdaptations[index];
-        } else {
-            return null;
-        }
+        return realAdaptations.find((a) => a.index == index);
     }
 
     function getIndexForAdaptation(realAdaptation) {
@@ -419,7 +415,7 @@ function DashManifestModel() {
         if (voAdaptation && voAdaptation.period && isInteger(voAdaptation.period.index)) {
             const periodArray = voAdaptation.period.mpd.manifest.Period_asArray[voAdaptation.period.index];
             if (periodArray && periodArray.AdaptationSet_asArray && isInteger(voAdaptation.index)) {
-                return processAdaptation(periodArray.AdaptationSet_asArray[voAdaptation.index]);
+                return processAdaptation(periodArray.AdaptationSet.find((as) => as.index === voAdaptation.index));
             }
         }
     }

@@ -214,7 +214,7 @@ function DashHandler(config) {
 
         const request = new FragmentRequest();
         const representation = segment.representation;
-        const bandwidth = representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index].Representation_asArray[representation.index].bandwidth;
+        const bandwidth = representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray.find((as) => as.index == representation.adaptation.index).Representation_asArray.find((rep) => rep.id === representation.id).bandwidth;
         let url = segment.media;
 
         url = replaceTokenForTemplate(url, 'Number', segment.replacementNumber);

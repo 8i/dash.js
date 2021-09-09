@@ -333,7 +333,7 @@ app.controller('DashController', ['$scope', '$window', 'sources', 'contributors'
     const addSourceBuffer = window.MediaSource.prototype.addSourceBuffer;
     window.MediaSource.prototype.addSourceBuffer = function(...varArgs) {
         let mimeType = varArgs[0];
-        if (mimeType === "mesh/fb;codecs=\"draco.514\"") {
+        if (mimeType === "mesh/mp4;codecs=\"draco.514\"") {
             let meshSourceBuffer = new MeshSourceBuffer(varArgs);
             if (typeof sourceAddedCb === 'function') sourceAddedCb(meshSourceBuffer);
             return meshSourceBuffer;
@@ -344,7 +344,7 @@ app.controller('DashController', ['$scope', '$window', 'sources', 'contributors'
 
     const isTypeSupported = window.MediaSource.isTypeSupported;
     window.MediaSource.isTypeSupported = function(codec) {
-        if (codec === "mesh/fb;codecs=\"draco.514\"") {
+        if (codec === "mesh/mp4;codecs=\"draco.514\"") {
             return true;
         } else {
             return isTypeSupported(codec);

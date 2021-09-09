@@ -31,7 +31,6 @@
 import ThroughputRule from './ThroughputRule';
 import InsufficientBufferRule from './InsufficientBufferRule';
 import AbandonRequestsRule from './AbandonRequestsRule';
-import DroppedFramesRule from './DroppedFramesRule';
 import SwitchHistoryRule from './SwitchHistoryRule';
 import BolaRule from './BolaRule';
 import L2ARule from './L2ARule.js';
@@ -103,9 +102,6 @@ function ABRRulesCollection(config) {
                 );
                 qualitySwitchRules.push(
                     SwitchHistoryRule(context).create()
-                );
-                qualitySwitchRules.push(
-                    DroppedFramesRule(context).create()
                 );
 
                 abandonFragmentRules.push(

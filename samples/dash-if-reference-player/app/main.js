@@ -35,7 +35,7 @@ angular.module('DashIFTestVectorsService', ['ngResource']).factory('dashifTestVe
 
 app.controller('DashController', ['$scope', '$window', 'sources', 'contributors', 'dashifTestVectors', function ($scope, $window, sources, contributors, dashifTestVectors) {
     $scope.selectedItem = {
-        url: 'https://assets.8i.com/8IPROMOEXPERIENCE20210204_S02_T01_20210205_141236/manifest.mpd'
+        url: 'https://q0qseysdoh.execute-api.us-east-2.amazonaws.com/v1/latest?stage=test-client'
     };
 
     sources.query(function (data) {

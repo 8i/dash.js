@@ -615,6 +615,7 @@ function Stream(config) {
                 const type = streamProcessors[i].getType();
                 if (type === Constants.AUDIO ||
                     type === Constants.VIDEO ||
+                    type === Constants.MESH ||
                     type === Constants.FRAGMENTED_TEXT) {
                     let mediaInfo = streamProcessors[i].getMediaInfo();
                     if (mediaInfo) {
@@ -680,7 +681,7 @@ function Stream(config) {
         // if there is at least one buffer controller that has not completed buffering yet do nothing
         for (let i = 0; i < ln; i++) {
             //if audio or video buffer is not buffering completed state, do not send STREAM_BUFFERING_COMPLETED
-            if (!processors[i].isBufferingCompleted() && (processors[i].getType() === Constants.AUDIO || processors[i].getType() === Constants.VIDEO)) {
+            if (!processors[i].isBufferingCompleted() && (processors[i].getType() === Constants.AUDIO || processors[i].getType() === Constants.VIDEO || processors[i].getType() === Constants.MESH)) {
                 logger.warn('onBufferingCompleted - One streamProcessor has finished but', processors[i].getType(), 'one is not buffering completed');
                 return;
             }
@@ -721,7 +722,7 @@ function Stream(config) {
             streamProcessor = streamProcessors[i];
             type = streamProcessor.getType();
 
-            if (type === Constants.AUDIO || type === Constants.VIDEO || type === Constants.FRAGMENTED_TEXT || type === Constants.TEXT) {
+            if (type === Constants.AUDIO || type === Constants.VIDEO || type === Constants.FRAGMENTED_TEXT || type === Constants.TEXT || type === Constants.MESH) {
                 arr.push(streamProcessor);
             }
         }

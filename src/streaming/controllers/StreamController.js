@@ -241,7 +241,7 @@ function StreamController() {
     function startPlaybackEndedTimerInterval() {
         if (!playbackEndedTimerInterval) {
             playbackEndedTimerInterval = setInterval(function () {
-                if (!isStreamSwitchingInProgress && playbackController.getTimeToStreamEnd() <= 0) {
+                if (!isStreamSwitchingInProgress && playbackController.getTimeToStreamEnd() <= 0 && !videoModel.getElement().loop) {
                     eventBus.trigger(Events.PLAYBACK_ENDED, { 'isLast': getActiveStreamInfo().isLast });
                 }
             }, PLAYBACK_ENDED_TIMER_INTERVAL);

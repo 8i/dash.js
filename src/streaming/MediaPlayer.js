@@ -686,7 +686,7 @@ function MediaPlayer() {
      * @instance
      */
     function getBufferLength(type) {
-        const types = [Constants.VIDEO, Constants.AUDIO, Constants.FRAGMENTED_TEXT];
+        const types = [Constants.VIDEO, Constants.AUDIO, Constants.FRAGMENTED_TEXT, Constants.MESH];
         if (!type) {
             const buffer = types.map(
                 t => getTracksFor(t).length > 0 ? getDashMetrics().getCurrentBufferLevel(t) : Number.MAX_VALUE

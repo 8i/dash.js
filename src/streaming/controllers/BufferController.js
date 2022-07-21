@@ -336,7 +336,7 @@ function BufferController(config) {
 
     function adjustSeekTarget() {
         // Check buffered data only for audio and video
-        if (type !== Constants.AUDIO && type !== Constants.VIDEO) return;
+        if (type !== Constants.AUDIO && type !== Constants.VIDEO && type !== Constants.MESH) return;
         if (isNaN(seekTarget)) return;
 
         // Check if current buffered range already contains seek target (and current video element time)

@@ -63,7 +63,7 @@ import Settings from '../core/Settings';
 import {
     getVersionString
 }
-    from '../core/Version';
+from '../core/Version';
 
 //Dash
 import SegmentBaseController from '../dash/controllers/SegmentBaseController';
@@ -76,7 +76,7 @@ import {
 import BASE64 from '../../externals/base64';
 import ISOBoxer from 'codem-isoboxer';
 import DashJSError from './vo/DashJSError';
-import {checkParameterType} from './utils/SupervisorTools';
+import { checkParameterType } from './utils/SupervisorTools';
 import ManifestUpdater from './ManifestUpdater';
 import URLUtils from '../streaming/utils/URLUtils';
 import BoxParser from './utils/BoxParser';
@@ -731,7 +731,7 @@ function MediaPlayer() {
      * @instance
      */
     function getBufferLength(type) {
-        const types = [Constants.VIDEO, Constants.AUDIO, Constants.TEXT];
+        const types = [Constants.VIDEO, Constants.AUDIO, Constants.TEXT, Constants.MESH];
         if (!type) {
             const buffer = types.map(
                 t => getTracksFor(t).length > 0 ? getDashMetrics().getCurrentBufferLevel(t) : Number.MAX_VALUE
@@ -1996,7 +1996,7 @@ function MediaPlayer() {
      * @return {object}
      */
     function getCurrentSteeringResponseData() {
-        if(contentSteeringController) {
+        if (contentSteeringController) {
             return contentSteeringController.getCurrentSteeringResponseData();
         }
     }

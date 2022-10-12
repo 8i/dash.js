@@ -137,6 +137,7 @@ function OfflineStream(config) {
      */
     function initializeMedia(streamInfo) {
         createOfflineStreamProcessorFor(constants.VIDEO,streamInfo);
+        createOfflineStreamProcessorFor(constants.MESH,streamInfo);
         createOfflineStreamProcessorFor(constants.AUDIO,streamInfo);
         createOfflineStreamProcessorFor(constants.TEXT,streamInfo);
         createOfflineStreamProcessorFor(constants.MUXED,streamInfo);

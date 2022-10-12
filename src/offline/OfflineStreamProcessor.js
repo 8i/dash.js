@@ -313,7 +313,7 @@ function OfflineStreamProcessor(config) {
             return representation.id === bitrate.id;
         });
 
-        if (type !== constants.VIDEO && type !== constants.AUDIO && type !== constants.TEXT) {
+        if (type !== constants.MESH || type !== constants.VIDEO && type !== constants.AUDIO && type !== constants.TEXT) {
             updating = false;
             return;
         }

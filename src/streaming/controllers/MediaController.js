@@ -34,7 +34,7 @@ import EventBus from '../../core/EventBus';
 import FactoryMaker from '../../core/FactoryMaker';
 import Debug from '../../core/Debug';
 import bcp47Normalize from 'bcp-47-normalize';
-import {extendedFilter} from 'bcp-47-match';
+import { extendedFilter } from 'bcp-47-match';
 
 function MediaController() {
 
@@ -241,7 +241,7 @@ function MediaController() {
      * @memberof MediaController#
      */
     function _isMultiTrackSupportedByType(type) {
-        return (type === Constants.AUDIO || type === Constants.VIDEO || type === Constants.TEXT || type === Constants.IMAGE);
+        return (type === Constants.MESH || type === Constants.AUDIO || type === Constants.VIDEO || type === Constants.TEXT || type === Constants.IMAGE);
     }
 
     /**
@@ -348,7 +348,6 @@ function MediaController() {
             return (matchLang && matchIndex && matchViewPoint && (matchRole || (track.type === Constants.AUDIO && isTrackActive)) && matchAccessibility && matchAudioChannelConfiguration);
         } catch (e) {
             return false;
-            logger.error(e);
         }
     }
 
@@ -356,7 +355,8 @@ function MediaController() {
         initialSettings = {
             audio: null,
             video: null,
-            text: null
+            text: null,
+            mesh: null,
         };
     }
 
@@ -534,6 +534,11 @@ function MediaController() {
 
     function createTrackInfo() {
         return {
+            mesh: {
+                list: [],
+                storeLastSettings: true,
+                current: null
+            },
             audio: {
                 list: [],
                 storeLastSettings: true,

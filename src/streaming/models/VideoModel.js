@@ -206,11 +206,9 @@ function VideoModel() {
     }
 
     function addStalledStream(type) {
-
         if (type === null || !element || element.seeking || stalledStreams.indexOf(type) !== -1) {
             return;
         }
-
         stalledStreams.push(type);
     }
 

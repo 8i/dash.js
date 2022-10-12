@@ -448,6 +448,7 @@ function OfflineDownload(config) {
         rep[constants.VIDEO] = [];
         rep[constants.AUDIO] = [];
         rep[constants.TEXT] = [];
+        rep[constants.MESH] = [];
 
         // selectedRepresentations.video.forEach(item => {
         //     ret[constants.VIDEO].push(item.id);

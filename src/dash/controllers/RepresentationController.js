@@ -31,7 +31,7 @@
 import Constants from '../../streaming/constants/Constants';
 import FactoryMaker from '../../core/FactoryMaker';
 import MediaPlayerEvents from '../../streaming/MediaPlayerEvents';
-import {getTimeBasedSegment} from '../utils/SegmentsUtils';
+import { getTimeBasedSegment } from '../utils/SegmentsUtils';
 
 function RepresentationController(config) {
 
@@ -109,7 +109,7 @@ function RepresentationController(config) {
         _setCurrentVoRepresentation(rep);
         realAdaptation = newRealAdaptation;
 
-        if (type !== Constants.VIDEO && type !== Constants.AUDIO && (type !== Constants.TEXT || !isFragmented)) {
+        if (type !== Constants.MESH && type !== Constants.VIDEO && type !== Constants.AUDIO && (type !== Constants.TEXT || !isFragmented)) {
             endDataUpdate();
             return Promise.resolve();
         }

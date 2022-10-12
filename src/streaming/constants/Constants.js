@@ -39,6 +39,13 @@ class Constants {
 
     init() {
         /**
+         *  @constant {string} MESH Mesh media type
+         *  @memberof Constants#
+         *  @static
+         */
+        this.MESH = 'mesh';
+
+        /**
          *  @constant {string} STREAM Stream media type. Mainly used to report metrics relative to the full stream
          *  @memberof Constants#
          *  @static

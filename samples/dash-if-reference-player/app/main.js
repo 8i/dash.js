@@ -35,7 +35,7 @@ angular.module('DashIFTestVectorsService', ['ngResource']).factory('dashifTestVe
 
 app.controller('DashController', ['$scope', '$window', 'sources', 'contributors', 'dashifTestVectors', function ($scope, $window, sources, contributors, dashifTestVectors) {
     $scope.selectedItem = {
-        url: 'https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd'
+        url: 'https://dash-cdn.8i.com/25/shows/158/takes/755/manifest.mpd'
     };
 
     sources.query(function (data) {
@@ -70,6 +70,18 @@ app.controller('DashController', ['$scope', '$window', 'sources', 'contributors'
             }
         });
     });
+
+    const addSourceBuffer = window.MediaSource.prototype.addSourceBuffer;
+    window.MediaSource.prototype.addSourceBuffer = function (...varArgs) {
+        let mimeType = varArgs[0];
+        if (mimeType === "mesh/fb;codecs=\"draco.514\"" || mimeType === "mesh/mp4;codecs=\"draco.514\"") {
+            let meshSourceBuffer = new MeshSourceBuffer(varArgs);
+            if (typeof sourceAddedCb === 'function') sourceAddedCb(meshSourceBuffer);
+            return meshSourceBuffer;
+        } else {
+            return addSourceBuffer.apply(this, varArgs);
+        }
+    }
 
     contributors.query(function (data) {
         $scope.contributors = data.items;
@@ -1511,8 +1523,8 @@ app.controller('DashController', ['$scope', '$window', 'sources', 'contributors'
             if (typeof defaultSettings[setting] === 'object' && defaultSettings[setting] !== null && !(defaultSettings[setting] instanceof Array)) {
                 settingDifferencesObject[setting] = this.makeSettingDifferencesObject(settings[setting], defaultSettings[setting], false);
             }
-            else if(settings[setting] !== defaultSettings[setting]){
-                if(Array.isArray(settings[setting])){
+            else if (settings[setting] !== defaultSettings[setting]) {
+                if (Array.isArray(settings[setting])) {
                     settingDifferencesObject[setting] = _arraysEqual(settings[setting], defaultSettings[setting]) ? {} : settings[setting];
                 }
                 else {
@@ -1573,13 +1585,13 @@ app.controller('DashController', ['$scope', '$window', 'sources', 'contributors'
         var obj = base;
 
         for (var key = 0; key < keyList.length; key++) {
-            base = base[keyList[key]] = base [keyList[key]] || {};
+            base = base[keyList[key]] = base[keyList[key]] || {};
         }
 
 
         value = $scope.handleQueryParameters(value);
 
-        if (lastProperty) base = base [lastProperty] = value;
+        if (lastProperty) base = base[lastProperty] = value;
 
         return obj;
     }
@@ -1781,8 +1793,8 @@ app.controller('DashController', ['$scope', '$window', 'sources', 'contributors'
         else if (value === 'null') typedValue = null;
         else if (value === 'undefined') typedValue = undefined;
         else integerRegEx.test(value) ? typedValue = parseInt(value) :
-                (floatRegEx.test(value) ? typedValue = parseFloat(value) :
-                    typedValue = value);
+            (floatRegEx.test(value) ? typedValue = parseFloat(value) :
+                typedValue = value);
 
         return typedValue;
     }

@@ -61,6 +61,7 @@ function IndexDBOfflineLoader(config) {
                     config.request.mediaType === constants.AUDIO ||
                     config.request.mediaType === constants.VIDEO ||
                     config.request.mediaType === constants.TEXT ||
+                    config.request.mediaType === constants.MESH ||
                     config.request.mediaType === constants.MUXED ||
                     config.request.mediaType === constants.IMAGE
                 ) {

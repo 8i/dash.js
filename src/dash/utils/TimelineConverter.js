@@ -236,7 +236,7 @@ function TimelineConverter() {
 
         streams.forEach((stream) => {
             const adapter = stream.getAdapter();
-            const mediaInfo = adapter.getMediaInfoForType(stream.getStreamInfo(), Constants.VIDEO) || adapter.getMediaInfoForType(stream.getStreamInfo(), Constants.AUDIO);
+            const mediaInfo = adapter.getMediaInfoForType(stream.getStreamInfo(), Constants.VIDEO) || adapter.getMediaInfoForType(stream.getStreamInfo(), Constants.AUDIO) || adapter.getMediaInfoForType(stream.getStreamInfo(), Constants.MESH);
             const voRepresentations = adapter.getVoRepresentations(mediaInfo);
             const voRepresentation = voRepresentations[0];
             let periodRange = { start: NaN, end: NaN };

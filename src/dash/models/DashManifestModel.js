@@ -46,7 +46,7 @@ import FactoryMaker from '../../core/FactoryMaker';
 import Debug from '../../core/Debug';
 import DashJSError from '../../streaming/vo/DashJSError';
 import Errors from '../../core/errors/Errors';
-import {THUMBNAILS_SCHEME_ID_URIS} from '../../streaming/thumbnail/ThumbnailTracks';
+import { THUMBNAILS_SCHEME_ID_URIS } from '../../streaming/thumbnail/ThumbnailTracks';
 
 function DashManifestModel() {
     let instance,
@@ -146,6 +146,10 @@ function DashManifestModel() {
 
     function getIsAudio(adaptation) {
         return getIsTypeOf(adaptation, Constants.AUDIO);
+    }
+
+    function getIsMesh(adaptation) {
+        return getIsTypeOf(adaptation, Constants.MESH)
     }
 
     function getIsVideo(adaptation) {
@@ -477,7 +481,7 @@ function DashManifestModel() {
 
     function getRepresentationFor(index, adaptation) {
         return adaptation && adaptation.Representation_asArray && adaptation.Representation_asArray.length > 0 &&
-        isInteger(index) ? adaptation.Representation_asArray[index] : null;
+            isInteger(index) ? adaptation.Representation_asArray[index] : null;
     }
 
     function getRealAdaptationFor(voAdaptation) {
@@ -682,6 +686,8 @@ function DashManifestModel() {
                     voAdaptationSet.type = Constants.TEXT;
                 } else if (getIsImage(realAdaptationSet)) {
                     voAdaptationSet.type = Constants.IMAGE;
+                } else if (getIsMesh(realAdaptationSet)) {
+                    voAdaptationSet.type = Constants.MESH;
                 } else {
                     logger.warn('Unknown Adaptation stream type');
                 }
@@ -1122,7 +1128,7 @@ function DashManifestModel() {
             const element = manifest[DashConstants.CONTENT_STEERING_AS_ARRAY][0];
             const entry = new ContentSteering();
 
-            entry.serverUrl =  element.__text;
+            entry.serverUrl = element.__text;
 
             if (element.hasOwnProperty(DashConstants.DEFAULT_SERVICE_LOCATION)) {
                 entry.defaultServiceLocation = element[DashConstants.DEFAULT_SERVICE_LOCATION];

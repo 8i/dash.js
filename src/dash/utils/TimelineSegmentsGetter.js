@@ -32,7 +32,7 @@
 import FactoryMaker from '../../core/FactoryMaker';
 import Constants from '../../streaming/constants/Constants';
 
-import {getTimeBasedSegment} from './SegmentsUtils';
+import { getTimeBasedSegment } from './SegmentsUtils';
 
 function TimelineSegmentsGetter(config, isDynamic) {
 

@@ -9,7 +9,7 @@
     "scripts": {
         "dev": "tsc && webpack --config build/webpack.dev.js --mode development --watch --progress",
         "start": "webpack serve --config build/webpack.dev.js",
-        "lint": "eslint src/**/*.js test/unit/mocks/*.js test/unit/*.js",
+        "lint": "eslint src/**/*.js test/unit/mocks/*.js test/unit/*.js --fix",
         "build": "tsc && rimraf dist && webpack --config build/webpack.prod.js",
         "doc": "jsdoc -c build/jsdoc/jsdoc_conf.json -d docs/jsdoc",
         "coverage": "nyc --reporter=text --reporter=lcov --reporter=text-summary --report-dir='./coverage' npm run test",

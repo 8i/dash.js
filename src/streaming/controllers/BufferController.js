@@ -39,7 +39,7 @@ import Debug from '../../core/Debug';
 import InitCache from '../utils/InitCache';
 import DashJSError from '../vo/DashJSError';
 import Errors from '../../core/errors/Errors';
-import {HTTPRequest} from '../vo/metrics/HTTPRequest';
+import { HTTPRequest } from '../vo/metrics/HTTPRequest';
 import MediaPlayerEvents from '../../streaming/MediaPlayerEvents';
 
 const BUFFER_END_THRESHOLD = 0.5;
@@ -328,7 +328,7 @@ function BufferController(config) {
     function _adjustSeekTarget() {
         if (isNaN(seekTarget)) return;
         // Check buffered data only for audio and video
-        if (type !== Constants.AUDIO && type !== Constants.VIDEO) {
+        if (type !== Constants.AUDIO && type !== Constants.VIDEO && type !== Constants.MESH) {
             seekTarget = NaN;
             return;
         }
@@ -568,11 +568,11 @@ function BufferController(config) {
                         && ranges.start(i) <= rangeStart && rangeStart <= ranges.end(i)) {
                         let oldRangeStart = rangeStart;
                         if (i + 1 < ranges.length) {
-                            rangeStart = ranges.start(i+1);
+                            rangeStart = ranges.start(i + 1);
                         } else {
                             rangeStart = ranges.end(i) + 1;
                         }
-                        logger.debug('Buffered range [' + ranges.start(i) + ', ' + ranges.end(i) + '] overlaps with targetTime ' + targetTime + ' and range to be pruned [' + oldRangeStart + ', ' + endOfBuffer + '], using [' + rangeStart + ', ' + endOfBuffer +'] instead' + ((rangeStart < endOfBuffer) ? '' : ' (no actual pruning)'));
+                        logger.debug('Buffered range [' + ranges.start(i) + ', ' + ranges.end(i) + '] overlaps with targetTime ' + targetTime + ' and range to be pruned [' + oldRangeStart + ', ' + endOfBuffer + '], using [' + rangeStart + ', ' + endOfBuffer + '] instead' + ((rangeStart < endOfBuffer) ? '' : ' (no actual pruning)'));
                         break;
                     }
                 }
@@ -694,7 +694,7 @@ function BufferController(config) {
 
     function checkIfSufficientBuffer() {
         // No need to check buffer if type is not audio or video (for example if several errors occur during text parsing, so that the buffer cannot be filled, no error must occur on video playback)
-        if (type !== Constants.AUDIO && type !== Constants.VIDEO) return;
+        if (type !== Constants.AUDIO && type !== Constants.VIDEO && type !== Constants.MESH) return;
 
         // When the player is working in low latency mode, the buffer is often below STALL_THRESHOLD.
         // So, when in low latency mode, change dash.js behavior so it notifies a stall just when

@@ -44,7 +44,7 @@ import URLUtils from './utils/URLUtils';
 import BlacklistController from './controllers/BlacklistController';
 
 
-const MEDIA_TYPES = [Constants.VIDEO, Constants.AUDIO, Constants.TEXT, Constants.MUXED, Constants.IMAGE];
+const MEDIA_TYPES = [Constants.MESH, Constants.VIDEO, Constants.AUDIO, Constants.TEXT, Constants.MUXED, Constants.IMAGE];
 
 
 function Stream(config) {
@@ -276,7 +276,6 @@ function Stream(config) {
             isUpdating = true;
             _addInlineEvents();
 
-
             let element = videoModel.getElement();
 
             MEDIA_TYPES.forEach((mediaType) => {
@@ -401,6 +400,11 @@ function Stream(config) {
     function _isMediaSupported(mediaInfo) {
         const type = mediaInfo ? mediaInfo.type : null;
         let msg;
+        
+        if (type === Constants.MESH) {
+            // TODO: Validate the mime-type to make sure we actually support it
+            return true;
+        }
 
         if (type === Constants.MUXED) {
             msg = 'Multiplexed representations are intentionally not supported, as they are not compliant with the DASH-AVC/264 guidelines';
@@ -723,6 +727,7 @@ function Stream(config) {
                 const mediaInfo = streamProcessors[i].getMediaInfo();
                 if (type === Constants.AUDIO ||
                     type === Constants.VIDEO ||
+                    type === Constants.MESH  ||
                     (type === Constants.TEXT && mediaInfo.isFragmented)) {
                     let mediaInfo = streamProcessors[i].getMediaInfo();
                     if (mediaInfo) {
@@ -772,7 +777,7 @@ function Stream(config) {
         // if there is at least one buffer controller that has not completed buffering yet do nothing
         for (let i = 0; i < ln; i++) {
             //if audio or video buffer is not buffering completed state, do not send STREAM_BUFFERING_COMPLETED
-            if (!processors[i].isBufferingCompleted() && (processors[i].getType() === Constants.AUDIO || processors[i].getType() === Constants.VIDEO)) {
+            if (!processors[i].isBufferingCompleted() && (processors[i].getType() === Constants.AUDIO || processors[i].getType() === Constants.VIDEO  || processors[i].getType() === Constants.MESH)) {
                 logger.debug('onBufferingCompleted - One streamProcessor has finished but', processors[i].getType(), 'one is not buffering completed');
                 return;
             }
@@ -824,7 +829,7 @@ function Stream(config) {
             streamProcessor = streamProcessors[i];
             type = streamProcessor.getType();
 
-            if (type === Constants.AUDIO || type === Constants.VIDEO || type === Constants.TEXT) {
+            if (type === Constants.AUDIO || type === Constants.VIDEO || type === Constants.TEXT || type === Constants.MESH) {
                 arr.push(streamProcessor);
             }
         }

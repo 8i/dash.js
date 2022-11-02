@@ -1,3 +1,7 @@
+import Constants from '../streaming/constants/Constants';
+import Debug from '../core/Debug';
+import EventBus from './EventBus';
+import Events from './events/Events';
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -29,12 +33,8 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 import FactoryMaker from './FactoryMaker';
-import Utils from './Utils.js';
-import Debug from '../core/Debug';
-import Constants from '../streaming/constants/Constants';
 import {HTTPRequest} from '../streaming/vo/metrics/HTTPRequest';
-import EventBus from './EventBus';
-import Events from './events/Events';
+import Utils from './Utils.js';
 
 /** @module Settings
  * @description Define the configuration parameters of Dash.js MediaPlayer.
@@ -862,7 +862,8 @@ function Settings() {
             },
             trackSwitchMode: {
                 audio: Constants.TRACK_SWITCH_MODE_ALWAYS_REPLACE,
-                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
+                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
+                mesh: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
             },
             selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
             fragmentRequestTimeout: 20000,
@@ -906,27 +907,33 @@ function Settings() {
                 usePixelRatioInLimitBitrateByPortal: false,
                 maxBitrate: {
                     audio: -1,
-                    video: -1
+                    video: -1,
+                    mesh:  -1
                 },
                 minBitrate: {
                     audio: -1,
-                    video: -1
+                    video: -1,
+                    mesh:  -1
                 },
                 maxRepresentationRatio: {
                     audio: 1,
-                    video: 1
+                    video: 1,
+                    mesh:  1,
                 },
                 initialBitrate: {
                     audio: -1,
-                    video: -1
+                    video: -1,
+                    mesh:  -1
                 },
                 initialRepresentationRatio: {
                     audio: -1,
-                    video: -1
+                    video: -1,
+                    mesh:  0,
                 },
                 autoSwitchBitrate: {
                     audio: true,
-                    video: true
+                    video: true,
+                    mesh: false
                 },
                 fetchThroughputCalculationMode: Constants.ABR_FETCH_THROUGHPUT_CALCULATION_MOOF_PARSING
             },

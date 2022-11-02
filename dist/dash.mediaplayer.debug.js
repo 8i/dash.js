@@ -20198,16 +20198,20 @@ var FactoryMaker = function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _FactoryMaker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FactoryMaker */ "./src/core/FactoryMaker.js");
-/* harmony import */ var _Utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Utils.js */ "./src/core/Utils.js");
-/* harmony import */ var _core_Debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/Debug */ "./src/core/Debug.js");
-/* harmony import */ var _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../streaming/constants/Constants */ "./src/streaming/constants/Constants.js");
-/* harmony import */ var _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest */ "./src/streaming/vo/metrics/HTTPRequest.js");
-/* harmony import */ var _EventBus__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./EventBus */ "./src/core/EventBus.js");
-/* harmony import */ var _events_Events__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./events/Events */ "./src/core/events/Events.js");
+/* harmony import */ var _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../streaming/constants/Constants */ "./src/streaming/constants/Constants.js");
+/* harmony import */ var _core_Debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/Debug */ "./src/core/Debug.js");
+/* harmony import */ var _EventBus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EventBus */ "./src/core/EventBus.js");
+/* harmony import */ var _events_Events__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./events/Events */ "./src/core/events/Events.js");
+/* harmony import */ var _FactoryMaker__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FactoryMaker */ "./src/core/FactoryMaker.js");
+/* harmony import */ var _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest */ "./src/streaming/vo/metrics/HTTPRequest.js");
+/* harmony import */ var _Utils_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Utils.js */ "./src/core/Utils.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
 
 /**
  * The copyright in this software is being made available under the BSD License,
@@ -20239,9 +20243,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
-
-
 
 
 
@@ -20955,11 +20956,11 @@ function Settings() {
 
   var instance;
   var context = this.context;
-  var eventBus = Object(_EventBus__WEBPACK_IMPORTED_MODULE_5__["default"])(context).getInstance();
+  var eventBus = Object(_EventBus__WEBPACK_IMPORTED_MODULE_2__["default"])(context).getInstance();
   var DISPATCH_KEY_MAP = {
-    'streaming.delay.liveDelay': _events_Events__WEBPACK_IMPORTED_MODULE_6__["default"].SETTING_UPDATED_LIVE_DELAY,
-    'streaming.delay.liveDelayFragmentCount': _events_Events__WEBPACK_IMPORTED_MODULE_6__["default"].SETTING_UPDATED_LIVE_DELAY_FRAGMENT_COUNT,
-    'streaming.liveCatchup.enabled': _events_Events__WEBPACK_IMPORTED_MODULE_6__["default"].SETTING_UPDATED_CATCHUP_ENABLED
+    'streaming.delay.liveDelay': _events_Events__WEBPACK_IMPORTED_MODULE_3__["default"].SETTING_UPDATED_LIVE_DELAY,
+    'streaming.delay.liveDelayFragmentCount': _events_Events__WEBPACK_IMPORTED_MODULE_3__["default"].SETTING_UPDATED_LIVE_DELAY_FRAGMENT_COUNT,
+    'streaming.liveCatchup.enabled': _events_Events__WEBPACK_IMPORTED_MODULE_3__["default"].SETTING_UPDATED_CATCHUP_ENABLED
   };
   /**
    * @const {PlayerSettings} defaultSettings
@@ -20968,7 +20969,7 @@ function Settings() {
 
   var defaultSettings = {
     debug: {
-      logLevel: _core_Debug__WEBPACK_IMPORTED_MODULE_2__["default"].LOG_LEVEL_WARNING,
+      logLevel: _core_Debug__WEBPACK_IMPORTED_MODULE_1__["default"].LOG_LEVEL_WARNING,
       dispatchEvent: false
     },
     streaming: {
@@ -21056,7 +21057,7 @@ function Settings() {
         playbackRate: NaN,
         playbackBufferMin: 0.5,
         enabled: null,
-        mode: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].LIVE_CATCHUP_MODE_DEFAULT
+        mode: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].LIVE_CATCHUP_MODE_DEFAULT
       },
       lastBitrateCachingInfo: {
         enabled: true,
@@ -21071,16 +21072,17 @@ function Settings() {
         audio: 5
       },
       trackSwitchMode: {
-        audio: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].TRACK_SWITCH_MODE_ALWAYS_REPLACE,
-        video: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].TRACK_SWITCH_MODE_NEVER_REPLACE
+        audio: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TRACK_SWITCH_MODE_ALWAYS_REPLACE,
+        video: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TRACK_SWITCH_MODE_NEVER_REPLACE,
+        mesh: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TRACK_SWITCH_MODE_NEVER_REPLACE
       },
-      selectionModeForInitialTrack: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
+      selectionModeForInitialTrack: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
       fragmentRequestTimeout: 20000,
-      retryIntervals: (_retryIntervals = {}, _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].MPD_TYPE, 500), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].XLINK_EXPANSION_TYPE, 500), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].MEDIA_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].INIT_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].BITSTREAM_SWITCHING_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].INDEX_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].MSS_FRAGMENT_INFO_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].LICENSE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].OTHER_TYPE, 1000), _defineProperty(_retryIntervals, "lowLatencyReductionFactor", 10), _retryIntervals),
-      retryAttempts: (_retryAttempts = {}, _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].MPD_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].XLINK_EXPANSION_TYPE, 1), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].MEDIA_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].INIT_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].BITSTREAM_SWITCHING_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].INDEX_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].MSS_FRAGMENT_INFO_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].LICENSE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_4__["HTTPRequest"].OTHER_TYPE, 3), _defineProperty(_retryAttempts, "lowLatencyMultiplyFactor", 5), _retryAttempts),
+      retryIntervals: (_retryIntervals = {}, _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].MPD_TYPE, 500), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].XLINK_EXPANSION_TYPE, 500), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].MEDIA_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].INIT_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].BITSTREAM_SWITCHING_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].INDEX_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].MSS_FRAGMENT_INFO_SEGMENT_TYPE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].LICENSE, 1000), _defineProperty(_retryIntervals, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].OTHER_TYPE, 1000), _defineProperty(_retryIntervals, "lowLatencyReductionFactor", 10), _retryIntervals),
+      retryAttempts: (_retryAttempts = {}, _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].MPD_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].XLINK_EXPANSION_TYPE, 1), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].MEDIA_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].INIT_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].BITSTREAM_SWITCHING_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].INDEX_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].MSS_FRAGMENT_INFO_SEGMENT_TYPE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].LICENSE, 3), _defineProperty(_retryAttempts, _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_5__["HTTPRequest"].OTHER_TYPE, 3), _defineProperty(_retryAttempts, "lowLatencyMultiplyFactor", 5), _retryAttempts),
       abr: {
-        movingAverageMethod: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].MOVING_AVERAGE_SLIDING_WINDOW,
-        ABRStrategy: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].ABR_STRATEGY_DYNAMIC,
+        movingAverageMethod: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MOVING_AVERAGE_SLIDING_WINDOW,
+        ABRStrategy: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].ABR_STRATEGY_DYNAMIC,
         additionalAbrRules: {
           insufficientBufferRule: true,
           switchHistoryRule: true,
@@ -21094,29 +21096,35 @@ function Settings() {
         usePixelRatioInLimitBitrateByPortal: false,
         maxBitrate: {
           audio: -1,
-          video: -1
+          video: -1,
+          mesh: -1
         },
         minBitrate: {
           audio: -1,
-          video: -1
+          video: -1,
+          mesh: -1
         },
         maxRepresentationRatio: {
           audio: 1,
-          video: 1
+          video: 1,
+          mesh: 1
         },
         initialBitrate: {
           audio: -1,
-          video: -1
+          video: -1,
+          mesh: -1
         },
         initialRepresentationRatio: {
           audio: -1,
-          video: -1
+          video: -1,
+          mesh: 0
         },
         autoSwitchBitrate: {
           audio: true,
-          video: true
+          video: true,
+          mesh: false
         },
-        fetchThroughputCalculationMode: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].ABR_FETCH_THROUGHPUT_CALCULATION_MOOF_PARSING
+        fetchThroughputCalculationMode: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].ABR_FETCH_THROUGHPUT_CALCULATION_MOOF_PARSING
       },
       cmcd: {
         enabled: false,
@@ -21124,7 +21132,7 @@ function Settings() {
         cid: null,
         rtp: null,
         rtpSafetyFactor: 5,
-        mode: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_3__["default"].CMCD_MODE_QUERY,
+        mode: _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].CMCD_MODE_QUERY,
         enabledKeys: ['br', 'd', 'ot', 'tb', 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su', 'bs', 'rtp', 'cid', 'pr', 'sf', 'sid', 'st', 'v']
       }
     },
@@ -21134,7 +21142,7 @@ function Settings() {
       }
     }
   };
-  var settings = _Utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].clone(defaultSettings); //Merge in the settings. If something exists in the new config that doesn't match the schema of the default config,
+  var settings = _Utils_js__WEBPACK_IMPORTED_MODULE_6__["default"].clone(defaultSettings); //Merge in the settings. If something exists in the new config that doesn't match the schema of the default config,
   //regard it as an error and log it.
 
   function mixinSettings(source, dest, path) {
@@ -21144,7 +21152,7 @@ function Settings() {
           if (_typeof(source[n]) === 'object' && !(source[n] instanceof Array) && source[n] !== null) {
             mixinSettings(source[n], dest[n], path.slice() + n + '.');
           } else {
-            dest[n] = _Utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].clone(source[n]);
+            dest[n] = _Utils_js__WEBPACK_IMPORTED_MODULE_6__["default"].clone(source[n]);
 
             if (DISPATCH_KEY_MAP[path + n]) {
               eventBus.trigger(DISPATCH_KEY_MAP[path + n]);
@@ -21193,7 +21201,7 @@ function Settings() {
 
 
   function reset() {
-    settings = _Utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].clone(defaultSettings);
+    settings = _Utils_js__WEBPACK_IMPORTED_MODULE_6__["default"].clone(defaultSettings);
   }
 
   instance = {
@@ -21205,7 +21213,7 @@ function Settings() {
 }
 
 Settings.__dashjs_factory_name = 'Settings';
-var factory = _FactoryMaker__WEBPACK_IMPORTED_MODULE_0__["default"].getSingletonFactory(Settings);
+var factory = _FactoryMaker__WEBPACK_IMPORTED_MODULE_4__["default"].getSingletonFactory(Settings);
 /* harmony default export */ __webpack_exports__["default"] = (factory);
 
 /***/ }),
@@ -25783,7 +25791,7 @@ function RepresentationController(config) {
 
     realAdaptation = newRealAdaptation;
 
-    if (type !== _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO && type !== _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && (type !== _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT || !isFragmented)) {
+    if (type !== _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH && type !== _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO && type !== _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && (type !== _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT || !isFragmented)) {
       endDataUpdate();
       return Promise.resolve();
     }
@@ -26852,6 +26860,10 @@ function DashManifestModel() {
     return getIsTypeOf(adaptation, _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO);
   }
 
+  function getIsMesh(adaptation) {
+    return getIsTypeOf(adaptation, _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH);
+  }
+
   function getIsVideo(adaptation) {
     return getIsTypeOf(adaptation, _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO);
   }
@@ -27401,6 +27413,8 @@ function DashManifestModel() {
           voAdaptationSet.type = _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT;
         } else if (getIsImage(realAdaptationSet)) {
           voAdaptationSet.type = _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].IMAGE;
+        } else if (getIsMesh(realAdaptationSet)) {
+          voAdaptationSet.type = _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH;
         } else {
           logger.warn('Unknown Adaptation stream type');
         }
@@ -30461,7 +30475,7 @@ function TimelineConverter() {
 
     streams.forEach(function (stream) {
       var adapter = stream.getAdapter();
-      var mediaInfo = adapter.getMediaInfoForType(stream.getStreamInfo(), _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_6__["default"].VIDEO) || adapter.getMediaInfoForType(stream.getStreamInfo(), _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_6__["default"].AUDIO);
+      var mediaInfo = adapter.getMediaInfoForType(stream.getStreamInfo(), _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_6__["default"].VIDEO) || adapter.getMediaInfoForType(stream.getStreamInfo(), _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_6__["default"].AUDIO) || adapter.getMediaInfoForType(stream.getStreamInfo(), _streaming_constants_Constants__WEBPACK_IMPORTED_MODULE_6__["default"].MESH);
       var voRepresentations = adapter.getVoRepresentations(mediaInfo);
       var voRepresentation = voRepresentations[0];
       var periodRange = {
@@ -33786,7 +33800,7 @@ function MediaPlayer() {
 
 
   function getBufferLength(type) {
-    var types = [_constants_Constants__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO, _constants_Constants__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO, _constants_Constants__WEBPACK_IMPORTED_MODULE_1__["default"].TEXT];
+    var types = [_constants_Constants__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO, _constants_Constants__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO, _constants_Constants__WEBPACK_IMPORTED_MODULE_1__["default"].TEXT, _constants_Constants__WEBPACK_IMPORTED_MODULE_1__["default"].MESH];
 
     if (!type) {
       var buffer = types.map(function (t) {
@@ -36678,7 +36692,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var MEDIA_TYPES = [_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MUXED, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].IMAGE];
+var MEDIA_TYPES = [_constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MUXED, _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].IMAGE];
 
 function Stream(config) {
   config = config || {};
@@ -37009,6 +37023,11 @@ function Stream(config) {
     var type = mediaInfo ? mediaInfo.type : null;
     var msg;
 
+    if (type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH) {
+      // TODO: Validate the mime-type to make sure we actually support it
+      return true;
+    }
+
     if (type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MUXED) {
       msg = 'Multiplexed representations are intentionally not supported, as they are not compliant with the DASH-AVC/264 guidelines';
       logger.fatal(msg);
@@ -37329,7 +37348,7 @@ function Stream(config) {
 
         var mediaInfo = streamProcessors[_i].getMediaInfo();
 
-        if (type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT && mediaInfo.isFragmented) {
+        if (type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT && mediaInfo.isFragmented) {
           var _mediaInfo = streamProcessors[_i].getMediaInfo();
 
           if (_mediaInfo) {
@@ -37379,7 +37398,7 @@ function Stream(config) {
 
     for (var i = 0; i < ln; i++) {
       //if audio or video buffer is not buffering completed state, do not send STREAM_BUFFERING_COMPLETED
-      if (!processors[i].isBufferingCompleted() && (processors[i].getType() === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || processors[i].getType() === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO)) {
+      if (!processors[i].isBufferingCompleted() && (processors[i].getType() === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || processors[i].getType() === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || processors[i].getType() === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH)) {
         logger.debug('onBufferingCompleted - One streamProcessor has finished but', processors[i].getType(), 'one is not buffering completed');
         return;
       }
@@ -37433,7 +37452,7 @@ function Stream(config) {
       streamProcessor = streamProcessors[i];
       type = streamProcessor.getType();
 
-      if (type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT) {
+      if (type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH) {
         arr.push(streamProcessor);
       }
     }
@@ -39111,10 +39130,17 @@ var Constants = /*#__PURE__*/function () {
     key: "init",
     value: function init() {
       /**
+       *  @constant {string} MESH Mesh media type
+       *  @memberof Constants#
+       *  @static
+       */
+      this.MESH = 'mesh';
+      /**
        *  @constant {string} STREAM Stream media type. Mainly used to report metrics relative to the full stream
        *  @memberof Constants#
        *  @static
        */
+
       this.STREAM = 'stream';
       /**
        *  @constant {string} VIDEO Video media type
@@ -41035,7 +41061,7 @@ function BufferController(config) {
   function _adjustSeekTarget() {
     if (isNaN(seekTarget)) return; // Check buffered data only for audio and video
 
-    if (type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO) {
+    if (type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO && type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH) {
       seekTarget = NaN;
       return;
     } // Check if current buffered range already contains seek target (and current video element time)
@@ -41392,7 +41418,7 @@ function BufferController(config) {
 
   function checkIfSufficientBuffer() {
     // No need to check buffer if type is not audio or video (for example if several errors occur during text parsing, so that the buffer cannot be filled, no error must occur on video playback)
-    if (type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO) return; // When the player is working in low latency mode, the buffer is often below STALL_THRESHOLD.
+    if (type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO && type !== _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH) return; // When the player is working in low latency mode, the buffer is often below STALL_THRESHOLD.
     // So, when in low latency mode, change dash.js behavior so it notifies a stall just when
     // buffer reach 0 seconds
 
@@ -43777,7 +43803,7 @@ function MediaController() {
 
 
   function _isMultiTrackSupportedByType(type) {
-    return type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].IMAGE;
+    return type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].TEXT || type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].IMAGE;
   }
   /**
    * @param {MediaInfo} t1 - first track to compare
@@ -43878,7 +43904,6 @@ function MediaController() {
       return matchLang && matchIndex && matchViewPoint && (matchRole || track.type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && isTrackActive) && matchAccessibility && matchAudioChannelConfiguration;
     } catch (e) {
       return false;
-      logger.error(e);
     }
   }
 
@@ -43886,7 +43911,8 @@ function MediaController() {
     initialSettings = {
       audio: null,
       video: null,
-      text: null
+      text: null,
+      mesh: null
     };
   }
 
@@ -44056,6 +44082,11 @@ function MediaController() {
 
   function createTrackInfo() {
     return {
+      mesh: {
+        list: [],
+        storeLastSettings: true,
+        current: null
+      },
       audio: {
         list: [],
         storeLastSettings: true,
@@ -45392,6 +45423,12 @@ function ScheduleController(config) {
         switchTrack = false;
       } else {
         logger.debug('Quality has changed, get init request for representationid = ' + currentRepresentationInfo.id);
+      }
+
+      if (type === _constants_Constants__WEBPACK_IMPORTED_MODULE_0__["default"].MESH) {
+        checkPlaybackQuality = false;
+        initSegmentRequired = false;
+        window.initMesh = true;
       }
 
       eventBus.trigger(_core_events_Events__WEBPACK_IMPORTED_MODULE_3__["default"].INIT_FRAGMENT_NEEDED, {
@@ -53721,14 +53758,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ThroughputRule__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ThroughputRule */ "./src/streaming/rules/abr/ThroughputRule.js");
 /* harmony import */ var _InsufficientBufferRule__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./InsufficientBufferRule */ "./src/streaming/rules/abr/InsufficientBufferRule.js");
 /* harmony import */ var _AbandonRequestsRule__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AbandonRequestsRule */ "./src/streaming/rules/abr/AbandonRequestsRule.js");
-/* harmony import */ var _DroppedFramesRule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./DroppedFramesRule */ "./src/streaming/rules/abr/DroppedFramesRule.js");
-/* harmony import */ var _SwitchHistoryRule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./SwitchHistoryRule */ "./src/streaming/rules/abr/SwitchHistoryRule.js");
-/* harmony import */ var _BolaRule__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./BolaRule */ "./src/streaming/rules/abr/BolaRule.js");
-/* harmony import */ var _L2ARule_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./L2ARule.js */ "./src/streaming/rules/abr/L2ARule.js");
-/* harmony import */ var _lolp_LoLpRule_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./lolp/LoLpRule.js */ "./src/streaming/rules/abr/lolp/LoLpRule.js");
-/* harmony import */ var _core_FactoryMaker__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../core/FactoryMaker */ "./src/core/FactoryMaker.js");
-/* harmony import */ var _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../SwitchRequest */ "./src/streaming/rules/SwitchRequest.js");
-/* harmony import */ var _constants_Constants__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../constants/Constants */ "./src/streaming/constants/Constants.js");
+/* harmony import */ var _SwitchHistoryRule__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SwitchHistoryRule */ "./src/streaming/rules/abr/SwitchHistoryRule.js");
+/* harmony import */ var _BolaRule__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./BolaRule */ "./src/streaming/rules/abr/BolaRule.js");
+/* harmony import */ var _L2ARule_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./L2ARule.js */ "./src/streaming/rules/abr/L2ARule.js");
+/* harmony import */ var _lolp_LoLpRule_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./lolp/LoLpRule.js */ "./src/streaming/rules/abr/lolp/LoLpRule.js");
+/* harmony import */ var _core_FactoryMaker__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../core/FactoryMaker */ "./src/core/FactoryMaker.js");
+/* harmony import */ var _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../SwitchRequest */ "./src/streaming/rules/SwitchRequest.js");
+/* harmony import */ var _constants_Constants__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../constants/Constants */ "./src/streaming/constants/Constants.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -53769,7 +53805,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 var QUALITY_SWITCH_RULES = 'qualitySwitchRules';
 var ABANDON_FRAGMENT_RULES = 'abandonFragmentRules';
 
@@ -53788,20 +53823,20 @@ function ABRRulesCollection(config) {
 
     if (settings.get().streaming.abr.useDefaultABRRules) {
       // If L2A is used we only need this one rule
-      if (settings.get().streaming.abr.ABRStrategy === _constants_Constants__WEBPACK_IMPORTED_MODULE_10__["default"].ABR_STRATEGY_L2A) {
-        qualitySwitchRules.push(Object(_L2ARule_js__WEBPACK_IMPORTED_MODULE_6__["default"])(context).create({
+      if (settings.get().streaming.abr.ABRStrategy === _constants_Constants__WEBPACK_IMPORTED_MODULE_9__["default"].ABR_STRATEGY_L2A) {
+        qualitySwitchRules.push(Object(_L2ARule_js__WEBPACK_IMPORTED_MODULE_5__["default"])(context).create({
           dashMetrics: dashMetrics,
           settings: settings
         }));
       } // If LoLP is used we only need this one rule
-      else if (settings.get().streaming.abr.ABRStrategy === _constants_Constants__WEBPACK_IMPORTED_MODULE_10__["default"].ABR_STRATEGY_LoLP) {
-          qualitySwitchRules.push(Object(_lolp_LoLpRule_js__WEBPACK_IMPORTED_MODULE_7__["default"])(context).create({
+      else if (settings.get().streaming.abr.ABRStrategy === _constants_Constants__WEBPACK_IMPORTED_MODULE_9__["default"].ABR_STRATEGY_LoLP) {
+          qualitySwitchRules.push(Object(_lolp_LoLpRule_js__WEBPACK_IMPORTED_MODULE_6__["default"])(context).create({
             dashMetrics: dashMetrics
           }));
         } else {
           // Only one of BolaRule and ThroughputRule will give a switchRequest.quality !== SwitchRequest.NO_CHANGE.
           // This is controlled by useBufferOccupancyABR mechanism in AbrController.
-          qualitySwitchRules.push(Object(_BolaRule__WEBPACK_IMPORTED_MODULE_5__["default"])(context).create({
+          qualitySwitchRules.push(Object(_BolaRule__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create({
             dashMetrics: dashMetrics,
             mediaPlayerModel: mediaPlayerModel,
             settings: settings
@@ -53818,11 +53853,7 @@ function ABRRulesCollection(config) {
           }
 
           if (settings.get().streaming.abr.additionalAbrRules.switchHistoryRule) {
-            qualitySwitchRules.push(Object(_SwitchHistoryRule__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create());
-          }
-
-          if (settings.get().streaming.abr.additionalAbrRules.droppedFramesRule) {
-            qualitySwitchRules.push(Object(_DroppedFramesRule__WEBPACK_IMPORTED_MODULE_3__["default"])(context).create());
+            qualitySwitchRules.push(Object(_SwitchHistoryRule__WEBPACK_IMPORTED_MODULE_3__["default"])(context).create());
           }
 
           if (settings.get().streaming.abr.additionalAbrRules.abandonRequestsRule) {
@@ -53850,7 +53881,7 @@ function ABRRulesCollection(config) {
 
   function _getRulesWithChange(srArray) {
     return srArray.filter(function (sr) {
-      return sr.quality > _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE;
+      return sr.quality > _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE;
     });
   }
   /**
@@ -53869,41 +53900,41 @@ function ABRRulesCollection(config) {
       return;
     }
 
-    values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.STRONG] = {
-      quality: _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE,
+    values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.STRONG] = {
+      quality: _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE,
       reason: null
     };
-    values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.WEAK] = {
-      quality: _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE,
+    values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.WEAK] = {
+      quality: _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE,
       reason: null
     };
-    values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.DEFAULT] = {
-      quality: _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE,
+    values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.DEFAULT] = {
+      quality: _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE,
       reason: null
     };
 
     for (i = 0, len = srArray.length; i < len; i += 1) {
       req = srArray[i];
 
-      if (req.quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE) {
+      if (req.quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE) {
         // We only use the new quality in case it is lower than the already saved one or if no new quality has been selected for the respective priority
-        if (values[req.priority].quality === _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE || values[req.priority].quality > req.quality) {
+        if (values[req.priority].quality === _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE || values[req.priority].quality > req.quality) {
           values[req.priority].quality = req.quality;
           values[req.priority].reason = req.reason || null;
         }
       }
     }
 
-    if (values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.WEAK].quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE) {
-      newSwitchReq = values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.WEAK];
+    if (values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.WEAK].quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE) {
+      newSwitchReq = values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.WEAK];
     }
 
-    if (values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.DEFAULT].quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE) {
-      newSwitchReq = values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.DEFAULT];
+    if (values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.DEFAULT].quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE) {
+      newSwitchReq = values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.DEFAULT];
     }
 
-    if (values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.STRONG].quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].NO_CHANGE) {
-      newSwitchReq = values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"].PRIORITY.STRONG];
+    if (values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.STRONG].quality !== _SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].NO_CHANGE) {
+      newSwitchReq = values[_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"].PRIORITY.STRONG];
     }
 
     if (newSwitchReq) {
@@ -53911,7 +53942,7 @@ function ABRRulesCollection(config) {
       reason = newSwitchReq.reason;
     }
 
-    return Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"])(context).create(quality, reason);
+    return Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"])(context).create(quality, reason);
   }
 
   function getMaxQuality(rulesContext) {
@@ -53922,7 +53953,7 @@ function ABRRulesCollection(config) {
     var activeRules = _getRulesWithChange(switchRequestArray);
 
     var maxQuality = getMinSwitchRequest(activeRules);
-    return maxQuality || Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"])(context).create();
+    return maxQuality || Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"])(context).create();
   }
 
   function shouldAbandonFragment(rulesContext, streamId) {
@@ -53933,7 +53964,7 @@ function ABRRulesCollection(config) {
     var activeRules = _getRulesWithChange(abandonRequestArray);
 
     var shouldAbandon = getMinSwitchRequest(activeRules);
-    return shouldAbandon || Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_9__["default"])(context).create();
+    return shouldAbandon || Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_8__["default"])(context).create();
   }
 
   function reset() {
@@ -53964,10 +53995,10 @@ function ABRRulesCollection(config) {
 }
 
 ABRRulesCollection.__dashjs_factory_name = 'ABRRulesCollection';
-var factory = _core_FactoryMaker__WEBPACK_IMPORTED_MODULE_8__["default"].getClassFactory(ABRRulesCollection);
+var factory = _core_FactoryMaker__WEBPACK_IMPORTED_MODULE_7__["default"].getClassFactory(ABRRulesCollection);
 factory.QUALITY_SWITCH_RULES = QUALITY_SWITCH_RULES;
 factory.ABANDON_FRAGMENT_RULES = ABANDON_FRAGMENT_RULES;
-_core_FactoryMaker__WEBPACK_IMPORTED_MODULE_8__["default"].updateSingletonFactory(ABRRulesCollection.__dashjs_factory_name, factory);
+_core_FactoryMaker__WEBPACK_IMPORTED_MODULE_7__["default"].updateSingletonFactory(ABRRulesCollection.__dashjs_factory_name, factory);
 /* harmony default export */ __webpack_exports__["default"] = (factory);
 
 /***/ }),
@@ -54701,86 +54732,6 @@ function BolaRule(config) {
 
 BolaRule.__dashjs_factory_name = 'BolaRule';
 /* harmony default export */ __webpack_exports__["default"] = (_core_FactoryMaker__WEBPACK_IMPORTED_MODULE_2__["default"].getClassFactory(BolaRule));
-
-/***/ }),
-
-/***/ "./src/streaming/rules/abr/DroppedFramesRule.js":
-/*!******************************************************!*\
-  !*** ./src/streaming/rules/abr/DroppedFramesRule.js ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _core_FactoryMaker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../core/FactoryMaker */ "./src/core/FactoryMaker.js");
-/* harmony import */ var _SwitchRequest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../SwitchRequest */ "./src/streaming/rules/SwitchRequest.js");
-/* harmony import */ var _core_Debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../core/Debug */ "./src/core/Debug.js");
-
-
-
-
-function DroppedFramesRule() {
-  var context = this.context;
-  var instance, logger;
-  var DROPPED_PERCENTAGE_FORBID = 0.15;
-  var GOOD_SAMPLE_SIZE = 375; //Don't apply the rule until this many frames have been rendered(and counted under those indices).
-
-  function setup() {
-    logger = Object(_core_Debug__WEBPACK_IMPORTED_MODULE_2__["default"])(context).getInstance().getLogger(instance);
-  }
-
-  function getMaxIndex(rulesContext) {
-    var switchRequest = Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_1__["default"])(context).create();
-
-    if (!rulesContext || !rulesContext.hasOwnProperty('getDroppedFramesHistory')) {
-      return switchRequest;
-    }
-
-    var droppedFramesHistory = rulesContext.getDroppedFramesHistory();
-    var streamId = rulesContext.getStreamInfo().id;
-
-    if (droppedFramesHistory) {
-      var dfh = droppedFramesHistory.getFrameHistory(streamId);
-
-      if (!dfh || dfh.length === 0) {
-        return switchRequest;
-      }
-
-      var droppedFrames = 0;
-      var totalFrames = 0;
-      var maxIndex = _SwitchRequest__WEBPACK_IMPORTED_MODULE_1__["default"].NO_CHANGE; //No point in measuring dropped frames for the zeroeth index.
-
-      for (var i = 1; i < dfh.length; i++) {
-        if (dfh[i]) {
-          droppedFrames = dfh[i].droppedVideoFrames;
-          totalFrames = dfh[i].totalVideoFrames;
-
-          if (totalFrames > GOOD_SAMPLE_SIZE && droppedFrames / totalFrames > DROPPED_PERCENTAGE_FORBID) {
-            maxIndex = i - 1;
-            logger.debug('index: ' + maxIndex + ' Dropped Frames: ' + droppedFrames + ' Total Frames: ' + totalFrames);
-            break;
-          }
-        }
-      }
-
-      return Object(_SwitchRequest__WEBPACK_IMPORTED_MODULE_1__["default"])(context).create(maxIndex, {
-        droppedFrames: droppedFrames
-      });
-    }
-
-    return switchRequest;
-  }
-
-  instance = {
-    getMaxIndex: getMaxIndex
-  };
-  setup();
-  return instance;
-}
-
-DroppedFramesRule.__dashjs_factory_name = 'DroppedFramesRule';
-/* harmony default export */ __webpack_exports__["default"] = (_core_FactoryMaker__WEBPACK_IMPORTED_MODULE_0__["default"].getClassFactory(DroppedFramesRule));
 
 /***/ }),
 

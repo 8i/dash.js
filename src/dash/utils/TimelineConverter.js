@@ -37,6 +37,14 @@ import Settings from '../../core/Settings';
 import Constants from '../../streaming/constants/Constants';
 import MediaPlayerEvents from '../../streaming/MediaPlayerEvents';
 import ConformanceViolationConstants from '../../streaming/constants/ConformanceViolationConstants';
+import moment from 'moment';
+
+export function offsetToSeconds(timeOffset) {
+    if (timeOffset && timeOffset.includes('P')) {
+        return moment.duration(timeOffset).asSeconds();
+    }
+    return timeOffset
+}
 
 function TimelineConverter() {
 
@@ -94,7 +102,8 @@ function TimelineConverter() {
             if (isDynamic) {
                 // SAST = Period@start + seg@presentationStartTime + seg@duration
                 // ASAST = SAST - ATO
-                const availabilityTimeOffset = representation.availabilityTimeOffset;
+                let availabilityTimeOffset = offsetToSeconds(representation.availabilityTimeOffset);
+
                 // presentationEndTime = Period@start + seg@presentationStartTime + Segment@duration
                 availabilityTime = new Date(availabilityStartTime.getTime() + (presentationEndTime - availabilityTimeOffset) * 1000);
             } else {

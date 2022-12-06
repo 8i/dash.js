@@ -47,6 +47,7 @@ import Debug from '../../core/Debug';
 import DashJSError from '../../streaming/vo/DashJSError';
 import Errors from '../../core/errors/Errors';
 import { THUMBNAILS_SCHEME_ID_URIS } from '../../streaming/thumbnail/ThumbnailTracks';
+import {offsetToSeconds} from '../utils/TimelineConverter';
 
 function DashManifestModel() {
     let instance,
@@ -625,7 +626,7 @@ function DashManifestModel() {
                     if (segmentInfo.hasOwnProperty(DashConstants.AVAILABILITY_TIME_OFFSET)) {
                         voRepresentation.availabilityTimeOffset = segmentInfo.availabilityTimeOffset;
                     } else if (baseUrl && baseUrl.availabilityTimeOffset !== undefined) {
-                        voRepresentation.availabilityTimeOffset = baseUrl.availabilityTimeOffset;
+                        voRepresentation.availabilityTimeOffset = offsetToSeconds(baseUrl.availabilityTimeOffset);
                     }
                     if (segmentInfo.hasOwnProperty(DashConstants.AVAILABILITY_TIME_COMPLETE)) {
                         voRepresentation.availabilityTimeComplete = segmentInfo.availabilityTimeComplete !== 'false';

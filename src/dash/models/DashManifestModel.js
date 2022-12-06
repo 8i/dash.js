@@ -624,7 +624,7 @@ function DashManifestModel() {
                         voRepresentation.presentationTimeOffset = segmentInfo.presentationTimeOffset / voRepresentation.timescale;
                     }
                     if (segmentInfo.hasOwnProperty(DashConstants.AVAILABILITY_TIME_OFFSET)) {
-                        voRepresentation.availabilityTimeOffset = segmentInfo.availabilityTimeOffset;
+                        voRepresentation.availabilityTimeOffset = offsetToSeconds(segmentInfo.availabilityTimeOffset);
                     } else if (baseUrl && baseUrl.availabilityTimeOffset !== undefined) {
                         voRepresentation.availabilityTimeOffset = offsetToSeconds(baseUrl.availabilityTimeOffset);
                     }
@@ -1105,7 +1105,7 @@ function DashManifestModel() {
                 }
 
                 if (entry.hasOwnProperty(DashConstants.AVAILABILITY_TIME_OFFSET)) {
-                    baseUrl.availabilityTimeOffset = entry[DashConstants.AVAILABILITY_TIME_OFFSET];
+                    baseUrl.availabilityTimeOffset = `${offsetToSeconds(entry[DashConstants.AVAILABILITY_TIME_OFFSET]) || 4}`;
                 }
 
                 if (entry.hasOwnProperty(DashConstants.AVAILABILITY_TIME_COMPLETE)) {

@@ -36,6 +36,7 @@ import BaseURL from '../../dash/vo/BaseURL';
 import FactoryMaker from '../../core/FactoryMaker';
 import EventBus from '../../core/EventBus';
 import Events from '../../core/events/Events';
+import {offsetToSeconds} from '../../dash/utils/TimelineConverter';
 
 function BaseURLController() {
 
@@ -92,7 +93,7 @@ function BaseURLController() {
                 } else {
                     p.url = urlUtils.resolve(b.url, p.url);
                 }
-                p.availabilityTimeOffset = b.availabilityTimeOffset;
+                p.availabilityTimeOffset = offsetToSeconds(b.availabilityTimeOffset);
                 p.availabilityTimeComplete = b.availabilityTimeComplete;
             } else {
                 return new BaseURL();

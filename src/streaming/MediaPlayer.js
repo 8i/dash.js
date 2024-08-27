@@ -60,10 +60,7 @@ import Events from './../core/events/Events';
 import MediaPlayerEvents from './MediaPlayerEvents';
 import FactoryMaker from '../core/FactoryMaker';
 import Settings from '../core/Settings';
-import {
-    getVersionString
-}
-    from '../core/Version';
+import {getVersionString} from '../core/Version';
 
 //Dash
 import SegmentBaseController from '../dash/controllers/SegmentBaseController';
@@ -593,7 +590,18 @@ function MediaPlayer() {
             throw Constants.BAD_ARGUMENT_ERROR;
         }
 
+        if (value < 0) {
+            value = 0;
+        }
+
         let s = playbackController.getIsDynamic() ? getDVRSeekOffset(value) : value;
+
+        // For VoD limit the seek to the duration of the content
+        const videoElement = getVideoElement();
+        if (!playbackController.getIsDynamic() && videoElement.duration) {
+            s = Math.min(videoElement.duration, s);
+        }
+
         playbackController.seek(s, false, false, true);
     }
 
@@ -1418,6 +1426,13 @@ function MediaPlayer() {
         videoModel.setTTMLRenderingDiv(div);
     }
 
+    function attachVttRenderingDiv(div) {
+        if (!videoModel.getElement()) {
+            throw ELEMENT_NOT_ATTACHED_ERROR;
+        }
+        videoModel.setVttRenderingDiv(div);
+    }
+
     /*
     ---------------------------------------------------------------------------
 
@@ -1832,6 +1847,12 @@ function MediaPlayer() {
         if (typeof urlOrManifest === 'string') {
             uriFragmentModel.initialize(urlOrManifest);
         }
+
+        if (startTime == null || isNaN(startTime)) {
+            startTime = NaN;
+        }
+
+        startTime = Math.max(0, startTime);
 
         source = urlOrManifest;
 
@@ -2434,6 +2455,7 @@ function MediaPlayer() {
         setCustomInitialTrackSelectionFunction,
         resetCustomInitialTrackSelectionFunction,
         attachTTMLRenderingDiv,
+        attachVttRenderingDiv,
         getCurrentTextTrackIndex,
         provideThumbnail,
         getDashAdapter,

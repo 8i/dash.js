@@ -96,15 +96,16 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
-/***/ "./node_modules/path-browserify/index.js":
-/*!***********************************************!*\
-  !*** ./node_modules/path-browserify/index.js ***!
-  \***********************************************/
+/***/ "./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
-// backported and transplited with Babel, with backwards-compat fixes
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {// 'path' module extracted from Node.js v8.11.1 (only the posix part)
+// transplited with Babel
 
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -127,293 +128,520 @@ return /******/ (function(modules) { // webpackBootstrap
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
 
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
 
-  return parts;
+function assertPath(path) {
+  if (typeof path !== 'string') {
+    throw new TypeError('Path must be a string. Received ' + JSON.stringify(path));
+  }
 }
 
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
+// Resolves . and .. elements in a path with directory names
+function normalizeStringPosix(path, allowAboveRoot) {
+  var res = '';
+  var lastSegmentLength = 0;
+  var lastSlash = -1;
+  var dots = 0;
+  var code;
+  for (var i = 0; i <= path.length; ++i) {
+    if (i < path.length)
+      code = path.charCodeAt(i);
+    else if (code === 47 /*/*/)
       break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  if (path.length === 0) return '.';
-  var code = path.charCodeAt(0);
-  var hasRoot = code === 47 /*/*/;
-  var end = -1;
-  var matchedSlash = true;
-  for (var i = path.length - 1; i >= 1; --i) {
-    code = path.charCodeAt(i);
+    else
+      code = 47 /*/*/;
     if (code === 47 /*/*/) {
-        if (!matchedSlash) {
-          end = i;
-          break;
+      if (lastSlash === i - 1 || dots === 1) {
+        // NOOP
+      } else if (lastSlash !== i - 1 && dots === 2) {
+        if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 /*.*/ || res.charCodeAt(res.length - 2) !== 46 /*.*/) {
+          if (res.length > 2) {
+            var lastSlashIndex = res.lastIndexOf('/');
+            if (lastSlashIndex !== res.length - 1) {
+              if (lastSlashIndex === -1) {
+                res = '';
+                lastSegmentLength = 0;
+              } else {
+                res = res.slice(0, lastSlashIndex);
+                lastSegmentLength = res.length - 1 - res.lastIndexOf('/');
+              }
+              lastSlash = i;
+              dots = 0;
+              continue;
+            }
+          } else if (res.length === 2 || res.length === 1) {
+            res = '';
+            lastSegmentLength = 0;
+            lastSlash = i;
+            dots = 0;
+            continue;
+          }
+        }
+        if (allowAboveRoot) {
+          if (res.length > 0)
+            res += '/..';
+          else
+            res = '..';
+          lastSegmentLength = 2;
         }
       } else {
-      // We saw the first non-path separator
-      matchedSlash = false;
+        if (res.length > 0)
+          res += '/' + path.slice(lastSlash + 1, i);
+        else
+          res = path.slice(lastSlash + 1, i);
+        lastSegmentLength = i - lastSlash - 1;
+      }
+      lastSlash = i;
+      dots = 0;
+    } else if (code === 46 /*.*/ && dots !== -1) {
+      ++dots;
+    } else {
+      dots = -1;
     }
   }
-
-  if (end === -1) return hasRoot ? '/' : '.';
-  if (hasRoot && end === 1) {
-    // return '//';
-    // Backwards-compat fix:
-    return '/';
-  }
-  return path.slice(0, end);
-};
-
-function basename(path) {
-  if (typeof path !== 'string') path = path + '';
-
-  var start = 0;
-  var end = -1;
-  var matchedSlash = true;
-  var i;
-
-  for (i = path.length - 1; i >= 0; --i) {
-    if (path.charCodeAt(i) === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          start = i + 1;
-          break;
-        }
-      } else if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // path component
-      matchedSlash = false;
-      end = i + 1;
-    }
-  }
-
-  if (end === -1) return '';
-  return path.slice(start, end);
+  return res;
 }
 
-// Uses a mixed approach for backwards-compatibility, as ext behavior changed
-// in new Node.js versions, so only basename() above is backported here
-exports.basename = function (path, ext) {
-  var f = basename(path);
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
+function _format(sep, pathObject) {
+  var dir = pathObject.dir || pathObject.root;
+  var base = pathObject.base || (pathObject.name || '') + (pathObject.ext || '');
+  if (!dir) {
+    return base;
   }
-  return f;
-};
+  if (dir === pathObject.root) {
+    return dir + base;
+  }
+  return dir + sep + base;
+}
 
-exports.extname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  var startDot = -1;
-  var startPart = 0;
-  var end = -1;
-  var matchedSlash = true;
-  // Track the state of characters (if any) we see before our first dot and
-  // after any path separator we find
-  var preDotState = 0;
-  for (var i = path.length - 1; i >= 0; --i) {
-    var code = path.charCodeAt(i);
-    if (code === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          startPart = i + 1;
-          break;
-        }
+var posix = {
+  // path.resolve([from ...], to)
+  resolve: function resolve() {
+    var resolvedPath = '';
+    var resolvedAbsolute = false;
+    var cwd;
+
+    for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+      var path;
+      if (i >= 0)
+        path = arguments[i];
+      else {
+        if (cwd === undefined)
+          cwd = process.cwd();
+        path = cwd;
+      }
+
+      assertPath(path);
+
+      // Skip empty entries
+      if (path.length === 0) {
         continue;
       }
-    if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // extension
-      matchedSlash = false;
-      end = i + 1;
-    }
-    if (code === 46 /*.*/) {
-        // If this is our first dot, mark it as the start of our extension
-        if (startDot === -1)
-          startDot = i;
-        else if (preDotState !== 1)
-          preDotState = 1;
-    } else if (startDot !== -1) {
-      // We saw a non-dot and non-path separator before our dot, so we should
-      // have a good chance at having a non-empty extension
-      preDotState = -1;
-    }
-  }
 
-  if (startDot === -1 || end === -1 ||
-      // We saw a non-dot character immediately before the dot
-      preDotState === 0 ||
-      // The (right-most) trimmed path component is exactly '..'
-      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
-    return '';
-  }
-  return path.slice(startDot, end);
+      resolvedPath = path + '/' + resolvedPath;
+      resolvedAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    }
+
+    // At this point the path should be resolved to a full absolute path, but
+    // handle relative paths to be safe (might happen when process.cwd() fails)
+
+    // Normalize the path
+    resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute);
+
+    if (resolvedAbsolute) {
+      if (resolvedPath.length > 0)
+        return '/' + resolvedPath;
+      else
+        return '/';
+    } else if (resolvedPath.length > 0) {
+      return resolvedPath;
+    } else {
+      return '.';
+    }
+  },
+
+  normalize: function normalize(path) {
+    assertPath(path);
+
+    if (path.length === 0) return '.';
+
+    var isAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    var trailingSeparator = path.charCodeAt(path.length - 1) === 47 /*/*/;
+
+    // Normalize the path
+    path = normalizeStringPosix(path, !isAbsolute);
+
+    if (path.length === 0 && !isAbsolute) path = '.';
+    if (path.length > 0 && trailingSeparator) path += '/';
+
+    if (isAbsolute) return '/' + path;
+    return path;
+  },
+
+  isAbsolute: function isAbsolute(path) {
+    assertPath(path);
+    return path.length > 0 && path.charCodeAt(0) === 47 /*/*/;
+  },
+
+  join: function join() {
+    if (arguments.length === 0)
+      return '.';
+    var joined;
+    for (var i = 0; i < arguments.length; ++i) {
+      var arg = arguments[i];
+      assertPath(arg);
+      if (arg.length > 0) {
+        if (joined === undefined)
+          joined = arg;
+        else
+          joined += '/' + arg;
+      }
+    }
+    if (joined === undefined)
+      return '.';
+    return posix.normalize(joined);
+  },
+
+  relative: function relative(from, to) {
+    assertPath(from);
+    assertPath(to);
+
+    if (from === to) return '';
+
+    from = posix.resolve(from);
+    to = posix.resolve(to);
+
+    if (from === to) return '';
+
+    // Trim any leading backslashes
+    var fromStart = 1;
+    for (; fromStart < from.length; ++fromStart) {
+      if (from.charCodeAt(fromStart) !== 47 /*/*/)
+        break;
+    }
+    var fromEnd = from.length;
+    var fromLen = fromEnd - fromStart;
+
+    // Trim any leading backslashes
+    var toStart = 1;
+    for (; toStart < to.length; ++toStart) {
+      if (to.charCodeAt(toStart) !== 47 /*/*/)
+        break;
+    }
+    var toEnd = to.length;
+    var toLen = toEnd - toStart;
+
+    // Compare paths to find the longest common path from root
+    var length = fromLen < toLen ? fromLen : toLen;
+    var lastCommonSep = -1;
+    var i = 0;
+    for (; i <= length; ++i) {
+      if (i === length) {
+        if (toLen > length) {
+          if (to.charCodeAt(toStart + i) === 47 /*/*/) {
+            // We get here if `from` is the exact base path for `to`.
+            // For example: from='/foo/bar'; to='/foo/bar/baz'
+            return to.slice(toStart + i + 1);
+          } else if (i === 0) {
+            // We get here if `from` is the root
+            // For example: from='/'; to='/foo'
+            return to.slice(toStart + i);
+          }
+        } else if (fromLen > length) {
+          if (from.charCodeAt(fromStart + i) === 47 /*/*/) {
+            // We get here if `to` is the exact base path for `from`.
+            // For example: from='/foo/bar/baz'; to='/foo/bar'
+            lastCommonSep = i;
+          } else if (i === 0) {
+            // We get here if `to` is the root.
+            // For example: from='/foo'; to='/'
+            lastCommonSep = 0;
+          }
+        }
+        break;
+      }
+      var fromCode = from.charCodeAt(fromStart + i);
+      var toCode = to.charCodeAt(toStart + i);
+      if (fromCode !== toCode)
+        break;
+      else if (fromCode === 47 /*/*/)
+        lastCommonSep = i;
+    }
+
+    var out = '';
+    // Generate the relative path based on the path difference between `to`
+    // and `from`
+    for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
+      if (i === fromEnd || from.charCodeAt(i) === 47 /*/*/) {
+        if (out.length === 0)
+          out += '..';
+        else
+          out += '/..';
+      }
+    }
+
+    // Lastly, append the rest of the destination (`to`) path that comes after
+    // the common path parts
+    if (out.length > 0)
+      return out + to.slice(toStart + lastCommonSep);
+    else {
+      toStart += lastCommonSep;
+      if (to.charCodeAt(toStart) === 47 /*/*/)
+        ++toStart;
+      return to.slice(toStart);
+    }
+  },
+
+  _makeLong: function _makeLong(path) {
+    return path;
+  },
+
+  dirname: function dirname(path) {
+    assertPath(path);
+    if (path.length === 0) return '.';
+    var code = path.charCodeAt(0);
+    var hasRoot = code === 47 /*/*/;
+    var end = -1;
+    var matchedSlash = true;
+    for (var i = path.length - 1; i >= 1; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          if (!matchedSlash) {
+            end = i;
+            break;
+          }
+        } else {
+        // We saw the first non-path separator
+        matchedSlash = false;
+      }
+    }
+
+    if (end === -1) return hasRoot ? '/' : '.';
+    if (hasRoot && end === 1) return '//';
+    return path.slice(0, end);
+  },
+
+  basename: function basename(path, ext) {
+    if (ext !== undefined && typeof ext !== 'string') throw new TypeError('"ext" argument must be a string');
+    assertPath(path);
+
+    var start = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i;
+
+    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
+      if (ext.length === path.length && ext === path) return '';
+      var extIdx = ext.length - 1;
+      var firstNonSlashEnd = -1;
+      for (i = path.length - 1; i >= 0; --i) {
+        var code = path.charCodeAt(i);
+        if (code === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else {
+          if (firstNonSlashEnd === -1) {
+            // We saw the first non-path separator, remember this index in case
+            // we need it if the extension ends up not matching
+            matchedSlash = false;
+            firstNonSlashEnd = i + 1;
+          }
+          if (extIdx >= 0) {
+            // Try to match the explicit extension
+            if (code === ext.charCodeAt(extIdx)) {
+              if (--extIdx === -1) {
+                // We matched the extension, so mark this as the end of our path
+                // component
+                end = i;
+              }
+            } else {
+              // Extension does not match, so our result is the entire path
+              // component
+              extIdx = -1;
+              end = firstNonSlashEnd;
+            }
+          }
+        }
+      }
+
+      if (start === end) end = firstNonSlashEnd;else if (end === -1) end = path.length;
+      return path.slice(start, end);
+    } else {
+      for (i = path.length - 1; i >= 0; --i) {
+        if (path.charCodeAt(i) === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else if (end === -1) {
+          // We saw the first non-path separator, mark this as the end of our
+          // path component
+          matchedSlash = false;
+          end = i + 1;
+        }
+      }
+
+      if (end === -1) return '';
+      return path.slice(start, end);
+    }
+  },
+
+  extname: function extname(path) {
+    assertPath(path);
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+    for (var i = path.length - 1; i >= 0; --i) {
+      var code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1)
+            startDot = i;
+          else if (preDotState !== 1)
+            preDotState = 1;
+      } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+        // We saw a non-dot character immediately before the dot
+        preDotState === 0 ||
+        // The (right-most) trimmed path component is exactly '..'
+        preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      return '';
+    }
+    return path.slice(startDot, end);
+  },
+
+  format: function format(pathObject) {
+    if (pathObject === null || typeof pathObject !== 'object') {
+      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof pathObject);
+    }
+    return _format('/', pathObject);
+  },
+
+  parse: function parse(path) {
+    assertPath(path);
+
+    var ret = { root: '', dir: '', base: '', ext: '', name: '' };
+    if (path.length === 0) return ret;
+    var code = path.charCodeAt(0);
+    var isAbsolute = code === 47 /*/*/;
+    var start;
+    if (isAbsolute) {
+      ret.root = '/';
+      start = 1;
+    } else {
+      start = 0;
+    }
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i = path.length - 1;
+
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+
+    // Get non-dir info
+    for (; i >= start; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+    // We saw a non-dot character immediately before the dot
+    preDotState === 0 ||
+    // The (right-most) trimmed path component is exactly '..'
+    preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      if (end !== -1) {
+        if (startPart === 0 && isAbsolute) ret.base = ret.name = path.slice(1, end);else ret.base = ret.name = path.slice(startPart, end);
+      }
+    } else {
+      if (startPart === 0 && isAbsolute) {
+        ret.name = path.slice(1, startDot);
+        ret.base = path.slice(1, end);
+      } else {
+        ret.name = path.slice(startPart, startDot);
+        ret.base = path.slice(startPart, end);
+      }
+      ret.ext = path.slice(startDot, end);
+    }
+
+    if (startPart > 0) ret.dir = path.slice(0, startPart - 1);else if (isAbsolute) ret.dir = '/';
+
+    return ret;
+  },
+
+  sep: '/',
+  delimiter: ':',
+  win32: null,
+  posix: null
 };
 
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
+posix.posix = posix;
 
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
+module.exports = posix;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js")))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../process@0.11.10/node_modules/process/browser.js */ "./node_modules/.pnpm/process@0.11.10/node_modules/process/browser.js")))
 
 /***/ }),
 
-/***/ "./node_modules/process/browser.js":
-/*!*****************************************!*\
-  !*** ./node_modules/process/browser.js ***!
-  \*****************************************/
+/***/ "./node_modules/.pnpm/process@0.11.10/node_modules/process/browser.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/.pnpm/process@0.11.10/node_modules/process/browser.js ***!
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -605,15 +833,15 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ "./node_modules/ua-parser-js/src/ua-parser.js":
-/*!****************************************************!*\
-  !*** ./node_modules/ua-parser-js/src/ua-parser.js ***!
-  \****************************************************/
+/***/ "./node_modules/.pnpm/ua-parser-js@1.0.38/node_modules/ua-parser-js/src/ua-parser.js":
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/.pnpm/ua-parser-js@1.0.38/node_modules/ua-parser-js/src/ua-parser.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/////////////////////////////////////////////////////////////////////////////////
-/* UAParser.js v1.0.2
+/* UAParser.js v1.0.38
    Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
    MIT License *//*
    Detect Browser, Engine, OS, CPU, and Device type/model from User-Agent data.
@@ -631,7 +859,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     /////////////
 
 
-    var LIBVERSION  = '1.0.2',
+    var LIBVERSION  = '1.0.38',
         EMPTY       = '',
         UNKNOWN     = '?',
         FUNC_TYPE   = 'function',
@@ -651,7 +879,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
         SMARTTV     = 'smarttv',
         WEARABLE    = 'wearable',
         EMBEDDED    = 'embedded',
-        UA_MAX_LENGTH = 255;
+        UA_MAX_LENGTH = 500;
 
     var AMAZON  = 'Amazon',
         APPLE   = 'Apple',
@@ -668,10 +896,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
         MOTOROLA  = 'Motorola',
         OPERA   = 'Opera',
         SAMSUNG = 'Samsung',
+        SHARP   = 'Sharp',
         SONY    = 'Sony',
         XIAOMI  = 'Xiaomi',
         ZEBRA   = 'Zebra',
-        FACEBOOK   = 'Facebook';
+        FACEBOOK    = 'Facebook',
+        CHROMIUM_OS = 'Chromium OS',
+        MAC_OS  = 'Mac OS';
 
     ///////////
     // Helper
@@ -706,7 +937,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
         },
         trim = function (str, len) {
             if (typeof(str) === STR_TYPE) {
-                str = str.replace(/^\s\s*/, EMPTY).replace(/\s\s*$/, EMPTY);
+                str = str.replace(/^\s\s*/, EMPTY);
                 return typeof(len) === UNDEF_TYPE ? str : str.substring(0, UA_MAX_LENGTH);
             }
     };
@@ -729,6 +960,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
                 // try matching uastring with regexes
                 while (j < regex.length && !matches) {
 
+                    if (!regex[j]) { break; }
                     matches = regex[j++].exec(ua);
 
                     if (!!matches) {
@@ -833,34 +1065,42 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             ], [NAME, VERSION], [
             /opios[\/ ]+([\w\.]+)/i                                             // Opera mini on iphone >= 8.0
             ], [VERSION, [NAME, OPERA+' Mini']], [
+            /\bop(?:rg)?x\/([\w\.]+)/i                                          // Opera GX
+            ], [VERSION, [NAME, OPERA+' GX']], [
             /\bopr\/([\w\.]+)/i                                                 // Opera Webkit
             ], [VERSION, [NAME, OPERA]], [
 
             // Mixed
+            /\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i            // Baidu
+            ], [VERSION, [NAME, 'Baidu']], [
             /(kindle)\/([\w\.]+)/i,                                             // Kindle
             /(lunascape|maxthon|netfront|jasmine|blazer)[\/ ]?([\w\.]*)/i,      // Lunascape/Maxthon/Netfront/Jasmine/Blazer
             // Trident based
-            /(avant |iemobile|slim)(?:browser)?[\/ ]?([\w\.]*)/i,               // Avant/IEMobile/SlimBrowser
-            /(ba?idubrowser)[\/ ]?([\w\.]+)/i,                                  // Baidu Browser
+            /(avant|iemobile|slim)\s?(?:browser)?[\/ ]?([\w\.]*)/i,             // Avant/IEMobile/SlimBrowser
             /(?:ms|\()(ie) ([\w\.]+)/i,                                         // Internet Explorer
 
             // Webkit/KHTML based                                               // Flock/RockMelt/Midori/Epiphany/Silk/Skyfire/Bolt/Iron/Iridium/PhantomJS/Bowser/QupZilla/Falkon
-            /(flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark|qupzilla|falkon|rekonq|puffin|brave|whale|qqbrowserlite|qq)\/([-\w\.]+)/i,
+            /(flock|rockmelt|midori|epiphany|silk|skyfire|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|qq|duckduckgo)\/([-\w\.]+)/i,
                                                                                 // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ, aka ShouQ
+            /(heytap|ovi)browser\/([\d\.]+)/i,                                  // Heytap/Ovi
             /(weibo)__([\d\.]+)/i                                               // Weibo
             ], [NAME, VERSION], [
+            /\bddg\/([\w\.]+)/i                                                 // DuckDuckGo
+            ], [VERSION, [NAME, 'DuckDuckGo']], [
             /(?:\buc? ?browser|(?:juc.+)ucweb)[\/ ]?([\w\.]+)/i                 // UCBrowser
             ], [VERSION, [NAME, 'UC'+BROWSER]], [
-            /\bqbcore\/([\w\.]+)/i                                              // WeChat Desktop for Windows Built-in Browser
-            ], [VERSION, [NAME, 'WeChat(Win) Desktop']], [
+            /microm.+\bqbcore\/([\w\.]+)/i,                                     // WeChat Desktop for Windows Built-in Browser
+            /\bqbcore\/([\w\.]+).+microm/i,
             /micromessenger\/([\w\.]+)/i                                        // WeChat
             ], [VERSION, [NAME, 'WeChat']], [
             /konqueror\/([\w\.]+)/i                                             // Konqueror
             ], [VERSION, [NAME, 'Konqueror']], [
             /trident.+rv[: ]([\w\.]{1,9})\b.+like gecko/i                       // IE11
             ], [VERSION, [NAME, 'IE']], [
-            /yabrowser\/([\w\.]+)/i                                             // Yandex
+            /ya(?:search)?browser\/([\w\.]+)/i                                  // Yandex
             ], [VERSION, [NAME, 'Yandex']], [
+            /slbrowser\/([\w\.]+)/i                                             // Smart Lenovo Browser
+            ], [VERSION, [NAME, 'Smart Lenovo '+BROWSER]], [
             /(avast|avg)\/([\w\.]+)/i                                           // Avast/AVG Secure Browser
             ], [[NAME, /(.+)/, '$1 Secure '+BROWSER], VERSION], [
             /\bfocus\/([\w\.]+)/i                                               // Firefox Focus
@@ -878,28 +1118,41 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             /fxios\/([-\w\.]+)/i                                                // Firefox for iOS
             ], [VERSION, [NAME, FIREFOX]], [
             /\bqihu|(qi?ho?o?|360)browser/i                                     // 360
-            ], [[NAME, '360 '+BROWSER]], [
-            /(oculus|samsung|sailfish)browser\/([\w\.]+)/i
-            ], [[NAME, /(.+)/, '$1 '+BROWSER], VERSION], [                      // Oculus/Samsung/Sailfish Browser
+            ], [[NAME, '360 ' + BROWSER]], [
+            /(oculus|sailfish|huawei|vivo)browser\/([\w\.]+)/i
+            ], [[NAME, /(.+)/, '$1 ' + BROWSER], VERSION], [                    // Oculus/Sailfish/HuaweiBrowser/VivoBrowser
+            /samsungbrowser\/([\w\.]+)/i                                        // Samsung Internet
+            ], [VERSION, [NAME, SAMSUNG + ' Internet']], [
             /(comodo_dragon)\/([\w\.]+)/i                                       // Comodo Dragon
             ], [[NAME, /_/g, ' '], VERSION], [
+            /metasr[\/ ]?([\d\.]+)/i                                            // Sogou Explorer
+            ], [VERSION, [NAME, 'Sogou Explorer']], [
+            /(sogou)mo\w+\/([\d\.]+)/i                                          // Sogou Mobile
+            ], [[NAME, 'Sogou Mobile'], VERSION], [
             /(electron)\/([\w\.]+) safari/i,                                    // Electron-based App
             /(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,                   // Tesla
-            /m?(qqbrowser|baiduboxapp|2345Explorer)[\/ ]?([\w\.]+)/i            // QQBrowser/Baidu App/2345 Browser
+            /m?(qqbrowser|2345Explorer)[\/ ]?([\w\.]+)/i                        // QQBrowser/2345 Browser
             ], [NAME, VERSION], [
-            /(metasr)[\/ ]?([\w\.]+)/i,                                         // SouGouBrowser
-            /(lbbrowser)/i                                                      // LieBao Browser
+            /(lbbrowser)/i,                                                     // LieBao Browser
+            /\[(linkedin)app\]/i                                                // LinkedIn App for iOS & Android
             ], [NAME], [
 
             // WebView
             /((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i       // Facebook App for iOS & Android
             ], [[NAME, FACEBOOK], VERSION], [
+            /(Klarna)\/([\w\.]+)/i,                                             // Klarna Shopping Browser for iOS & Android
+            /(kakao(?:talk|story))[\/ ]([\w\.]+)/i,                             // Kakao App
+            /(naver)\(.*?(\d+\.[\w\.]+).*\)/i,                                  // Naver InApp
             /safari (line)\/([\w\.]+)/i,                                        // Line App for iOS
             /\b(line)\/([\w\.]+)\/iab/i,                                        // Line App for Android
-            /(chromium|instagram)[\/ ]([-\w\.]+)/i                              // Chromium/Instagram
+            /(alipay)client\/([\w\.]+)/i,                                       // Alipay
+            /(twitter)(?:and| f.+e\/([\w\.]+))/i,                               // Twitter
+            /(chromium|instagram|snapchat)[\/ ]([-\w\.]+)/i                     // Chromium/Instagram/Snapchat
             ], [NAME, VERSION], [
             /\bgsa\/([\w\.]+) .*safari\//i                                      // Google Search Appliance on iOS
             ], [VERSION, [NAME, 'GSA']], [
+            /musical_ly(?:.+app_?version\/|_)([\w\.]+)/i                        // TikTok
+            ], [VERSION, [NAME, 'TikTok']], [
 
             /headlesschrome(?:\/([\w\.]+)| )/i                                  // Chrome Headless
             ], [VERSION, [NAME, CHROME+' Headless']], [
@@ -913,9 +1166,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             /(chrome|omniweb|arora|[tizenoka]{5} ?browser)\/v?([\w\.]+)/i       // Chrome/OmniWeb/Arora/Tizen/Nokia
             ], [NAME, VERSION], [
 
-            /version\/([\w\.]+) .*mobile\/\w+ (safari)/i                        // Mobile Safari
+            /version\/([\w\.\,]+) .*mobile\/\w+ (safari)/i                      // Mobile Safari
             ], [VERSION, [NAME, 'Mobile Safari']], [
-            /version\/([\w\.]+) .*(mobile ?safari|safari)/i                     // Safari & Safari Mobile
+            /version\/([\w(\.|\,)]+) .*(mobile ?safari|safari)/i                // Safari & Safari Mobile
             ], [VERSION, NAME], [
             /webkit.+?(mobile ?safari|safari)(\/[\w\.]+)/i                      // Safari < 3.0
             ], [NAME, [VERSION, strMapper, oldSafariMap]], [
@@ -940,8 +1193,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             // Other
             /(polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|sleipnir|obigo|mosaic|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,
                                                                                 // Polaris/Lynx/Dillo/iCab/Doris/Amaya/w3m/NetSurf/Sleipnir/Obigo/Mosaic/Go/ICE/UP.Browser
-            /(links) \(([\w\.]+)/i                                              // Links
-            ], [NAME, VERSION]
+            /(links) \(([\w\.]+)/i,                                             // Links
+            /panasonic;(viera)/i                                                // Panasonic Viera
+            ], [NAME, VERSION], [
+            
+            /(cobalt)\/([\w\.]+)/i                                              // Cobalt
+            ], [NAME, [VERSION, /master.|lts./, ""]]
         ],
 
         cpu : [[
@@ -980,39 +1237,46 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
 
             //////////////////////////
             // MOBILES & TABLETS
-            // Ordered by popularity
             /////////////////////////
 
             // Samsung
-            /\b(sch-i[89]0\d|shw-m380s|sm-[pt]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i
+            /\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i
             ], [MODEL, [VENDOR, SAMSUNG], [TYPE, TABLET]], [
-            /\b((?:s[cgp]h|gt|sm)-\w+|galaxy nexus)/i,
+            /\b((?:s[cgp]h|gt|sm)-\w+|sc[g-]?[\d]+a?|galaxy nexus)/i,
             /samsung[- ]([-\w]+)/i,
             /sec-(sgh\w+)/i
             ], [MODEL, [VENDOR, SAMSUNG], [TYPE, MOBILE]], [
 
             // Apple
-            /\((ip(?:hone|od)[\w ]*);/i                                         // iPod/iPhone
+            /(?:\/|\()(ip(?:hone|od)[\w, ]*)(?:\/|;)/i                          // iPod/iPhone
             ], [MODEL, [VENDOR, APPLE], [TYPE, MOBILE]], [
             /\((ipad);[-\w\),; ]+apple/i,                                       // iPad
             /applecoremedia\/[\w\.]+ \((ipad)/i,
             /\b(ipad)\d\d?,\d\d?[;\]].+ios/i
             ], [MODEL, [VENDOR, APPLE], [TYPE, TABLET]], [
+            /(macintosh);/i
+            ], [MODEL, [VENDOR, APPLE]], [
+
+            // Sharp
+            /\b(sh-?[altvz]?\d\d[a-ekm]?)/i
+            ], [MODEL, [VENDOR, SHARP], [TYPE, MOBILE]], [
 
             // Huawei
             /\b((?:ag[rs][23]?|bah2?|sht?|btv)-a?[lw]\d{2})\b(?!.+d\/s)/i
             ], [MODEL, [VENDOR, HUAWEI], [TYPE, TABLET]], [
             /(?:huawei|honor)([-\w ]+)[;\)]/i,
-            /\b(nexus 6p|\w{2,4}-[atu]?[ln][01259x][012359][an]?)\b(?!.+d\/s)/i
+            /\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][012359c][adn]?)\b(?!.+d\/s)/i
             ], [MODEL, [VENDOR, HUAWEI], [TYPE, MOBILE]], [
 
             // Xiaomi
-            /\b(poco[\w ]+)(?: bui|\))/i,                                       // Xiaomi POCO
+            /\b(poco[\w ]+|m2\d{3}j\d\d[a-z]{2})(?: bui|\))/i,                  // Xiaomi POCO
             /\b; (\w+) build\/hm\1/i,                                           // Xiaomi Hongmi 'numeric' models
             /\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui/i,                             // Xiaomi Hongmi
             /\b(redmi[\-_ ]?(?:note|k)?[\w_ ]+)(?: bui|\))/i,                   // Xiaomi Redmi
-            /\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite)?)(?: bui|\))/i // Xiaomi Mi
+            /oid[^\)]+; (m?[12][0-389][01]\w{3,6}[c-y])( bui|; wv|\))/i,        // Xiaomi Redmi 'numeric' models
+            /\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite)?)(?: bui|\))/i // Xiaomi Mi
             ], [[MODEL, /_/g, ' '], [VENDOR, XIAOMI], [TYPE, MOBILE]], [
+            /oid[^\)]+; (2\d{4}(283|rpbf)[cgl])( bui|\))/i,                     // Redmi Pad
             /\b(mi[-_ ]?(?:pad)(?:[\w_ ]+))(?: bui|\))/i                        // Mi Pad tablets
             ],[[MODEL, /_/g, ' '], [VENDOR, XIAOMI], [TYPE, TABLET]], [
 
@@ -1020,6 +1284,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             /; (\w+) bui.+ oppo/i,
             /\b(cph[12]\d{3}|p(?:af|c[al]|d\w|e[ar])[mt]\d0|x9007|a101op)\b/i
             ], [MODEL, [VENDOR, 'OPPO'], [TYPE, MOBILE]], [
+            /\b(opd2\d{3}a?) bui/i
+            ], [MODEL, [VENDOR, 'OPPO'], [TYPE, TABLET]], [
 
             // Vivo
             /vivo (\w+)(?: bui|\))/i,
@@ -1027,7 +1293,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             ], [MODEL, [VENDOR, 'Vivo'], [TYPE, MOBILE]], [
 
             // Realme
-            /\b(rmx[12]\d{3})(?: bui|;|\))/i
+            /\b(rmx[1-3]\d{3})(?: bui|;|\))/i
             ], [MODEL, [VENDOR, 'Realme'], [TYPE, MOBILE]], [
 
             // Motorola
@@ -1063,7 +1329,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             ], [MODEL, [VENDOR, GOOGLE], [TYPE, MOBILE]], [
 
             // Sony
-            /droid.+ ([c-g]\d{4}|so[-gl]\w+|xq-a\w[4-7][12])(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i
+            /droid.+ (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-a\w[4-7][12])(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i
             ], [MODEL, [VENDOR, SONY], [TYPE, MOBILE]], [
             /sony tablet [ps]/i,
             /\b(?:sony)?sgp\w+(?: bui|\))/i
@@ -1076,7 +1342,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
 
             // Amazon
             /(alexa)webm/i,
-            /(kf[a-z]{2}wi)( bui|\))/i,                                         // Kindle Fire without Silk
+            /(kf[a-z]{2}wi|aeo[c-r]{2})( bui|\))/i,                             // Kindle Fire without Silk / Echo Show
             /(kf[a-z]+)( bui|\)).+silk\//i                                      // Kindle Fire HD
             ], [MODEL, [VENDOR, AMAZON], [TYPE, TABLET]], [
             /((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i                     // Fire Phone
@@ -1102,7 +1368,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
 
             // ZTE
             /(zte)[- ]([\w ]+?)(?: bui|\/|\))/i,
-            /(alcatel|geeksphone|nexian|panasonic|sony)[-_ ]?([-\w]*)/i         // Alcatel/GeeksPhone/Nexian/Panasonic/Sony
+            /(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)/i         // Alcatel/GeeksPhone/Nexian/Panasonic/Sony
             ], [VENDOR, [MODEL, /_/g, ' '], [TYPE, MOBILE]], [
 
             // Acer
@@ -1113,13 +1379,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             /droid.+; (m[1-5] note) bui/i,
             /\bmz-([-\w]{2,})/i
             ], [MODEL, [VENDOR, 'Meizu'], [TYPE, MOBILE]], [
-
-            // Sharp
-            /\b(sh-?[altvz]?\d\d[a-ekm]?)/i
-            ], [MODEL, [VENDOR, 'Sharp'], [TYPE, MOBILE]], [
+                
+            // Ulefone
+            /; ((?:power )?armor(?:[\w ]{0,8}))(?: bui|\))/i
+            ], [MODEL, [VENDOR, 'Ulefone'], [TYPE, MOBILE]], [
 
             // MIXED
-            /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron)[-_ ]?([-\w]*)/i,
+            /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron|infinix|tecno)[-_ ]?([-\w]*)/i,
                                                                                 // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron
             /(hp) ([\w ]+\w)/i,                                                 // HP iPAQ
             /(asus)-?(\w+)/i,                                                   // Asus
@@ -1129,6 +1395,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             /(oppo) ?([\w ]+) bui/i                                             // OPPO
             ], [VENDOR, MODEL, [TYPE, MOBILE]], [
 
+            /(kobo)\s(ereader|touch)/i,                                         // Kobo
             /(archos) (gamepad2?)/i,                                            // Archos
             /(hp).+(touchpad(?!.+tablet)|tablet)/i,                             // HP TouchPad
             /(kindle)\/([\w\.]+)/i,                                             // Kindle
@@ -1199,6 +1466,37 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             ], [MODEL, [VENDOR, ZEBRA], [TYPE, MOBILE]], [
 
             ///////////////////
+            // SMARTTVS
+            ///////////////////
+
+            /smart-tv.+(samsung)/i                                              // Samsung
+            ], [VENDOR, [TYPE, SMARTTV]], [
+            /hbbtv.+maple;(\d+)/i
+            ], [[MODEL, /^/, 'SmartTV'], [VENDOR, SAMSUNG], [TYPE, SMARTTV]], [
+            /(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i        // LG SmartTV
+            ], [[VENDOR, LG], [TYPE, SMARTTV]], [
+            /(apple) ?tv/i                                                      // Apple TV
+            ], [VENDOR, [MODEL, APPLE+' TV'], [TYPE, SMARTTV]], [
+            /crkey/i                                                            // Google Chromecast
+            ], [[MODEL, CHROME+'cast'], [VENDOR, GOOGLE], [TYPE, SMARTTV]], [
+            /droid.+aft(\w+)( bui|\))/i                                         // Fire TV
+            ], [MODEL, [VENDOR, AMAZON], [TYPE, SMARTTV]], [
+            /\(dtv[\);].+(aquos)/i,
+            /(aquos-tv[\w ]+)\)/i                                               // Sharp
+            ], [MODEL, [VENDOR, SHARP], [TYPE, SMARTTV]],[
+            /(bravia[\w ]+)( bui|\))/i                                              // Sony
+            ], [MODEL, [VENDOR, SONY], [TYPE, SMARTTV]], [
+            /(mitv-\w{5}) bui/i                                                 // Xiaomi
+            ], [MODEL, [VENDOR, XIAOMI], [TYPE, SMARTTV]], [
+            /Hbbtv.*(technisat) (.*);/i                                         // TechniSAT
+            ], [VENDOR, MODEL, [TYPE, SMARTTV]], [
+            /\b(roku)[\dx]*[\)\/]((?:dvp-)?[\d\.]*)/i,                          // Roku
+            /hbbtv\/\d+\.\d+\.\d+ +\([\w\+ ]*; *([\w\d][^;]*);([^;]*)/i         // HbbTV devices
+            ], [[VENDOR, trim], [MODEL, trim], [TYPE, SMARTTV]], [
+            /\b(android tv|smart[- ]?tv|opera tv|tv; rv:)\b/i                   // SmartTV from Unidentified Vendors
+            ], [[TYPE, SMARTTV]], [
+
+            ///////////////////
             // CONSOLES
             ///////////////////
 
@@ -1213,40 +1511,18 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             ], [MODEL, [VENDOR, MICROSOFT], [TYPE, CONSOLE]], [
 
             ///////////////////
-            // SMARTTVS
-            ///////////////////
-
-            /smart-tv.+(samsung)/i                                              // Samsung
-            ], [VENDOR, [TYPE, SMARTTV]], [
-            /hbbtv.+maple;(\d+)/i
-            ], [[MODEL, /^/, 'SmartTV'], [VENDOR, SAMSUNG], [TYPE, SMARTTV]], [
-            /(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i        // LG SmartTV
-            ], [[VENDOR, LG], [TYPE, SMARTTV]], [
-            /(apple) ?tv/i                                                      // Apple TV
-            ], [VENDOR, [MODEL, APPLE+' TV'], [TYPE, SMARTTV]], [
-            /crkey/i                                                            // Google Chromecast
-            ], [[MODEL, CHROME+'cast'], [VENDOR, GOOGLE], [TYPE, SMARTTV]], [
-            /droid.+aft(\w)( bui|\))/i                                          // Fire TV
-            ], [MODEL, [VENDOR, AMAZON], [TYPE, SMARTTV]], [
-            /\(dtv[\);].+(aquos)/i                                              // Sharp
-            ], [MODEL, [VENDOR, 'Sharp'], [TYPE, SMARTTV]], [
-            /\b(roku)[\dx]*[\)\/]((?:dvp-)?[\d\.]*)/i,                          // Roku
-            /hbbtv\/\d+\.\d+\.\d+ +\([\w ]*; *(\w[^;]*);([^;]*)/i               // HbbTV devices
-            ], [[VENDOR, trim], [MODEL, trim], [TYPE, SMARTTV]], [
-            /\b(android tv|smart[- ]?tv|opera tv|tv; rv:)\b/i                   // SmartTV from Unidentified Vendors
-            ], [[TYPE, SMARTTV]], [
-
-            ///////////////////
             // WEARABLES
             ///////////////////
 
             /((pebble))app/i                                                    // Pebble
             ], [VENDOR, MODEL, [TYPE, WEARABLE]], [
+            /(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i                              // Apple Watch
+            ], [MODEL, [VENDOR, APPLE], [TYPE, WEARABLE]], [
             /droid.+; (glass) \d/i                                              // Google Glass
             ], [MODEL, [VENDOR, GOOGLE], [TYPE, WEARABLE]], [
             /droid.+; (wt63?0{2,3})\)/i
             ], [MODEL, [VENDOR, ZEBRA], [TYPE, WEARABLE]], [
-            /(quest( 2)?)/i                                                     // Oculus Quest
+            /(quest( \d| pro)?)/i                                               // Oculus Quest
             ], [MODEL, [VENDOR, FACEBOOK], [TYPE, WEARABLE]], [
 
             ///////////////////
@@ -1255,18 +1531,20 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
 
             /(tesla)(?: qtcarbrowser|\/[-\w\.]+)/i                              // Tesla
             ], [VENDOR, [TYPE, EMBEDDED]], [
+            /(aeobc)\b/i                                                        // Echo Dot
+            ], [MODEL, [VENDOR, AMAZON], [TYPE, EMBEDDED]], [
 
             ////////////////////
             // MIXED (GENERIC)
             ///////////////////
 
-            /droid .+?; ([^;]+?)(?: bui|\) applew).+? mobile safari/i           // Android Phones from Unidentified Vendors
+            /droid .+?; ([^;]+?)(?: bui|; wv\)|\) applew).+? mobile safari/i    // Android Phones from Unidentified Vendors
             ], [MODEL, [TYPE, MOBILE]], [
             /droid .+?; ([^;]+?)(?: bui|\) applew).+?(?! mobile) safari/i       // Android Tablets from Unidentified Vendors
             ], [MODEL, [TYPE, TABLET]], [
             /\b((tablet|tab)[;\/]|focus\/\d(?!.+mobile))/i                      // Unidentifiable Tablet
             ], [[TYPE, TABLET]], [
-            /(phone|mobile(?:[;\/]| safari)|pda(?=.+windows ce))/i              // Unidentifiable Mobile
+            /(phone|mobile(?:[;\/]| [ \w\/\.]*safari)|pda(?=.+windows ce))/i    // Unidentifiable Mobile
             ], [[TYPE, MOBILE]], [
             /(android[-\w\. ]{0,9});.+buil/i                                    // Generic Android Device
             ], [MODEL, [VENDOR, 'Generic']]
@@ -1284,7 +1562,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             /(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna)\/([\w\.]+)/i, // WebKit/Trident/NetFront/NetSurf/Amaya/Lynx/w3m/Goanna
             /ekioh(flow)\/([\w\.]+)/i,                                          // Flow
             /(khtml|tasman|links)[\/ ]\(?([\w\.]+)/i,                           // KHTML/Tasman/Links
-            /(icab)[\/ ]([23]\.[\d\.]+)/i                                       // iCab
+            /(icab)[\/ ]([23]\.[\d\.]+)/i,                                      // iCab
+            /\b(libweb)/i
             ], [NAME, VERSION], [
 
             /rv\:([\w\.]{1,9})\b.+(gecko)/i                                     // Gecko
@@ -1296,23 +1575,24 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             // Windows
             /microsoft (windows) (vista|xp)/i                                   // Windows (iTunes)
             ], [NAME, VERSION], [
-            /(windows) nt 6\.2; (arm)/i,                                        // Windows RT
-            /(windows (?:phone(?: os)?|mobile))[\/ ]?([\d\.\w ]*)/i,            // Windows Phone
-            /(windows)[\/ ]?([ntce\d\. ]+\w)(?!.+xbox)/i
+            /(windows (?:phone(?: os)?|mobile))[\/ ]?([\d\.\w ]*)/i             // Windows Phone
             ], [NAME, [VERSION, strMapper, windowsVersionMap]], [
-            /(win(?=3|9|n)|win 9x )([nt\d\.]+)/i
-            ], [[NAME, 'Windows'], [VERSION, strMapper, windowsVersionMap]], [
+            /windows nt 6\.2; (arm)/i,                                        // Windows RT
+            /windows[\/ ]?([ntce\d\. ]+\w)(?!.+xbox)/i,
+            /(?:win(?=3|9|n)|win 9x )([nt\d\.]+)/i
+            ], [[VERSION, strMapper, windowsVersionMap], [NAME, 'Windows']], [
 
             // iOS/macOS
             /ip[honead]{2,4}\b(?:.*os ([\w]+) like mac|; opera)/i,              // iOS
+            /(?:ios;fbsv\/|iphone.+ios[\/ ])([\d\.]+)/i,
             /cfnetwork\/.+darwin/i
             ], [[VERSION, /_/g, '.'], [NAME, 'iOS']], [
             /(mac os x) ?([\w\. ]*)/i,
             /(macintosh|mac_powerpc\b)(?!.+haiku)/i                             // Mac OS
-            ], [[NAME, 'Mac OS'], [VERSION, /_/g, '.']], [
+            ], [[NAME, MAC_OS], [VERSION, /_/g, '.']], [
 
             // Mobile OSes
-            /droid ([\w\.]+)\b.+(android[- ]x86)/i                              // Android-x86
+            /droid ([\w\.]+)\b.+(android[- ]x86|harmonyos)/i                    // Android-x86/HarmonyOS
             ], [VERSION, NAME], [                                               // Android/WebOS/QNX/Bada/RIM/Maemo/MeeGo/Sailfish OS
             /(android|webos|qnx|bada|rim tablet os|maemo|meego|sailfish)[-\/ ]?([\w\.]*)/i,
             /(blackberry)\w*\/([\w\.]*)/i,                                      // Blackberry
@@ -1328,12 +1608,19 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             /web0s;.+rt(tv)/i,
             /\b(?:hp)?wos(?:browser)?\/([\w\.]+)/i                              // WebOS
             ], [VERSION, [NAME, 'webOS']], [
+            /watch(?: ?os[,\/]|\d,\d\/)([\d\.]+)/i                              // watchOS
+            ], [VERSION, [NAME, 'watchOS']], [
 
             // Google Chromecast
             /crkey\/([\d\.]+)/i                                                 // Google Chromecast
             ], [VERSION, [NAME, CHROME+'cast']], [
-            /(cros) [\w]+ ([\w\.]+\w)/i                                         // Chromium OS
-            ], [[NAME, 'Chromium OS'], VERSION],[
+            /(cros) [\w]+(?:\)| ([\w\.]+)\b)/i                                  // Chromium OS
+            ], [[NAME, CHROMIUM_OS], VERSION],[
+
+            // Smart TVs
+            /panasonic;(viera)/i,                                               // Panasonic Viera
+            /(netrange)mmh/i,                                                   // Netrange
+            /(nettv)\/(\d+\.[\w\.]+)/i,                                         // NetTV
 
             // Console
             /(nintendo|playstation) ([wids345portablevuch]+)/i,                 // Nintendo/Playstation
@@ -1354,7 +1641,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             ], [[NAME, 'Solaris'], VERSION], [
             /((?:open)?solaris)[-\/ ]?([\w\.]*)/i,                              // Solaris
             /(aix) ((\d)(?=\.|\)| )[\w\.])*/i,                                  // AIX
-            /\b(beos|os\/2|amigaos|morphos|openvms|fuchsia|hp-ux)/i,            // BeOS/OS2/AmigaOS/MorphOS/OpenVMS/Fuchsia/HP-UX
+            /\b(beos|os\/2|amigaos|morphos|openvms|fuchsia|hp-ux|serenityos)/i, // BeOS/OS2/AmigaOS/MorphOS/OpenVMS/Fuchsia/HP-UX/SerenityOS
             /(unix) ?([\w\.]*)/i                                                // UNIX
             ], [NAME, VERSION]
         ]
@@ -1375,15 +1662,22 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             return new UAParser(ua, extensions).getResult();
         }
 
-        var _ua = ua || ((typeof window !== UNDEF_TYPE && window.navigator && window.navigator.userAgent) ? window.navigator.userAgent : EMPTY);
+        var _navigator = (typeof window !== UNDEF_TYPE && window.navigator) ? window.navigator : undefined;
+        var _ua = ua || ((_navigator && _navigator.userAgent) ? _navigator.userAgent : EMPTY);
+        var _uach = (_navigator && _navigator.userAgentData) ? _navigator.userAgentData : undefined;
         var _rgxmap = extensions ? extend(regexes, extensions) : regexes;
+        var _isSelfNav = _navigator && _navigator.userAgent == _ua;
 
         this.getBrowser = function () {
             var _browser = {};
             _browser[NAME] = undefined;
             _browser[VERSION] = undefined;
             rgxMapper.call(_browser, _ua, _rgxmap.browser);
-            _browser.major = majorize(_browser.version);
+            _browser[MAJOR] = majorize(_browser[VERSION]);
+            // Brave-specific detection
+            if (_isSelfNav && _navigator && _navigator.brave && typeof _navigator.brave.isBrave == FUNC_TYPE) {
+                _browser[NAME] = 'Brave';
+            }
             return _browser;
         };
         this.getCPU = function () {
@@ -1398,6 +1692,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             _device[MODEL] = undefined;
             _device[TYPE] = undefined;
             rgxMapper.call(_device, _ua, _rgxmap.device);
+            if (_isSelfNav && !_device[TYPE] && _uach && _uach.mobile) {
+                _device[TYPE] = MOBILE;
+            }
+            // iPadOS-specific detection: identified as Mac, but has some iOS-only properties
+            if (_isSelfNav && _device[MODEL] == 'Macintosh' && _navigator && typeof _navigator.standalone !== UNDEF_TYPE && _navigator.maxTouchPoints && _navigator.maxTouchPoints > 2) {
+                _device[MODEL] = 'iPad';
+                _device[TYPE] = TABLET;
+            }
             return _device;
         };
         this.getEngine = function () {
@@ -1412,6 +1714,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
             _os[NAME] = undefined;
             _os[VERSION] = undefined;
             rgxMapper.call(_os, _ua, _rgxmap.os);
+            if (_isSelfNav && !_os[NAME] && _uach && _uach.platform && _uach.platform != 'Unknown') {
+                _os[NAME] = _uach.platform  
+                                    .replace(/chrome os/i, CHROMIUM_OS)
+                                    .replace(/macos/i, MAC_OS);           // backward compatibility
+            }
             return _os;
         };
         this.getResult = function () {
@@ -1454,7 +1761,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
         exports.UAParser = UAParser;
     } else {
         // requirejs env (optional)
-        if ("function" === FUNC_TYPE && __webpack_require__(/*! !webpack amd options */ "./node_modules/webpack/buildin/amd-options.js")) {
+        if ("function" === FUNC_TYPE && __webpack_require__(/*! !webpack amd options */ "./node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/amd-options.js")) {
             !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
                 return UAParser;
             }).call(exports, __webpack_require__, exports, module),
@@ -1491,7 +1798,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
 
 /***/ }),
 
-/***/ "./node_modules/webpack/buildin/amd-options.js":
+/***/ "./node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/amd-options.js":
 /*!****************************************!*\
   !*** (webpack)/buildin/amd-options.js ***!
   \****************************************/
@@ -1544,7 +1851,6 @@ __webpack_require__.r(__webpack_exports__);
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @module FactoryMaker
  * @ignore
@@ -1554,7 +1860,6 @@ var FactoryMaker = function () {
   var singletonContexts = [];
   var singletonFactories = {};
   var classFactories = {};
-
   function extend(name, childInstance, override, context) {
     if (!context[name] && childInstance) {
       context[name] = {
@@ -1563,6 +1868,7 @@ var FactoryMaker = function () {
       };
     }
   }
+
   /**
    * Use this method from your extended object.  this.factory is injected into your object.
    * this.factory.getSingletonInstance(this.context, 'VideoModel')
@@ -1575,19 +1881,16 @@ var FactoryMaker = function () {
    * @memberof module:FactoryMaker
    * @instance
    */
-
-
   function getSingletonInstance(context, className) {
     for (var i in singletonContexts) {
       var obj = singletonContexts[i];
-
       if (obj.context === context && obj.name === className) {
         return obj.instance;
       }
     }
-
     return null;
   }
+
   /**
    * Use this method to add an singleton instance to the system.  Useful for unit testing to mock objects etc.
    *
@@ -1597,24 +1900,21 @@ var FactoryMaker = function () {
    * @memberof module:FactoryMaker
    * @instance
    */
-
-
   function setSingletonInstance(context, className, instance) {
     for (var i in singletonContexts) {
       var obj = singletonContexts[i];
-
       if (obj.context === context && obj.name === className) {
         singletonContexts[i].instance = instance;
         return;
       }
     }
-
     singletonContexts.push({
       name: className,
       context: context,
       instance: instance
     });
   }
+
   /**
    * Use this method to remove all singleton instances associated with a particular context.
    *
@@ -1622,96 +1922,84 @@ var FactoryMaker = function () {
    * @memberof module:FactoryMaker
    * @instance
    */
-
-
   function deleteSingletonInstances(context) {
     singletonContexts = singletonContexts.filter(function (x) {
       return x.context !== context;
     });
   }
+
   /*------------------------------------------------------------------------------------------*/
+
   // Factories storage Management
 
   /*------------------------------------------------------------------------------------------*/
 
-
   function getFactoryByName(name, factoriesArray) {
     return factoriesArray[name];
   }
-
   function updateFactory(name, factory, factoriesArray) {
     if (name in factoriesArray) {
       factoriesArray[name] = factory;
     }
   }
+
   /*------------------------------------------------------------------------------------------*/
+
   // Class Factories Management
 
   /*------------------------------------------------------------------------------------------*/
 
-
   function updateClassFactory(name, factory) {
     updateFactory(name, factory, classFactories);
   }
-
   function getClassFactoryByName(name) {
     return getFactoryByName(name, classFactories);
   }
-
   function getClassFactory(classConstructor) {
     var factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
-
     if (!factory) {
       factory = function factory(context) {
         if (context === undefined) {
           context = {};
         }
-
         return {
           create: function create() {
             return merge(classConstructor, context, arguments);
           }
         };
       };
-
       classFactories[classConstructor.__dashjs_factory_name] = factory; // store factory
     }
-
     return factory;
   }
+
   /*------------------------------------------------------------------------------------------*/
+
   // Singleton Factory MAangement
 
   /*------------------------------------------------------------------------------------------*/
 
-
   function updateSingletonFactory(name, factory) {
     updateFactory(name, factory, singletonFactories);
   }
-
   function getSingletonFactoryByName(name) {
     return getFactoryByName(name, singletonFactories);
   }
-
   function getSingletonFactory(classConstructor) {
     var factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
-
     if (!factory) {
       factory = function factory(context) {
         var instance;
-
         if (context === undefined) {
           context = {};
         }
-
         return {
           getInstance: function getInstance() {
             // If we don't have an instance yet check for one on the context
             if (!instance) {
               instance = getSingletonInstance(context, classConstructor.__dashjs_factory_name);
-            } // If there's no instance on the context then create one
-
-
+            }
+            // If there's no instance on the context then create one
             if (!instance) {
               instance = merge(classConstructor, context, arguments);
               singletonContexts.push({
@@ -1720,28 +2008,23 @@ var FactoryMaker = function () {
                 instance: instance
               });
             }
-
             return instance;
           }
         };
       };
-
       singletonFactories[classConstructor.__dashjs_factory_name] = factory; // store factory
     }
-
     return factory;
   }
-
   function merge(classConstructor, context, args) {
     var classInstance;
     var className = classConstructor.__dashjs_factory_name;
     var extensionObject = context[className];
-
     if (extensionObject) {
       var extension = extensionObject.instance;
-
       if (extensionObject.override) {
         //Override public methods in parent but keep parent.
+
         classInstance = classConstructor.apply({
           context: context
         }, args);
@@ -1750,7 +2033,6 @@ var FactoryMaker = function () {
           factory: instance,
           parent: classInstance
         }, args);
-
         for (var prop in extension) {
           if (classInstance.hasOwnProperty(prop)) {
             classInstance[prop] = extension[prop];
@@ -1758,6 +2040,7 @@ var FactoryMaker = function () {
         }
       } else {
         //replace parent object completely with new object. Same as dijon.
+
         return extension.apply({
           context: context,
           factory: instance
@@ -1768,16 +2051,14 @@ var FactoryMaker = function () {
       classInstance = classConstructor.apply({
         context: context
       }, args);
-    } // Add getClassName function to class instance prototype (used by Debug)
+    }
 
-
+    // Add getClassName function to class instance prototype (used by Debug)
     classInstance.getClassName = function () {
       return className;
     };
-
     return classInstance;
   }
-
   instance = {
     extend: extend,
     getSingletonInstance: getSingletonInstance,
@@ -1792,7 +2073,6 @@ var FactoryMaker = function () {
   };
   return instance;
 }();
-
 /* harmony default export */ __webpack_exports__["default"] = (FactoryMaker);
 
 /***/ }),
@@ -1806,18 +2086,16 @@ var FactoryMaker = function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var path_browserify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path-browserify */ "./node_modules/path-browserify/index.js");
+/* harmony import */ var path_browserify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path-browserify */ "./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js");
 /* harmony import */ var path_browserify__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(path_browserify__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
+/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/.pnpm/ua-parser-js@1.0.38/node_modules/ua-parser-js/src/ua-parser.js");
 /* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ua_parser_js__WEBPACK_IMPORTED_MODULE_1__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -1860,18 +2138,15 @@ var Utils = /*#__PURE__*/function () {
   function Utils() {
     _classCallCheck(this, Utils);
   }
-
-  _createClass(Utils, null, [{
+  return _createClass(Utils, null, [{
     key: "mixin",
     value: function mixin(dest, source, copy) {
       var s;
       var empty = {};
-
       if (dest) {
         for (var name in source) {
           if (source.hasOwnProperty(name)) {
             s = source[name];
-
             if (!(name in dest) || dest[name] !== s && (!(name in empty) || empty[name] !== s)) {
               if (_typeof(dest[name]) === 'object' && dest[name] !== null) {
                 dest[name] = Utils.mixin(dest[name], s, copy);
@@ -1882,7 +2157,6 @@ var Utils = /*#__PURE__*/function () {
           }
         }
       }
-
       return dest;
     }
   }, {
@@ -1891,13 +2165,10 @@ var Utils = /*#__PURE__*/function () {
       if (!src || _typeof(src) !== 'object') {
         return src; // anything
       }
-
       var r;
-
       if (src instanceof Array) {
         // array
         r = [];
-
         for (var i = 0, l = src.length; i < l; ++i) {
           if (i in src) {
             r.push(Utils.clone(src[i]));
@@ -1906,7 +2177,6 @@ var Utils = /*#__PURE__*/function () {
       } else {
         r = {};
       }
-
       return Utils.mixin(r, src, Utils.clone);
     }
   }, {
@@ -1916,7 +2186,6 @@ var Utils = /*#__PURE__*/function () {
         if (!params || params.length === 0) {
           return url;
         }
-
         var modifiedUrl = new URL(url);
         params.forEach(function (param) {
           if (param.key && param.value) {
@@ -1932,24 +2201,20 @@ var Utils = /*#__PURE__*/function () {
     key: "parseHttpHeaders",
     value: function parseHttpHeaders(headerStr) {
       var headers = {};
-
       if (!headerStr) {
         return headers;
-      } // Trim headerStr to fix a MS Edge bug with xhr.getAllResponseHeaders method
+      }
+
+      // Trim headerStr to fix a MS Edge bug with xhr.getAllResponseHeaders method
       // which send a string starting with a "\n" character
-
-
       var headerPairs = headerStr.trim().split("\r\n");
-
       for (var i = 0, ilen = headerPairs.length; i < ilen; i++) {
         var headerPair = headerPairs[i];
         var index = headerPair.indexOf(": ");
-
         if (index > 0) {
           headers[headerPair.substring(0, index)] = headerPair.substring(index + 2);
         }
       }
-
       return headers;
     }
   }, {
@@ -1967,49 +2232,47 @@ var Utils = /*#__PURE__*/function () {
     key: "generateHashCode",
     value: function generateHashCode(string) {
       var hash = 0;
-
       if (string.length === 0) {
         return hash;
       }
-
       for (var i = 0; i < string.length; i++) {
         var chr = string.charCodeAt(i);
         hash = (hash << 5) - hash + chr;
         hash |= 0;
       }
-
       return hash;
     }
+
     /**
      * Compares both urls and returns a relative url (target relative to original)
      * @param {string} original
      * @param {string} target
      * @return {string|*}
      */
-
   }, {
     key: "getRelativeUrl",
     value: function getRelativeUrl(originalUrl, targetUrl) {
       try {
         var original = new URL(originalUrl);
-        var target = new URL(targetUrl); // Unify the protocol to compare the origins
+        var target = new URL(targetUrl);
 
+        // Unify the protocol to compare the origins
         original.protocol = target.protocol;
-
         if (original.origin !== target.origin) {
           return targetUrl;
-        } // Use the relative path implementation of the path library. We need to cut off the actual filename in the end to get the relative path
+        }
 
+        // Use the relative path implementation of the path library. We need to cut off the actual filename in the end to get the relative path
+        var relativePath = path_browserify__WEBPACK_IMPORTED_MODULE_0___default.a.relative(original.pathname.substr(0, original.pathname.lastIndexOf('/')), target.pathname.substr(0, target.pathname.lastIndexOf('/')));
 
-        var relativePath = path_browserify__WEBPACK_IMPORTED_MODULE_0___default.a.relative(original.pathname.substr(0, original.pathname.lastIndexOf('/')), target.pathname.substr(0, target.pathname.lastIndexOf('/'))); // In case the relative path is empty (both path are equal) return the filename only. Otherwise add a slash in front of the filename
-
+        // In case the relative path is empty (both path are equal) return the filename only. Otherwise add a slash in front of the filename
         var startIndexOffset = relativePath.length === 0 ? 1 : 0;
-        relativePath += target.pathname.substr(target.pathname.lastIndexOf('/') + startIndexOffset, target.pathname.length - 1); // Build the other candidate, e.g. the 'host relative' path that starts with "/", and return the shortest of the two candidates.
+        relativePath += target.pathname.substr(target.pathname.lastIndexOf('/') + startIndexOffset, target.pathname.length - 1);
 
+        // Build the other candidate, e.g. the 'host relative' path that starts with "/", and return the shortest of the two candidates.
         if (target.pathname.length < relativePath.length) {
           return target.pathname;
         }
-
         return relativePath;
       } catch (e) {
         return targetUrl;
@@ -2019,7 +2282,6 @@ var Utils = /*#__PURE__*/function () {
     key: "parseUserAgent",
     value: function parseUserAgent() {
       var ua = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
       try {
         var uaString = ua === null ? typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '' : '';
         return Object(ua_parser_js__WEBPACK_IMPORTED_MODULE_1__["UAParser"])(uaString);
@@ -2028,10 +2290,7 @@ var Utils = /*#__PURE__*/function () {
       }
     }
   }]);
-
-  return Utils;
 }();
-
 /* harmony default export */ __webpack_exports__["default"] = (Utils);
 
 /***/ }),
@@ -2045,12 +2304,12 @@ var Utils = /*#__PURE__*/function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2081,7 +2340,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @class
  * @ignore
@@ -2090,14 +2348,12 @@ var ErrorsBase = /*#__PURE__*/function () {
   function ErrorsBase() {
     _classCallCheck(this, ErrorsBase);
   }
-
-  _createClass(ErrorsBase, [{
+  return _createClass(ErrorsBase, [{
     key: "extend",
     value: function extend(errors, config) {
       if (!errors) return;
       var override = config ? config.override : false;
       var publicOnly = config ? config.publicOnly : false;
-
       for (var err in errors) {
         if (!errors.hasOwnProperty(err) || this[err] && !override) continue;
         if (publicOnly && errors[err].indexOf('public_') === -1) continue;
@@ -2105,10 +2361,7 @@ var ErrorsBase = /*#__PURE__*/function () {
       }
     }
   }]);
-
-  return ErrorsBase;
 }();
-
 /* harmony default export */ __webpack_exports__["default"] = (ErrorsBase);
 
 /***/ }),
@@ -2122,12 +2375,12 @@ var ErrorsBase = /*#__PURE__*/function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2158,7 +2411,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @class
  * @ignore
@@ -2167,14 +2419,12 @@ var EventsBase = /*#__PURE__*/function () {
   function EventsBase() {
     _classCallCheck(this, EventsBase);
   }
-
-  _createClass(EventsBase, [{
+  return _createClass(EventsBase, [{
     key: "extend",
     value: function extend(events, config) {
       if (!events) return;
       var override = config ? config.override : false;
       var publicOnly = config ? config.publicOnly : false;
-
       for (var evt in events) {
         if (!events.hasOwnProperty(evt) || this[evt] && !override) continue;
         if (publicOnly && events[evt].indexOf('public_') === -1) continue;
@@ -2182,10 +2432,7 @@ var EventsBase = /*#__PURE__*/function () {
       }
     }
   }]);
-
-  return EventsBase;
 }();
-
 /* harmony default export */ __webpack_exports__["default"] = (EventsBase);
 
 /***/ }),
@@ -2199,12 +2446,12 @@ var EventsBase = /*#__PURE__*/function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2235,7 +2482,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * Constants declaration
  * @class
@@ -2245,11 +2491,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Constants = /*#__PURE__*/function () {
   function Constants() {
     _classCallCheck(this, Constants);
-
     this.init();
   }
-
-  _createClass(Constants, [{
+  return _createClass(Constants, [{
     key: "init",
     value: function init() {
       /**
@@ -2258,243 +2502,243 @@ var Constants = /*#__PURE__*/function () {
        *  @static
        */
       this.MESH = 'mesh';
+
       /**
        *  @constant {string} STREAM Stream media type. Mainly used to report metrics relative to the full stream
        *  @memberof Constants#
        *  @static
        */
-
       this.STREAM = 'stream';
+
       /**
        *  @constant {string} VIDEO Video media type
        *  @memberof Constants#
        *  @static
        */
-
       this.VIDEO = 'video';
+
       /**
        *  @constant {string} AUDIO Audio media type
        *  @memberof Constants#
        *  @static
        */
-
       this.AUDIO = 'audio';
+
       /**
        *  @constant {string} TEXT Text media type
        *  @memberof Constants#
        *  @static
        */
-
       this.TEXT = 'text';
+
       /**
        *  @constant {string} MUXED Muxed (video/audio in the same chunk) media type
        *  @memberof Constants#
        *  @static
        */
-
       this.MUXED = 'muxed';
+
       /**
        *  @constant {string} IMAGE Image media type
        *  @memberof Constants#
        *  @static
        */
-
       this.IMAGE = 'image';
+
       /**
        *  @constant {string} STPP STTP Subtitles format
        *  @memberof Constants#
        *  @static
        */
-
       this.STPP = 'stpp';
+
       /**
        *  @constant {string} TTML STTP Subtitles format
        *  @memberof Constants#
        *  @static
        */
-
       this.TTML = 'ttml';
+
       /**
        *  @constant {string} VTT STTP Subtitles format
        *  @memberof Constants#
        *  @static
        */
-
       this.VTT = 'vtt';
+
       /**
        *  @constant {string} WVTT STTP Subtitles format
        *  @memberof Constants#
        *  @static
        */
-
       this.WVTT = 'wvtt';
+
       /**
        *  @constant {string} Content Steering
        *  @memberof Constants#
        *  @static
        */
-
       this.CONTENT_STEERING = 'contentSteering';
+
       /**
        *  @constant {string} ABR_STRATEGY_DYNAMIC Dynamic Adaptive bitrate algorithm
        *  @memberof Constants#
        *  @static
        */
-
       this.ABR_STRATEGY_DYNAMIC = 'abrDynamic';
+
       /**
        *  @constant {string} ABR_STRATEGY_BOLA Adaptive bitrate algorithm based on Bola (buffer level)
        *  @memberof Constants#
        *  @static
        */
-
       this.ABR_STRATEGY_BOLA = 'abrBola';
+
       /**
        *  @constant {string} ABR_STRATEGY_L2A Adaptive bitrate algorithm based on L2A (online learning)
        *  @memberof Constants#
        *  @static
        */
-
       this.ABR_STRATEGY_L2A = 'abrL2A';
+
       /**
        *  @constant {string} ABR_STRATEGY_LoLP Adaptive bitrate algorithm based on LoL+
        *  @memberof Constants#
        *  @static
        */
-
       this.ABR_STRATEGY_LoLP = 'abrLoLP';
+
       /**
        *  @constant {string} ABR_STRATEGY_THROUGHPUT Adaptive bitrate algorithm based on throughput
        *  @memberof Constants#
        *  @static
        */
-
       this.ABR_STRATEGY_THROUGHPUT = 'abrThroughput';
+
       /**
        *  @constant {string} ABR_FETCH_THROUGHPUT_CALUCUALTION_DOWNLOADED_DATA Throughput calculation based on downloaded data array
        *  @memberof Constants#
        *  @static
        */
-
       this.ABR_FETCH_THROUGHPUT_CALCULATION_DOWNLOADED_DATA = 'abrFetchThroughputCalculationDownloadedData';
+
       /**
        *  @constant {string} ABR_FETCH_THROUGHPUT_CALCULATION_MOOF_PARSING Throughput calculation based on moof parsing
        *  @memberof Constants#
        *  @static
        */
-
       this.ABR_FETCH_THROUGHPUT_CALCULATION_MOOF_PARSING = 'abrFetchThroughputCalculationMoofParsing';
+
       /**
       *  @constant {string} ABR_FETCH_THROUGHPUT_CALCULATION_AAST Throughput calculation based on adjusted availability start time in low latency mode
       *  @memberof Constants#
       *  @static
       */
-
       this.ABR_FETCH_THROUGHPUT_CALCULATION_AAST = 'abrFetchThroughputCalculationAAST';
+
       /**
        *  @constant {string} LIVE_CATCHUP_MODE_DEFAULT Throughput calculation based on moof parsing
        *  @memberof Constants#
        *  @static
        */
-
       this.LIVE_CATCHUP_MODE_DEFAULT = 'liveCatchupModeDefault';
+
       /**
        *  @constant {string} LIVE_CATCHUP_MODE_LOLP Throughput calculation based on moof parsing
        *  @memberof Constants#
        *  @static
        */
-
       this.LIVE_CATCHUP_MODE_LOLP = 'liveCatchupModeLoLP';
+
       /**
        *  @constant {string} MOVING_AVERAGE_SLIDING_WINDOW Moving average sliding window
        *  @memberof Constants#
        *  @static
        */
-
       this.MOVING_AVERAGE_SLIDING_WINDOW = 'slidingWindow';
+
       /**
        *  @constant {string} EWMA Exponential moving average
        *  @memberof Constants#
        *  @static
        */
-
       this.MOVING_AVERAGE_EWMA = 'ewma';
+
       /**
        *  @constant {string} BAD_ARGUMENT_ERROR Invalid Arguments type of error
        *  @memberof Constants#
        *  @static
        */
-
       this.BAD_ARGUMENT_ERROR = 'Invalid Arguments';
+
       /**
        *  @constant {string} MISSING_CONFIG_ERROR Missing configuration parameters type of error
        *  @memberof Constants#
        *  @static
        */
-
       this.MISSING_CONFIG_ERROR = 'Missing config parameter(s)';
+
       /**
        *  @constant {string} TRACK_SWITCH_MODE_ALWAYS_REPLACE used to clear the buffered data (prior to current playback position) after track switch. Default for audio
        *  @memberof Constants#
        *  @static
        */
-
       this.TRACK_SWITCH_MODE_ALWAYS_REPLACE = 'alwaysReplace';
+
       /**
        *  @constant {string} TRACK_SWITCH_MODE_NEVER_REPLACE used to forbid clearing the buffered data (prior to current playback position) after track switch. Defers to fastSwitchEnabled for placement of new data. Default for video
        *  @memberof Constants#
        *  @static
        */
-
       this.TRACK_SWITCH_MODE_NEVER_REPLACE = 'neverReplace';
+
       /**
        *  @constant {string} TRACK_SELECTION_MODE_FIRST_TRACK makes the player select the first track found in the manifest.
        *  @memberof Constants#
        *  @static
        */
-
       this.TRACK_SELECTION_MODE_FIRST_TRACK = 'firstTrack';
+
       /**
        *  @constant {string} TRACK_SELECTION_MODE_HIGHEST_BITRATE makes the player select the track with a highest bitrate. This mode is a default mode.
        *  @memberof Constants#
        *  @static
        */
-
       this.TRACK_SELECTION_MODE_HIGHEST_BITRATE = 'highestBitrate';
+
       /**
        *  @constant {string} TRACK_SELECTION_MODE_HIGHEST_EFFICIENCY makes the player select the track with the lowest bitrate per pixel average.
        *  @memberof Constants#
        *  @static
        */
-
       this.TRACK_SELECTION_MODE_HIGHEST_EFFICIENCY = 'highestEfficiency';
+
       /**
        *  @constant {string} TRACK_SELECTION_MODE_WIDEST_RANGE makes the player select the track with a widest range of bitrates.
        *  @memberof Constants#
        *  @static
        */
-
       this.TRACK_SELECTION_MODE_WIDEST_RANGE = 'widestRange';
+
       /**
        *  @constant {string} TRACK_SELECTION_MODE_WIDEST_RANGE makes the player select the track with the highest selectionPriority as defined in the manifest
        *  @memberof Constants#
        *  @static
        */
-
       this.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY = 'highestSelectionPriority';
+
       /**
        *  @constant {string} CMCD_MODE_QUERY specifies to attach CMCD metrics as query parameters.
        *  @memberof Constants#
        *  @static
        */
-
       this.CMCD_MODE_QUERY = 'query';
+
       /**
        *  @constant {string} CMCD_MODE_HEADER specifies to attach CMCD metrics as HTTP headers.
        *  @memberof Constants#
        *  @static
        */
-
       this.CMCD_MODE_HEADER = 'header';
       this.LOCATION = 'Location';
       this.INITIALIZE = 'initialize';
@@ -2524,10 +2768,7 @@ var Constants = /*#__PURE__*/function () {
       };
     }
   }]);
-
-  return Constants;
 }();
-
 var constants = new Constants();
 /* harmony default export */ __webpack_exports__["default"] = (constants);
 
@@ -2542,12 +2783,12 @@ var constants = new Constants();
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2578,7 +2819,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * Protection Constants declaration
  * @class
@@ -2587,11 +2827,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var ProtectionConstants = /*#__PURE__*/function () {
   function ProtectionConstants() {
     _classCallCheck(this, ProtectionConstants);
-
     this.init();
   }
-
-  _createClass(ProtectionConstants, [{
+  return _createClass(ProtectionConstants, [{
     key: "init",
     value: function init() {
       this.CLEARKEY_KEYSTEM_STRING = 'org.w3.clearkey';
@@ -2603,10 +2841,7 @@ var ProtectionConstants = /*#__PURE__*/function () {
       this.INITIALIZATION_DATA_TYPE_WEBM = 'webm';
     }
   }]);
-
-  return ProtectionConstants;
 }();
-
 var constants = new ProtectionConstants();
 /* harmony default export */ __webpack_exports__["default"] = (constants);
 
@@ -2621,12 +2856,12 @@ var constants = new ProtectionConstants();
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2657,21 +2892,21 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
+
 var LICENSE_SERVER_MANIFEST_CONFIGURATIONS = {
   attributes: ['Laurl', 'laurl'],
   prefixes: ['clearkey', 'dashif']
 };
+
 /**
  * @class
  * @ignore
  */
-
 var CommonEncryption = /*#__PURE__*/function () {
   function CommonEncryption() {
     _classCallCheck(this, CommonEncryption);
   }
-
-  _createClass(CommonEncryption, null, [{
+  return _createClass(CommonEncryption, null, [{
     key: "findCencContentProtection",
     value:
     /**
@@ -2684,39 +2919,36 @@ var CommonEncryption = /*#__PURE__*/function () {
      */
     function findCencContentProtection(cpArray) {
       var retVal = null;
-
       for (var i = 0; i < cpArray.length; ++i) {
         var cp = cpArray[i];
         if (cp.schemeIdUri.toLowerCase() === 'urn:mpeg:dash:mp4protection:2011' && (cp.value.toLowerCase() === 'cenc' || cp.value.toLowerCase() === 'cbcs')) retVal = cp;
       }
-
       return retVal;
     }
+
     /**
      * Returns just the data portion of a single PSSH
      *
      * @param {ArrayBuffer} pssh - the PSSH
      * @return {ArrayBuffer} data portion of the PSSH
      */
-
   }, {
     key: "getPSSHData",
     value: function getPSSHData(pssh) {
       var offset = 8; // Box size and type fields
+      var view = new DataView(pssh);
 
-      var view = new DataView(pssh); // Read version
-
+      // Read version
       var version = view.getUint8(offset);
       offset += 20; // Version (1), flags (3), system ID (16)
 
       if (version > 0) {
         offset += 4 + 16 * view.getUint32(offset); // Key ID count (4) and All key IDs (16*count)
       }
-
       offset += 4; // Data size
-
       return pssh.slice(offset);
     }
+
     /**
      * Returns the PSSH associated with the given key system from the concatenated
      * list of PSSH boxes in the given initData
@@ -2727,18 +2959,16 @@ var CommonEncryption = /*#__PURE__*/function () {
      * @returns {ArrayBuffer|null} The PSSH box data corresponding to the given key system, null if not found
      * or null if a valid association could not be found.
      */
-
   }, {
     key: "getPSSHForKeySystem",
     value: function getPSSHForKeySystem(keySystem, initData) {
       var psshList = CommonEncryption.parsePSSHList(initData);
-
       if (keySystem && psshList.hasOwnProperty(keySystem.uuid.toLowerCase())) {
         return psshList[keySystem.uuid.toLowerCase()];
       }
-
       return null;
     }
+
     /**
      * Parse a standard common encryption PSSH which contains a simple
      * base64-encoding of the init data
@@ -2747,7 +2977,6 @@ var CommonEncryption = /*#__PURE__*/function () {
      * @param {BASE64} BASE64 reference
      * @returns {ArrayBuffer|null} the init data or null if not found
      */
-
   }, {
     key: "parseInitDataFromContentProtection",
     value: function parseInitDataFromContentProtection(cpData, BASE64) {
@@ -2756,9 +2985,9 @@ var CommonEncryption = /*#__PURE__*/function () {
         cpData.pssh.__text = cpData.pssh.__text.replace(/\r?\n|\r/g, '').replace(/\s+/g, '');
         return BASE64.decodeArray(cpData.pssh.__text).buffer;
       }
-
       return null;
     }
+
     /**
      * Parses list of PSSH boxes into keysystem-specific PSSH data
      *
@@ -2768,104 +2997,87 @@ var CommonEncryption = /*#__PURE__*/function () {
      * the detected key system UUIDs (e.g. 00000000-0000-0000-0000-0000000000)
      * and a ArrayBuffer (the entire PSSH box) as the property value
      */
-
   }, {
     key: "parsePSSHList",
     value: function parsePSSHList(data) {
       if (data === null || data === undefined) return [];
       var dv = new DataView(data.buffer || data); // data.buffer first for Uint8Array support
-
       var done = false;
-      var pssh = {}; // TODO: Need to check every data read for end of buffer
+      var pssh = {};
 
+      // TODO: Need to check every data read for end of buffer
       var byteCursor = 0;
-
       while (!done) {
         var size = void 0,
-            nextBox = void 0,
-            version = void 0,
-            systemID = void 0;
+          nextBox = void 0,
+          version = void 0,
+          systemID = void 0;
         var boxStart = byteCursor;
         if (byteCursor >= dv.buffer.byteLength) break;
-        /* Box size */
 
+        /* Box size */
         size = dv.getUint32(byteCursor);
         nextBox = byteCursor + size;
         byteCursor += 4;
-        /* Verify PSSH */
 
+        /* Verify PSSH */
         if (dv.getUint32(byteCursor) !== 0x70737368) {
           byteCursor = nextBox;
           continue;
         }
-
         byteCursor += 4;
+
         /* Version must be 0 or 1 */
-
         version = dv.getUint8(byteCursor);
-
         if (version !== 0 && version !== 1) {
           byteCursor = nextBox;
           continue;
         }
-
         byteCursor++;
-        byteCursor += 3;
-        /* skip flags */
-        // 16-byte UUID/SystemID
+        byteCursor += 3; /* skip flags */
 
+        // 16-byte UUID/SystemID
         systemID = '';
         var i = void 0,
-            val = void 0;
-
+          val = void 0;
         for (i = 0; i < 4; i++) {
           val = dv.getUint8(byteCursor + i).toString(16);
           systemID += val.length === 1 ? '0' + val : val;
         }
-
         byteCursor += 4;
         systemID += '-';
-
         for (i = 0; i < 2; i++) {
           val = dv.getUint8(byteCursor + i).toString(16);
           systemID += val.length === 1 ? '0' + val : val;
         }
-
         byteCursor += 2;
         systemID += '-';
-
         for (i = 0; i < 2; i++) {
           val = dv.getUint8(byteCursor + i).toString(16);
           systemID += val.length === 1 ? '0' + val : val;
         }
-
         byteCursor += 2;
         systemID += '-';
-
         for (i = 0; i < 2; i++) {
           val = dv.getUint8(byteCursor + i).toString(16);
           systemID += val.length === 1 ? '0' + val : val;
         }
-
         byteCursor += 2;
         systemID += '-';
-
         for (i = 0; i < 6; i++) {
           val = dv.getUint8(byteCursor + i).toString(16);
           systemID += val.length === 1 ? '0' + val : val;
         }
-
         byteCursor += 6;
         systemID = systemID.toLowerCase();
+
         /* PSSH Data Size */
-
         byteCursor += 4;
-        /* PSSH Data */
 
+        /* PSSH Data */
         pssh[systemID] = dv.buffer.slice(boxStart, nextBox);
         byteCursor = nextBox;
       }
-
       return pssh;
     }
   }, {
@@ -2875,60 +3087,44 @@ var CommonEncryption = /*#__PURE__*/function () {
         if (!mediaInfo || mediaInfo.length === 0) {
           return null;
         }
-
         var i = 0;
         var licenseServer = null;
-
         while (i < mediaInfo.length && !licenseServer) {
           var info = mediaInfo[i];
-
           if (info && info.contentProtection && info.contentProtection.length > 0) {
             var targetProtectionData = info.contentProtection.filter(function (cp) {
               return cp.schemeIdUri && cp.schemeIdUri === schemeIdUri;
             });
-
             if (targetProtectionData && targetProtectionData.length > 0) {
               var j = 0;
-
               while (j < targetProtectionData.length && !licenseServer) {
                 var ckData = targetProtectionData[j];
                 var k = 0;
-
                 while (k < LICENSE_SERVER_MANIFEST_CONFIGURATIONS.attributes.length && !licenseServer) {
                   var l = 0;
                   var attribute = LICENSE_SERVER_MANIFEST_CONFIGURATIONS.attributes[k];
-
                   while (l < LICENSE_SERVER_MANIFEST_CONFIGURATIONS.prefixes.length && !licenseServer) {
                     var prefix = LICENSE_SERVER_MANIFEST_CONFIGURATIONS.prefixes[l];
-
                     if (ckData[attribute] && ckData[attribute].__prefix && ckData[attribute].__prefix === prefix && ckData[attribute].__text) {
                       licenseServer = ckData[attribute].__text;
                     }
-
                     l += 1;
                   }
-
                   k += 1;
                 }
-
                 j += 1;
               }
             }
           }
-
           i += 1;
         }
-
         return licenseServer;
       } catch (e) {
         return null;
       }
     }
   }]);
-
-  return CommonEncryption;
 }();
-
 /* harmony default export */ __webpack_exports__["default"] = (CommonEncryption);
 
 /***/ }),
@@ -2986,7 +3182,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var APIS_ProtectionModel_01b = [// Un-prefixed as per spec
+var APIS_ProtectionModel_01b = [
+// Un-prefixed as per spec
 {
   // Video Element
   generateKeyRequest: 'generateKeyRequest',
@@ -2997,7 +3194,8 @@ var APIS_ProtectionModel_01b = [// Un-prefixed as per spec
   keyerror: 'keyerror',
   keyadded: 'keyadded',
   keymessage: 'keymessage'
-}, // Webkit-prefixed (early Chrome versions and Chrome with EME disabled in chrome://flags)
+},
+// Webkit-prefixed (early Chrome versions and Chrome with EME disabled in chrome://flags)
 {
   // Video Element
   generateKeyRequest: 'webkitGenerateKeyRequest',
@@ -3009,7 +3207,8 @@ var APIS_ProtectionModel_01b = [// Un-prefixed as per spec
   keyadded: 'webkitkeyadded',
   keymessage: 'webkitkeymessage'
 }];
-var APIS_ProtectionModel_3Feb2014 = [// Un-prefixed as per spec
+var APIS_ProtectionModel_3Feb2014 = [
+// Un-prefixed as per spec
 // Chrome 38-39 (and some earlier versions) with chrome://flags -- Enable Encrypted Media Extensions
 {
   // Video Element
@@ -3024,7 +3223,8 @@ var APIS_ProtectionModel_3Feb2014 = [// Un-prefixed as per spec
   message: 'keymessage',
   ready: 'keyadded',
   close: 'keyclose'
-}, // MS-prefixed (IE11, Windows 8.1)
+},
+// MS-prefixed (IE11, Windows 8.1)
 {
   // Video Element
   setMediaKeys: 'msSetMediaKeys',
@@ -3039,10 +3239,10 @@ var APIS_ProtectionModel_3Feb2014 = [// Un-prefixed as per spec
   ready: 'mskeyadded',
   close: 'mskeyclose'
 }];
-
 function Protection() {
   var instance;
   var context = this.context;
+
   /**
    * Create a ProtectionController and associated ProtectionModel for use with
    * a single piece of content.
@@ -3051,7 +3251,6 @@ function Protection() {
    * @return {ProtectionController} protection controller
    *
    */
-
   function createProtectionSystem(config) {
     var controller = null;
     var protectionKeyController = Object(_controllers_ProtectionKeyController__WEBPACK_IMPORTED_MODULE_1__["default"])(context).getInstance();
@@ -3061,9 +3260,7 @@ function Protection() {
       settings: config.settings
     });
     protectionKeyController.initialize();
-
     var protectionModel = _getProtectionModel(config);
-
     if (!controller && protectionModel) {
       //TODO add ability to set external controller if still needed at all?
       controller = Object(_controllers_ProtectionController__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create({
@@ -3080,17 +3277,14 @@ function Protection() {
       });
       config.capabilities.setEncryptedMediaSupported(true);
     }
-
     return controller;
   }
-
   function _getProtectionModel(config) {
     var debug = config.debug;
     var logger = debug.getLogger(instance);
     var eventBus = config.eventBus;
     var errHandler = config.errHandler;
     var videoElement = config.videoModel ? config.videoModel.getElement() : null;
-
     if ((!videoElement || videoElement.onencrypted !== undefined) && (!videoElement || videoElement.mediaKeys !== undefined)) {
       logger.info('EME detected on this user agent! (ProtectionModel_21Jan2015)');
       return Object(_models_ProtectionModel_21Jan2015__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create({
@@ -3120,37 +3314,28 @@ function Protection() {
       return null;
     }
   }
-
   function _getAPI(videoElement, apis) {
     for (var i = 0; i < apis.length; i++) {
-      var api = apis[i]; // detect if api is supported by browser
+      var api = apis[i];
+      // detect if api is supported by browser
       // check only first function in api -> should be fine
-
       if (typeof videoElement[api[Object.keys(api)[0]]] !== 'function') {
         continue;
       }
-
       return api;
     }
-
     return null;
   }
-
   instance = {
     createProtectionSystem: createProtectionSystem
   };
   return instance;
 }
-
 Protection.__dashjs_factory_name = 'Protection';
-var factory = dashjs.FactoryMaker.getClassFactory(Protection);
-/* jshint ignore:line */
-
+var factory = dashjs.FactoryMaker.getClassFactory(Protection); /* jshint ignore:line */
 factory.events = _ProtectionEvents__WEBPACK_IMPORTED_MODULE_2__["default"];
 factory.errors = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"];
-dashjs.FactoryMaker.updateClassFactory(Protection.__dashjs_factory_name, factory);
-/* jshint ignore:line */
-
+dashjs.FactoryMaker.updateClassFactory(Protection.__dashjs_factory_name, factory); /* jshint ignore:line */
 /* harmony default export */ __webpack_exports__["default"] = (factory);
 
 /***/ }),
@@ -3165,24 +3350,19 @@ dashjs.FactoryMaker.updateClassFactory(Protection.__dashjs_factory_name, factory
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core_events_EventsBase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/events/EventsBase */ "./src/core/events/EventsBase.js");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
+function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
+function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
+function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
+function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
+function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3217,12 +3397,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 /**
  * @class
   */
-
 var ProtectionEvents = /*#__PURE__*/function (_EventsBase) {
-  _inherits(ProtectionEvents, _EventsBase);
-
-  var _super = _createSuper(ProtectionEvents);
-
   /**
    * @description Public facing external events to be used when including protection package.
    * All public events will be aggregated into the MediaPlayerEvents Class and can be accessed
@@ -3230,24 +3405,23 @@ var ProtectionEvents = /*#__PURE__*/function (_EventsBase) {
    */
   function ProtectionEvents() {
     var _this;
-
     _classCallCheck(this, ProtectionEvents);
+    _this = _callSuper(this, ProtectionEvents);
 
-    _this = _super.call(this);
     /**
      * Event ID for events delivered when the protection set receives
      * a key message from the CDM
      *
      * @ignore
      */
-
     _this.INTERNAL_KEY_MESSAGE = 'internalKeyMessage';
+
     /**
      * Event ID for events delivered when the status of one decryption keys has changed
      * @ignore
      */
-
     _this.INTERNAL_KEY_STATUS_CHANGED = 'internalkeyStatusChanged';
+
     /**
      * Event ID for events delivered when a new key has been added
      *
@@ -3257,128 +3431,125 @@ var ProtectionEvents = /*#__PURE__*/function (_EventsBase) {
      * is preferred.
      * @event ProtectionEvents#KEY_ADDED
      */
-
     _this.KEY_ADDED = 'public_keyAdded';
     /**
      * Event ID for events delivered when an error is encountered by the CDM
      * while processing a license server response message
      * @event ProtectionEvents#KEY_ERROR
      */
-
     _this.KEY_ERROR = 'public_keyError';
+
     /**
      * Event ID for events delivered when the protection set receives
      * a key message from the CDM
      * @event ProtectionEvents#KEY_MESSAGE
      */
-
     _this.KEY_MESSAGE = 'public_keyMessage';
+
     /**
      * Event ID for events delivered when a key session close
      * process has completed
      * @event ProtectionEvents#KEY_SESSION_CLOSED
      */
-
     _this.KEY_SESSION_CLOSED = 'public_keySessionClosed';
+
     /**
      * Event ID for events delivered when a new key sessions creation
      * process has completed
      * @event ProtectionEvents#KEY_SESSION_CREATED
      */
-
     _this.KEY_SESSION_CREATED = 'public_keySessionCreated';
+
     /**
      * Event ID for events delivered when a key session removal
      * process has completed
      * @event ProtectionEvents#KEY_SESSION_REMOVED
      */
-
     _this.KEY_SESSION_REMOVED = 'public_keySessionRemoved';
+
     /**
      * Event ID for events delivered when the status of one or more
      * decryption keys has changed
      * @event ProtectionEvents#KEY_STATUSES_CHANGED
      */
-
     _this.KEY_STATUSES_CHANGED = 'public_keyStatusesChanged';
+
     /**
      * Event ID for events delivered when a key system access procedure
      * has completed
      * @ignore
      */
-
     _this.KEY_SYSTEM_ACCESS_COMPLETE = 'public_keySystemAccessComplete';
+
     /**
      * Event ID for events delivered when a key system selection procedure
      * completes
      * @event ProtectionEvents#KEY_SYSTEM_SELECTED
      */
-
     _this.KEY_SYSTEM_SELECTED = 'public_keySystemSelected';
+
     /**
      * Event ID for events delivered when a license request procedure
      * has completed
      * @event ProtectionEvents#LICENSE_REQUEST_COMPLETE
      */
-
     _this.LICENSE_REQUEST_COMPLETE = 'public_licenseRequestComplete';
+
     /**
      * Sending a license rquest
      * @event ProtectionEvents#LICENSE_REQUEST_SENDING
      */
-
     _this.LICENSE_REQUEST_SENDING = 'public_licenseRequestSending';
+
     /**
      * Event ID for needkey/encrypted events
      * @ignore
      */
-
     _this.NEED_KEY = 'needkey';
+
     /**
      * Event ID for events delivered when the Protection system is detected and created.
      * @event ProtectionEvents#PROTECTION_CREATED
      */
-
     _this.PROTECTION_CREATED = 'public_protectioncreated';
+
     /**
      * Event ID for events delivered when the Protection system is destroyed.
      * @event ProtectionEvents#PROTECTION_DESTROYED
      */
-
     _this.PROTECTION_DESTROYED = 'public_protectiondestroyed';
+
     /**
      * Event ID for events delivered when a new server certificate has
      * been delivered to the CDM
      * @ignore
      */
-
     _this.SERVER_CERTIFICATE_UPDATED = 'serverCertificateUpdated';
+
     /**
      * Event ID for events delivered when the process of shutting down
      * a protection set has completed
      * @ignore
      */
-
     _this.TEARDOWN_COMPLETE = 'protectionTeardownComplete';
+
     /**
      * Event ID for events delivered when a HTMLMediaElement has been
      * associated with the protection set
      * @ignore
      */
-
     _this.VIDEO_ELEMENT_SELECTED = 'videoElementSelected';
+
     /**
      * Triggered when the key session has been updated successfully
      * @ignore
      */
-
     _this.KEY_SESSION_UPDATED = 'public_keySessionUpdated';
     return _this;
   }
-
-  return ProtectionEvents;
+  _inherits(ProtectionEvents, _EventsBase);
+  return _createClass(ProtectionEvents);
 }(_core_events_EventsBase__WEBPACK_IMPORTED_MODULE_0__["default"]);
-
 var protectionEvents = new ProtectionEvents();
 /* harmony default export */ __webpack_exports__["default"] = (protectionEvents);
 
@@ -3404,8 +3575,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core_Utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../core/Utils */ "./src/core/Utils.js");
 /* harmony import */ var _constants_Constants__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../constants/Constants */ "./src/streaming/constants/Constants.js");
 /* harmony import */ var _core_FactoryMaker__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../core/FactoryMaker */ "./src/core/FactoryMaker.js");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3447,11 +3617,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
 
+
 var NEEDKEY_BEFORE_INITIALIZE_RETRIES = 5;
 var NEEDKEY_BEFORE_INITIALIZE_TIMEOUT = 500;
 var LICENSE_SERVER_REQUEST_RETRIES = 3;
 var LICENSE_SERVER_REQUEST_RETRY_INTERVAL = 1000;
 var LICENSE_SERVER_REQUEST_DEFAULT_TIMEOUT = 8000;
+
 /**
  * @module ProtectionController
  * @description Provides access to media protection information and functionality.  Each
@@ -3481,7 +3653,6 @@ function ProtectionController(config) {
   var settings = config.settings;
   var customParametersModel = config.customParametersModel;
   var instance, logger, pendingKeySessionsToHandle, mediaInfoArr, protDataSet, sessionType, robustnessLevel, selectedKeySystem, keySystemSelectionInProgress, licenseXhrRequest, licenseRequestRetryTimeout;
-
   function setup() {
     logger = debug.getLogger(instance);
     pendingKeySessionsToHandle = [];
@@ -3493,12 +3664,12 @@ function ProtectionController(config) {
     eventBus.on(events.INTERNAL_KEY_MESSAGE, _onKeyMessage, instance);
     eventBus.on(events.INTERNAL_KEY_STATUS_CHANGED, _onKeyStatusChanged, instance);
   }
-
   function checkConfig() {
     if (!eventBus || !eventBus.hasOwnProperty('on') || !protectionKeyController || !protectionKeyController.hasOwnProperty('getSupportedKeySystemsFromContentProtection')) {
       throw new Error('Missing config parameter(s)');
     }
   }
+
   /**
    * Initialize this protection system for a given media type.
    *
@@ -3506,8 +3677,6 @@ function ProtectionController(config) {
    * @memberof module:ProtectionController
    * @instance
    */
-
-
   function initializeForMedia(mediaInfo) {
     // Not checking here if a session for similar KS/KID combination is already created
     // because still don't know which keysystem will be selected.
@@ -3516,98 +3685,91 @@ function ProtectionController(config) {
     if (!mediaInfo) {
       throw new Error('mediaInfo can not be null or undefined');
     }
-
     checkConfig();
     mediaInfoArr.push(mediaInfo);
   }
+
   /**
    * Once all mediaInfo objects have been added to our mediaInfoArray we can select a key system or check if the kid has changed and we need to trigger a new license request
    * @memberof module:ProtectionController
    * @instance
    */
-
-
   function handleKeySystemFromManifest() {
     if (!mediaInfoArr || mediaInfoArr.length === 0) {
       return;
     }
-
     var supportedKeySystems = [];
     mediaInfoArr.forEach(function (mInfo) {
-      var currentKs = protectionKeyController.getSupportedKeySystemsFromContentProtection(mInfo.contentProtection, protDataSet, sessionType); // We assume that the same key systems are signaled for each AS. We can use the first entry we found
-
+      var currentKs = protectionKeyController.getSupportedKeySystemsFromContentProtection(mInfo.contentProtection, protDataSet, sessionType);
+      // We assume that the same key systems are signaled for each AS. We can use the first entry we found
       if (currentKs.length > 0) {
         if (supportedKeySystems.length === 0) {
           supportedKeySystems = currentKs;
-        } // Save config for creating key session once we selected a key system
-
-
+        }
+        // Save config for creating key session once we selected a key system
         pendingKeySessionsToHandle.push(currentKs);
       }
     });
-
     if (supportedKeySystems && supportedKeySystems.length > 0) {
       _selectKeySystemOrUpdateKeySessions(supportedKeySystems, true);
     }
   }
+
   /**
    * Selects a key system if we dont have any one yet. Otherwise we use the existing key system and trigger a new license request if the initdata has changed
    * @param {array} supportedKs
    * @private
    */
-
-
   function _handleKeySystemFromPssh(supportedKs) {
     pendingKeySessionsToHandle.push(supportedKs);
-
     _selectKeySystemOrUpdateKeySessions(supportedKs, false);
   }
+
   /**
    * Select the key system or update one of our existing key sessions
    * @param {array} supportedKs
    * @param {boolean} fromManifest
    * @private
    */
-
-
   function _selectKeySystemOrUpdateKeySessions(supportedKs, fromManifest) {
     // First time, so we need to select a key system
     if (!selectedKeySystem && !keySystemSelectionInProgress) {
       _selectInitialKeySystem(supportedKs, fromManifest);
-    } // We already selected a key system. We only need to trigger a new license exchange if the init data has changed
+    }
+
+    // We already selected a key system. We only need to trigger a new license exchange if the init data has changed
     else if (selectedKeySystem) {
-        _handleKeySessions();
-      }
+      _handleKeySessions();
+    }
   }
+
   /**
    * We do not have a key system yet. Select one
    * @param {array} supportedKs
    * @param {boolean} fromManifest
    * @private
    */
-
-
   function _selectInitialKeySystem(supportedKs, fromManifest) {
     if (!keySystemSelectionInProgress) {
       keySystemSelectionInProgress = true;
-      var requestedKeySystems = []; // Reorder key systems according to priority order provided in protectionData
+      var requestedKeySystems = [];
 
+      // Reorder key systems according to priority order provided in protectionData
       supportedKs = supportedKs.sort(function (ksA, ksB) {
         var indexA = protDataSet && protDataSet[ksA.ks.systemString] && protDataSet[ksA.ks.systemString].priority >= 0 ? protDataSet[ksA.ks.systemString].priority : supportedKs.length;
         var indexB = protDataSet && protDataSet[ksB.ks.systemString] && protDataSet[ksB.ks.systemString].priority >= 0 ? protDataSet[ksB.ks.systemString].priority : supportedKs.length;
         return indexA - indexB;
-      }); // Add all key systems to our request list since we have yet to select a key system
+      });
 
+      // Add all key systems to our request list since we have yet to select a key system
       for (var i = 0; i < supportedKs.length; i++) {
         var keySystemConfiguration = _getKeySystemConfiguration(supportedKs[i]);
-
         requestedKeySystems.push({
           ks: supportedKs[i].ks,
           configs: [keySystemConfiguration],
           protData: supportedKs[i].protData
         });
       }
-
       var keySystemAccess;
       protectionModel.requestKeySystemAccess(requestedKeySystems).then(function (event) {
         keySystemAccess = event.data;
@@ -3617,26 +3779,22 @@ function ProtectionController(config) {
       }).then(function (keySystem) {
         selectedKeySystem = keySystem;
         keySystemSelectionInProgress = false;
-
         if (!protectionModel) {
           return;
         }
-
         eventBus.trigger(events.KEY_SYSTEM_SELECTED, {
           data: keySystemAccess
-        }); // Set server certificate from protData
+        });
 
+        // Set server certificate from protData
         var protData = _getProtDataForKeySystem(selectedKeySystem);
-
         if (protData && protData.serverCertificate && protData.serverCertificate.length > 0) {
           protectionModel.setServerCertificate(BASE64.decodeArray(protData.serverCertificate).buffer);
         }
-
         _handleKeySessions();
       })["catch"](function (event) {
         selectedKeySystem = null;
         keySystemSelectionInProgress = false;
-
         if (!fromManifest) {
           eventBus.trigger(events.KEY_SYSTEM_SELECTED, {
             data: null,
@@ -3646,37 +3804,31 @@ function ProtectionController(config) {
       });
     }
   }
+
   /**
    * If we have already selected a key system we only need to create a new key session and issue a new license request if the init data has changed.
    * @private
    */
-
-
   function _handleKeySessions() {
     // Create key sessions for the different AdaptationSets
     var ksIdx;
-
     for (var i = 0; i < pendingKeySessionsToHandle.length; i++) {
       for (ksIdx = 0; ksIdx < pendingKeySessionsToHandle[i].length; ksIdx++) {
         if (selectedKeySystem === pendingKeySessionsToHandle[i][ksIdx].ks) {
           var current = pendingKeySessionsToHandle[i][ksIdx];
-
           _loadOrCreateKeySession(current);
-
           break;
         }
       }
     }
-
     pendingKeySessionsToHandle = [];
   }
+
   /**
    * Loads an existing key session if we already have a session id. Otherwise we create a new key session
    * @param {object} keySystemInfo
    * @private
    */
-
-
   function _loadOrCreateKeySession(keySystemInfo) {
     // Clearkey
     if (protectionKeyController.isClearKey(selectedKeySystem)) {
@@ -3688,18 +3840,21 @@ function ProtectionController(config) {
         };
         keySystemInfo.initData = new TextEncoder().encode(JSON.stringify(initData));
       }
-    } // Reuse existing KeySession
+    }
 
-
+    // Reuse existing KeySession
     if (keySystemInfo.sessionId) {
       // Load MediaKeySession with sessionId
       loadKeySession(keySystemInfo);
-    } // Create a new KeySession
+    }
+
+    // Create a new KeySession
     else if (keySystemInfo.initData !== null) {
-        // Create new MediaKeySession with initData
-        createKeySession(keySystemInfo);
-      }
+      // Create new MediaKeySession with initData
+      createKeySession(keySystemInfo);
+    }
   }
+
   /**
    * Loads a key session with the given session ID from persistent storage.  This essentially creates a new key session
    *
@@ -3709,12 +3864,11 @@ function ProtectionController(config) {
    * @fires ProtectionController#KeySessionCreated
    * @ignore
    */
-
-
   function loadKeySession(keySystemInfo) {
     checkConfig();
     protectionModel.loadKeySession(keySystemInfo);
   }
+
   /**
    * Create a new key session associated with the given initialization data from the MPD or from the PSSH box in the media
    * For the latest version of the EME a request is generated. Once this request is ready we get notified via the INTERNAL_KEY_MESSAGE event
@@ -3725,22 +3879,18 @@ function ProtectionController(config) {
    * @fires ProtectionController#KeySessionCreated
    * @ignore
    */
-
-
   function createKeySession(keySystemInfo) {
     var initDataForKS = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHForKeySystem(selectedKeySystem, keySystemInfo ? keySystemInfo.initData : null);
-
     if (initDataForKS) {
       // Check for duplicate key id
       if (_isKeyIdDuplicate(keySystemInfo.keyId)) {
         return;
-      } // Check for duplicate initData
+      }
 
-
+      // Check for duplicate initData
       if (_isInitDataDuplicate(initDataForKS)) {
         return;
       }
-
       try {
         keySystemInfo.initData = initDataForKS;
         protectionModel.createKeySession(keySystemInfo);
@@ -3759,33 +3909,30 @@ function ProtectionController(config) {
       });
     }
   }
+
   /**
    * Returns the protectionData for a specific keysystem as specified by the application.
    * @param {object} keySystem
    * @return {object | null}
    * @private
    */
-
-
   function _getProtDataForKeySystem(keySystem) {
     if (keySystem) {
       var keySystemString = keySystem.systemString;
-
       if (protDataSet) {
         return keySystemString in protDataSet ? protDataSet[keySystemString] : null;
       }
     }
-
     return null;
   }
+
   /**
    * Removes all entries from the mediaInfoArr
    */
-
-
   function clearMediaInfoArray() {
     mediaInfoArr = [];
   }
+
   /**
    * Returns a set of supported key systems and CENC initialization data
    * from the given array of ContentProtection elements.  Only
@@ -3801,67 +3948,58 @@ function ProtectionController(config) {
    * @instance
    * @ignore
    */
-
-
   function getSupportedKeySystemsFromContentProtection(cps) {
     checkConfig();
     return protectionKeyController.getSupportedKeySystemsFromContentProtection(cps, protDataSet, sessionType);
   }
+
   /**
    * Checks if a session has already created for the provided key id
    * @param {string} keyId
    * @return {boolean}
    * @private
    */
-
-
   function _isKeyIdDuplicate(keyId) {
     if (!keyId) {
       return false;
     }
-
     try {
       var sessions = protectionModel.getSessions();
-
       for (var i = 0; i < sessions.length; i++) {
         if (sessions[i].getKeyId() === keyId) {
           return true;
         }
       }
-
       return false;
     } catch (e) {
       return false;
     }
   }
+
   /**
    * Checks if the provided init data is equal to one of the existing init data values
    * @param {any} initDataForKS
    * @return {boolean}
    * @private
    */
-
-
   function _isInitDataDuplicate(initDataForKS) {
     if (!initDataForKS) {
       return false;
     }
-
     try {
       var currentInitData = protectionModel.getAllInitData();
-
       for (var i = 0; i < currentInitData.length; i++) {
         if (protectionKeyController.initDataEquals(initDataForKS, currentInitData[i])) {
           logger.debug('DRM: Ignoring initData because we have already seen it!');
           return true;
         }
       }
-
       return false;
     } catch (e) {
       return false;
     }
   }
+
   /**
    * Removes the given key session from persistent storage and closes the session
    * as if {@link ProtectionController#closeKeySession}
@@ -3875,12 +4013,11 @@ function ProtectionController(config) {
    * @fires ProtectionController#KeySessionClosed
    * @ignore
    */
-
-
   function removeKeySession(sessionToken) {
     checkConfig();
     protectionModel.removeKeySession(sessionToken);
   }
+
   /**
    * Closes the key session and releases all associated decryption keys.  These
    * keys will no longer be available for decrypting media
@@ -3892,12 +4029,11 @@ function ProtectionController(config) {
    * @fires ProtectionController#KeySessionClosed
    * @ignore
    */
-
-
   function closeKeySession(sessionToken) {
     checkConfig();
     protectionModel.closeKeySession(sessionToken);
   }
+
   /**
    * Sets a server certificate for use by the CDM when signing key messages
    * intended for a particular license server.  This will fire
@@ -3909,12 +4045,11 @@ function ProtectionController(config) {
    * @instance
    * @fires ProtectionController#ServerCertificateUpdated
    */
-
-
   function setServerCertificate(serverCertificate) {
     checkConfig();
     protectionModel.setServerCertificate(serverCertificate);
   }
+
   /**
    * Associate this protection system with the given HTMLMediaElement.  This
    * causes the system to register for needkey/encrypted events from the given
@@ -3925,11 +4060,8 @@ function ProtectionController(config) {
    * @memberof module:ProtectionController
    * @instance
    */
-
-
   function setMediaElement(element) {
     checkConfig();
-
     if (element) {
       protectionModel.setMediaElement(element);
       eventBus.on(events.NEED_KEY, _onNeedKey, instance);
@@ -3938,6 +4070,7 @@ function ProtectionController(config) {
       eventBus.off(events.NEED_KEY, _onNeedKey, instance);
     }
   }
+
   /**
    * Sets the session type to use when creating key sessions.  Either "temporary" or
    * "persistent-license".  Default is "temporary".
@@ -3946,11 +4079,10 @@ function ProtectionController(config) {
    * @memberof module:ProtectionController
    * @instance
    */
-
-
   function setSessionType(value) {
     sessionType = value;
   }
+
   /**
    * Sets the robustness level for video and audio capabilities. Optional to remove Chrome warnings.
    * Possible values are SW_SECURE_CRYPTO, SW_SECURE_DECODE, HW_SECURE_CRYPTO, HW_SECURE_CRYPTO, HW_SECURE_DECODE, HW_SECURE_ALL.
@@ -3959,11 +4091,10 @@ function ProtectionController(config) {
    * @memberof module:ProtectionController
    * @instance
    */
-
-
   function setRobustnessLevel(level) {
     robustnessLevel = level;
   }
+
   /**
    * Attach KeySystem-specific data to use for license acquisition with EME
    *
@@ -3974,27 +4105,24 @@ function ProtectionController(config) {
    * @instance
    * @ignore
    */
-
-
   function setProtectionData(data) {
     protDataSet = data;
     protectionKeyController.setProtectionData(data);
   }
+
   /**
    * Stop method is called when current playback is stopped/resetted.
    *
    * @memberof module:ProtectionController
    * @instance
    */
-
-
   function stop() {
     _abortLicenseRequest();
-
     if (protectionModel) {
       protectionModel.stop();
     }
   }
+
   /**
    * Destroys all protection data associated with this protection set.  This includes
    * deleting all key sessions. In the case of persistent key sessions, the sessions
@@ -4005,24 +4133,18 @@ function ProtectionController(config) {
    * @instance
    * @ignore
    */
-
-
   function reset() {
     eventBus.off(events.INTERNAL_KEY_MESSAGE, _onKeyMessage, instance);
     eventBus.off(events.INTERNAL_KEY_STATUS_CHANGED, _onKeyStatusChanged, instance);
     checkConfig();
-
     _abortLicenseRequest();
-
     setMediaElement(null);
     selectedKeySystem = null;
     keySystemSelectionInProgress = false;
-
     if (protectionModel) {
       protectionModel.reset();
       protectionModel = null;
     }
-
     needkeyRetries.forEach(function (retryTimeout) {
       return clearTimeout(retryTimeout);
     });
@@ -4030,14 +4152,13 @@ function ProtectionController(config) {
     mediaInfoArr = [];
     pendingKeySessionsToHandle = [];
   }
+
   /**
    * Returns an object corresponding to the EME MediaKeySystemConfiguration dictionary
    * @param {object} keySystem
    * @return {KeySystemConfiguration}
    * @private
    */
-
-
   function _getKeySystemConfiguration(keySystemData) {
     var protData = keySystemData.protData;
     var audioCapabilities = [];
@@ -4056,13 +4177,12 @@ function ProtectionController(config) {
     });
     return new _vo_KeySystemConfiguration__WEBPACK_IMPORTED_MODULE_2__["default"](audioCapabilities, videoCapabilities, distinctiveIdentifier, persistentState, [ksSessionType]);
   }
+
   /**
    * Event handler for when the status of the key has changed
    * @param {object} e
    * @private
    */
-
-
   function _onKeyStatusChanged(e) {
     if (e.error) {
       eventBus.trigger(events.KEY_STATUSES_CHANGED, {
@@ -4073,16 +4193,16 @@ function ProtectionController(config) {
       logger.debug('DRM: key status = ' + e.status);
     }
   }
+
   /**
    * Event handler for the key message event. Once we have a key message we can issue a license request
    * @param {object} e
    * @private
    */
-
-
   function _onKeyMessage(e) {
-    logger.debug('DRM: onKeyMessage'); // Dispatch event to applications indicating we received a key message
+    logger.debug('DRM: onKeyMessage');
 
+    // Dispatch event to applications indicating we received a key message
     var keyMessage = e.data;
     eventBus.trigger(events.KEY_MESSAGE, {
       data: keyMessage
@@ -4090,61 +4210,54 @@ function ProtectionController(config) {
     var messageType = keyMessage.messageType ? keyMessage.messageType : 'license-request';
     var message = keyMessage.message;
     var sessionToken = keyMessage.sessionToken;
-
     var protData = _getProtDataForKeySystem(selectedKeySystem);
-
     var licenseServerModelInstance = protectionKeyController.getLicenseServerModelInstance(selectedKeySystem, protData, messageType);
     var eventData = {
       sessionToken: sessionToken,
       messageType: messageType
-    }; // Ensure message from CDM is not empty
+    };
 
+    // Ensure message from CDM is not empty
     if (!message || message.byteLength === 0) {
       _sendLicenseRequestCompleteEvent(eventData, new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_4__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_NO_CHALLENGE_ERROR_CODE, _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_NO_CHALLENGE_ERROR_MESSAGE));
-
       return;
-    } // Message not destined for license server
+    }
 
-
+    // Message not destined for license server
     if (!licenseServerModelInstance) {
       logger.debug('DRM: License server request not required for this message (type = ' + e.data.messageType + ').  Session ID = ' + sessionToken.getSessionId());
-
       _sendLicenseRequestCompleteEvent(eventData);
-
       return;
-    } // Perform any special handling for ClearKey
+    }
 
-
+    // Perform any special handling for ClearKey
     if (protectionKeyController.isClearKey(selectedKeySystem)) {
       var clearkeys = protectionKeyController.processClearKeyLicenseRequest(selectedKeySystem, protData, message);
-
       if (clearkeys && clearkeys.keyPairs && clearkeys.keyPairs.length > 0) {
         logger.debug('DRM: ClearKey license request handled by application!');
-
         _sendLicenseRequestCompleteEvent(eventData);
-
         protectionModel.updateKeySession(sessionToken, clearkeys);
         return;
       }
-    } // In all other cases we have to make a license request
+    }
 
-
+    // In all other cases we have to make a license request
     _issueLicenseRequest(keyMessage, licenseServerModelInstance, protData);
   }
+
   /**
    * Notify other classes that the license request was completed
    * @param {object} data
    * @param {object} error
    * @private
    */
-
-
   function _sendLicenseRequestCompleteEvent(data, error) {
     eventBus.trigger(events.LICENSE_REQUEST_COMPLETE, {
       data: data,
       error: error
     });
   }
+
   /**
    * Start issuing a license request
    * @param {object} keyMessage
@@ -4152,8 +4265,6 @@ function ProtectionController(config) {
    * @param {object} protData
    * @private
    */
-
-
   function _issueLicenseRequest(keyMessage, licenseServerData, protData) {
     var sessionToken = keyMessage.sessionToken;
     var messageType = keyMessage.messageType ? keyMessage.messageType : 'license-request';
@@ -4161,56 +4272,48 @@ function ProtectionController(config) {
       sessionToken: sessionToken,
       messageType: messageType
     };
-    var keySystemString = selectedKeySystem ? selectedKeySystem.systemString : null; // Determine license server URL
+    var keySystemString = selectedKeySystem ? selectedKeySystem.systemString : null;
 
-    var url = _getLicenseServerUrl(protData, messageType, sessionToken, keyMessage, licenseServerData); // Ensure valid license server URL
+    // Determine license server URL
+    var url = _getLicenseServerUrl(protData, messageType, sessionToken, keyMessage, licenseServerData);
 
-
+    // Ensure valid license server URL
     if (!url) {
       _sendLicenseRequestCompleteEvent(eventData, new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_4__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_NO_LICENSE_SERVER_URL_ERROR_CODE, _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_NO_LICENSE_SERVER_URL_ERROR_MESSAGE));
-
       return;
-    } // Set optional XMLHttpRequest headers from protection data and message
+    }
 
-
+    // Set optional XMLHttpRequest headers from protection data and message
     var reqHeaders = {};
     var withCredentials = false;
-
     if (protData) {
       _updateHeaders(reqHeaders, protData.httpRequestHeaders);
     }
-
     var message = keyMessage.message;
     var headersFromMessage = selectedKeySystem.getRequestHeadersFromMessage(message);
-
     _updateHeaders(reqHeaders, headersFromMessage);
-
     Object.keys(reqHeaders).forEach(function (key) {
       if ('authorization' === key.toLowerCase()) {
         withCredentials = true;
       }
-    }); // Overwrite withCredentials property from protData if present
+    });
 
+    // Overwrite withCredentials property from protData if present
     if (protData && typeof protData.withCredentials == 'boolean') {
       withCredentials = protData.withCredentials;
     }
-
     var onLoad = function onLoad(xhr) {
       if (!protectionModel) {
         return;
       }
-
       if (xhr.status >= 200 && xhr.status <= 299) {
         var responseHeaders = _core_Utils__WEBPACK_IMPORTED_MODULE_8__["default"].parseHttpHeaders(xhr.getAllResponseHeaders ? xhr.getAllResponseHeaders() : null);
         var licenseResponse = new _vo_LicenseResponse__WEBPACK_IMPORTED_MODULE_6__["default"](xhr.responseURL, responseHeaders, xhr.response);
         var licenseResponseFilters = customParametersModel.getLicenseResponseFilters();
-
         _applyFilters(licenseResponseFilters, licenseResponse).then(function () {
           var licenseMessage = licenseServerData.getLicenseMessage(licenseResponse.data, keySystemString, messageType);
-
           if (licenseMessage !== null) {
             _sendLicenseRequestCompleteEvent(eventData);
-
             protectionModel.updateKeySession(sessionToken, licenseMessage);
           } else {
             _reportError(xhr, eventData, keySystemString, messageType, licenseServerData);
@@ -4220,15 +4323,12 @@ function ProtectionController(config) {
         _reportError(xhr, eventData, keySystemString, messageType, licenseServerData);
       }
     };
-
     var onAbort = function onAbort(xhr) {
       _sendLicenseRequestCompleteEvent(eventData, new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_4__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE, _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE + keySystemString + ' update, XHR aborted. status is "' + xhr.statusText + '" (' + xhr.status + '), readyState is ' + xhr.readyState));
     };
-
     var onError = function onError(xhr) {
       _sendLicenseRequestCompleteEvent(eventData, new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_4__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE, _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE + keySystemString + ' update, XHR error. status is "' + xhr.statusText + '" (' + xhr.status + '), readyState is ' + xhr.readyState));
     };
-
     var reqPayload = selectedKeySystem.getLicenseRequestFromMessage(message);
     var reqMethod = licenseServerData.getHTTPMethod(messageType);
     var responseType = licenseServerData.getResponseType(keySystemString, messageType);
@@ -4237,11 +4337,11 @@ function ProtectionController(config) {
     var licenseRequest = new _vo_LicenseRequest__WEBPACK_IMPORTED_MODULE_5__["default"](url, reqMethod, responseType, reqHeaders, withCredentials, messageType, sessionId, reqPayload);
     var retryAttempts = !isNaN(settings.get().streaming.retryAttempts[_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__["HTTPRequest"].LICENSE]) ? settings.get().streaming.retryAttempts[_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__["HTTPRequest"].LICENSE] : LICENSE_SERVER_REQUEST_RETRIES;
     var licenseRequestFilters = customParametersModel.getLicenseRequestFilters();
-
     _applyFilters(licenseRequestFilters, licenseRequest).then(function () {
       _doLicenseRequest(licenseRequest, retryAttempts, timeout, onLoad, onAbort, onError);
     });
   }
+
   /**
    * Implement license requests with a retry mechanism to avoid temporary network issues to affect playback experience
    * @param {object} request
@@ -4252,51 +4352,39 @@ function ProtectionController(config) {
    * @param {function} onError
    * @private
    */
-
-
   function _doLicenseRequest(request, retriesCount, timeout, onLoad, onAbort, onError) {
     var xhr = new XMLHttpRequest();
-
     if (settings.get().streaming.cmcd && settings.get().streaming.cmcd.enabled) {
       var cmcdMode = settings.get().streaming.cmcd.mode;
-
       if (cmcdMode === _constants_Constants__WEBPACK_IMPORTED_MODULE_9__["default"].CMCD_MODE_QUERY) {
         var cmcdParams = cmcdModel.getQueryParameter({
           url: request.url,
           type: _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__["HTTPRequest"].LICENSE
         });
-
         if (cmcdParams) {
           request.url = _core_Utils__WEBPACK_IMPORTED_MODULE_8__["default"].addAditionalQueryParameterToUrl(request.url, [cmcdParams]);
         }
       }
     }
-
     xhr.open(request.method, request.url, true);
     xhr.responseType = request.responseType;
     xhr.withCredentials = request.withCredentials;
-
     if (timeout > 0) {
       xhr.timeout = timeout;
     }
-
     for (var key in request.headers) {
       xhr.setRequestHeader(key, request.headers[key]);
     }
-
     if (settings.get().streaming.cmcd && settings.get().streaming.cmcd.enabled) {
       var _cmcdMode = settings.get().streaming.cmcd.mode;
-
       if (_cmcdMode === _constants_Constants__WEBPACK_IMPORTED_MODULE_9__["default"].CMCD_MODE_HEADER) {
         var cmcdHeaders = cmcdModel.getHeaderParameters({
           url: request.url,
           type: _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__["HTTPRequest"].LICENSE
         });
-
         if (cmcdHeaders) {
           for (var header in cmcdHeaders) {
             var value = cmcdHeaders[header];
-
             if (value) {
               xhr.setRequestHeader(header, value);
             }
@@ -4304,7 +4392,6 @@ function ProtectionController(config) {
         }
       }
     }
-
     var _retryRequest = function _retryRequest() {
       // fail silently and retry
       retriesCount--;
@@ -4313,36 +4400,29 @@ function ProtectionController(config) {
         _doLicenseRequest(request, retriesCount, timeout, onLoad, onAbort, onError);
       }, retryInterval);
     };
-
     xhr.onload = function () {
       licenseXhrRequest = null;
-
       if (this.status >= 200 && this.status <= 299 || retriesCount <= 0) {
         onLoad(this);
       } else {
         logger.warn('License request failed (' + this.status + '). Retrying it... Pending retries: ' + retriesCount);
-
         _retryRequest();
       }
     };
-
     xhr.ontimeout = xhr.onerror = function () {
       licenseXhrRequest = null;
-
       if (retriesCount <= 0) {
         onError(this);
       } else {
         logger.warn('License request network request failed . Retrying it... Pending retries: ' + retriesCount);
-
         _retryRequest();
       }
     };
-
     xhr.onabort = function () {
       onAbort(this);
-    }; // deprecated, to be removed
+    };
 
-
+    // deprecated, to be removed
     eventBus.trigger(events.LICENSE_REQUEST_SENDING, {
       url: request.url,
       headers: request.headers,
@@ -4352,25 +4432,23 @@ function ProtectionController(config) {
     licenseXhrRequest = xhr;
     xhr.send(request.data);
   }
+
   /**
    * Aborts license request
    * @private
    */
-
-
   function _abortLicenseRequest() {
     if (licenseXhrRequest) {
       licenseXhrRequest.onloadend = licenseXhrRequest.onerror = licenseXhrRequest.onprogress = undefined; //Ignore events from aborted requests.
-
       licenseXhrRequest.abort();
       licenseXhrRequest = null;
     }
-
     if (licenseRequestRetryTimeout) {
       clearTimeout(licenseRequestRetryTimeout);
       licenseRequestRetryTimeout = null;
     }
   }
+
   /**
    * Returns the url of the license server
    * @param {object} protData
@@ -4381,50 +4459,52 @@ function ProtectionController(config) {
    * @return {*}
    * @private
    */
-
-
   function _getLicenseServerUrl(protData, messageType, sessionToken, keyMessage, licenseServerData) {
     var url = null;
-    var message = keyMessage.message; // Check if the url is defined by the application
+    var message = keyMessage.message;
 
+    // Check if the url is defined by the application
     if (protData && protData.serverURL) {
       var serverURL = protData.serverURL;
-
       if (typeof serverURL === 'string' && serverURL !== '') {
         url = serverURL;
       } else if (_typeof(serverURL) === 'object' && serverURL.hasOwnProperty(messageType)) {
         url = serverURL[messageType];
       }
-    } // This is the old way of providing the url
+    }
+
+    // This is the old way of providing the url
     else if (protData && protData.laURL && protData.laURL !== '') {
-        url = protData.laURL;
-      } // No url provided by the app. Check the manifest and the pssh
-      else {
-          // Check for url defined in the manifest
-          url = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].getLicenseServerUrlFromMediaInfo(mediaInfoArr, selectedKeySystem.schemeIdURI); // In case we are not using Clearky we can still get a url from the pssh.
+      url = protData.laURL;
+    }
 
-          if (!url && !protectionKeyController.isClearKey(selectedKeySystem)) {
-            var psshData = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHData(sessionToken.initData);
-            url = selectedKeySystem.getLicenseServerURLFromInitData(psshData); // Still no url, check the keymessage
+    // No url provided by the app. Check the manifest and the pssh
+    else {
+      // Check for url defined in the manifest
+      url = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].getLicenseServerUrlFromMediaInfo(mediaInfoArr, selectedKeySystem.schemeIdURI);
 
-            if (!url) {
-              url = keyMessage.laURL;
-            }
-          }
-        } // Possibly update or override the URL based on the message
+      // In case we are not using Clearky we can still get a url from the pssh.
+      if (!url && !protectionKeyController.isClearKey(selectedKeySystem)) {
+        var psshData = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHData(sessionToken.initData);
+        url = selectedKeySystem.getLicenseServerURLFromInitData(psshData);
 
-
+        // Still no url, check the keymessage
+        if (!url) {
+          url = keyMessage.laURL;
+        }
+      }
+    }
+    // Possibly update or override the URL based on the message
     url = licenseServerData.getServerURLFromMessage(url, message, messageType);
     return url;
   }
+
   /**
    * Add new headers to the existing ones
    * @param {array} reqHeaders
    * @param {object} headers
    * @private
    */
-
-
   function _updateHeaders(reqHeaders, headers) {
     if (headers) {
       for (var key in headers) {
@@ -4432,6 +4512,7 @@ function ProtectionController(config) {
       }
     }
   }
+
   /**
    * Reports an error that might have occured during the license request
    * @param {object} xhr
@@ -4441,12 +4522,9 @@ function ProtectionController(config) {
    * @param {object} licenseServerData
    * @private
    */
-
-
   function _reportError(xhr, eventData, keySystemString, messageType, licenseServerData) {
     var errorMsg = 'NONE';
     var data = null;
-
     if (xhr.response) {
       errorMsg = licenseServerData.getErrorResponse(xhr.response, keySystemString, messageType);
       data = {
@@ -4455,9 +4533,9 @@ function ProtectionController(config) {
         responseText: xhr.statusText || null
       };
     }
-
     _sendLicenseRequestCompleteEvent(eventData, new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_4__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE, _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE + keySystemString + ' update, XHR complete. status is "' + xhr.statusText + '" (' + xhr.status + '), readyState is ' + xhr.readyState + '.  Response is ' + errorMsg, data));
   }
+
   /**
    * Applies custom filters defined by the application
    * @param {array} filters
@@ -4465,8 +4543,6 @@ function ProtectionController(config) {
    * @return {Promise<void>|*}
    * @private
    */
-
-
   function _applyFilters(filters, param) {
     if (!filters) return Promise.resolve();
     return filters.reduce(function (prev, next) {
@@ -4475,46 +4551,42 @@ function ProtectionController(config) {
       });
     }, Promise.resolve());
   }
+
   /**
    * Event handler for "needkey" and "encrypted" events
    * @param {object} event
    * @param {number} retry
    */
-
-
   function _onNeedKey(event, retry) {
     if (!settings.get().streaming.protection.ignoreEmeEncryptedEvent) {
-      logger.debug('DRM: onNeedKey'); // Ignore non-cenc initData
+      logger.debug('DRM: onNeedKey');
 
+      // Ignore non-cenc initData
       if (event.key.initDataType !== 'cenc') {
         logger.warn('DRM:  Only \'cenc\' initData is supported!  Ignoring initData of type: ' + event.key.initDataType);
         return;
       }
-
       if (mediaInfoArr.length === 0) {
         logger.warn('DRM: onNeedKey called before initializeForMedia, wait until initialized');
         retry = typeof retry === 'undefined' ? 1 : retry + 1;
-
         if (retry < NEEDKEY_BEFORE_INITIALIZE_RETRIES) {
           needkeyRetries.push(setTimeout(function () {
             _onNeedKey(event, retry);
           }, NEEDKEY_BEFORE_INITIALIZE_TIMEOUT));
           return;
         }
-      } // Some browsers return initData as Uint8Array (IE), some as ArrayBuffer (Chrome).
+      }
+
+      // Some browsers return initData as Uint8Array (IE), some as ArrayBuffer (Chrome).
       // Convert to ArrayBuffer
-
-
       var abInitData = event.key.initData;
-
       if (ArrayBuffer.isView(abInitData)) {
         abInitData = abInitData.buffer;
-      } // If key system has already been selected and initData already seen, then do nothing
+      }
 
-
+      // If key system has already been selected and initData already seen, then do nothing
       if (selectedKeySystem) {
         var initDataForKS = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHForKeySystem(selectedKeySystem, abInitData);
-
         if (initDataForKS) {
           // Check for duplicate initData
           if (_isInitDataDuplicate(initDataForKS)) {
@@ -4522,39 +4594,33 @@ function ProtectionController(config) {
           }
         }
       }
-
       logger.debug('DRM: initData:', String.fromCharCode.apply(null, new Uint8Array(abInitData)));
       var supportedKs = protectionKeyController.getSupportedKeySystemsFromSegmentPssh(abInitData, protDataSet, sessionType);
-
       if (supportedKs.length === 0) {
         logger.debug('DRM: Received needkey event with initData, but we don\'t support any of the key systems!');
         return;
       }
-
       _handleKeySystemFromPssh(supportedKs);
     }
   }
+
   /**
    * Returns all available key systems
    * @return {array}
    */
-
-
   function getKeySystems() {
     return protectionKeyController ? protectionKeyController.getKeySystems() : [];
   }
+
   /**
    * Sets all available key systems
    * @param {array} keySystems
    */
-
-
   function setKeySystems(keySystems) {
     if (protectionKeyController) {
       protectionKeyController.setKeySystems(keySystems);
     }
   }
-
   instance = {
     initializeForMedia: initializeForMedia,
     clearMediaInfoArray: clearMediaInfoArray,
@@ -4577,10 +4643,8 @@ function ProtectionController(config) {
   setup();
   return instance;
 }
-
 ProtectionController.__dashjs_factory_name = 'ProtectionController';
-/* harmony default export */ __webpack_exports__["default"] = (_core_FactoryMaker__WEBPACK_IMPORTED_MODULE_10__["default"].getClassFactory(ProtectionController));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (_core_FactoryMaker__WEBPACK_IMPORTED_MODULE_10__["default"].getClassFactory(ProtectionController)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -4643,54 +4707,53 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /**
  * @module ProtectionKeyController
  * @ignore
  * @description Media protection key system functionality that can be modified/overridden by applications
  */
-
 function ProtectionKeyController() {
   var context = this.context;
   var instance, debug, logger, keySystems, BASE64, settings, clearkeyKeySystem, clearkeyW3CKeySystem;
-
   function setConfig(config) {
     if (!config) return;
-
     if (config.debug) {
       debug = config.debug;
       logger = debug.getLogger(instance);
     }
-
     if (config.BASE64) {
       BASE64 = config.BASE64;
     }
-
     if (config.settings) {
       settings = config.settings;
     }
   }
-
   function initialize() {
     keySystems = [];
-    var keySystem; // PlayReady
+    var keySystem;
 
+    // PlayReady
     keySystem = Object(_drm_KeySystemPlayReady__WEBPACK_IMPORTED_MODULE_4__["default"])(context).getInstance({
       BASE64: BASE64,
       settings: settings
     });
-    keySystems.push(keySystem); // Widevine
+    keySystems.push(keySystem);
 
+    // Widevine
     keySystem = Object(_drm_KeySystemWidevine__WEBPACK_IMPORTED_MODULE_3__["default"])(context).getInstance({
       BASE64: BASE64
     });
-    keySystems.push(keySystem); // ClearKey
+    keySystems.push(keySystem);
 
+    // ClearKey
     keySystem = Object(_drm_KeySystemClearKey__WEBPACK_IMPORTED_MODULE_1__["default"])(context).getInstance({
       BASE64: BASE64
     });
     keySystems.push(keySystem);
-    clearkeyKeySystem = keySystem; // W3C ClearKey
+    clearkeyKeySystem = keySystem;
 
+    // W3C ClearKey
     keySystem = Object(_drm_KeySystemW3CClearKey__WEBPACK_IMPORTED_MODULE_2__["default"])(context).getInstance({
       BASE64: BASE64,
       debug: debug
@@ -4698,6 +4761,7 @@ function ProtectionKeyController() {
     keySystems.push(keySystem);
     clearkeyW3CKeySystem = keySystem;
   }
+
   /**
    * Returns a prioritized list of key systems supported
    * by this player (not necessarily those supported by the
@@ -4708,11 +4772,10 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function getKeySystems() {
     return keySystems;
   }
+
   /**
    * Sets the prioritized list of key systems to be supported
    * by this player.
@@ -4722,11 +4785,10 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function setKeySystems(newKeySystems) {
     keySystems = newKeySystems;
   }
+
   /**
    * Returns the key system associated with the given key system string
    * name (i.e. 'org.w3.clearkey')
@@ -4738,17 +4800,15 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function getKeySystemBySystemString(systemString) {
     for (var i = 0; i < keySystems.length; i++) {
       if (keySystems[i].systemString === systemString) {
         return keySystems[i];
       }
     }
-
     return null;
   }
+
   /**
    * Determines whether the given key system is ClearKey.  This is
    * necessary because the EME spec defines ClearKey and its method
@@ -4763,11 +4823,10 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function isClearKey(keySystem) {
     return keySystem === clearkeyKeySystem || keySystem === clearkeyW3CKeySystem;
   }
+
   /**
    * Check equality of initData array buffers.
    *
@@ -4778,24 +4837,20 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function initDataEquals(initData1, initData2) {
     if (initData1.byteLength === initData2.byteLength) {
       var data1 = new Uint8Array(initData1);
       var data2 = new Uint8Array(initData2);
-
       for (var j = 0; j < data1.length; j++) {
         if (data1[j] !== data2[j]) {
           return false;
         }
       }
-
       return true;
     }
-
     return false;
   }
+
   /**
    * Returns a set of supported key systems and CENC initialization data
    * from the given array of ContentProtection elements.  Only
@@ -4813,23 +4868,18 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function getSupportedKeySystemsFromContentProtection(cps, protDataSet, sessionType) {
     var cp, ks, ksIdx, cpIdx;
     var supportedKS = [];
-
     if (cps) {
       var cencContentProtection = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].findCencContentProtection(cps);
-
       for (ksIdx = 0; ksIdx < keySystems.length; ++ksIdx) {
-        ks = keySystems[ksIdx]; // Get protection data that applies for current key system
+        ks = keySystems[ksIdx];
 
+        // Get protection data that applies for current key system
         var protData = _getProtDataForKeySystem(ks.systemString, protDataSet);
-
         for (cpIdx = 0; cpIdx < cps.length; ++cpIdx) {
           cp = cps[cpIdx];
-
           if (cp.schemeIdUri.toLowerCase() === ks.schemeIdURI) {
             // Look for DRM-specific ContentProtection
             var initData = ks.getInitData(cp, cencContentProtection);
@@ -4846,9 +4896,9 @@ function ProtectionKeyController() {
         }
       }
     }
-
     return supportedKS;
   }
+
   /**
    * Returns key systems supported by this player for the given PSSH
    * initializationData. Key systems are returned in priority order
@@ -4865,19 +4915,16 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function getSupportedKeySystemsFromSegmentPssh(initData, protDataSet, sessionType) {
     var supportedKS = [];
     var pssh = _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].parsePSSHList(initData);
     var ks, keySystemString;
-
     for (var ksIdx = 0; ksIdx < keySystems.length; ++ksIdx) {
       ks = keySystems[ksIdx];
-      keySystemString = ks.systemString; // Get protection data that applies for current key system
+      keySystemString = ks.systemString;
 
+      // Get protection data that applies for current key system
       var protData = _getProtDataForKeySystem(keySystemString, protDataSet);
-
       if (ks.uuid in pssh) {
         supportedKS.push({
           ks: ks,
@@ -4889,9 +4936,9 @@ function ProtectionKeyController() {
         });
       }
     }
-
     return supportedKS;
   }
+
   /**
    * Returns the license server implementation data that should be used for this request.
    *
@@ -4909,17 +4956,13 @@ function ProtectionKeyController() {
    * @instance
    *
    */
-
-
   function getLicenseServerModelInstance(keySystem, protData, messageType) {
     // Our default server implementations do not do anything with "license-release" or
     // "individualization-request" messages, so we just send a success event
     if (messageType === 'license-release' || messageType === 'individualization-request') {
       return null;
     }
-
     var licenseServerData = null;
-
     if (protData && protData.hasOwnProperty('drmtoday')) {
       licenseServerData = Object(_servers_DRMToday__WEBPACK_IMPORTED_MODULE_5__["default"])(context).getInstance({
         BASE64: BASE64
@@ -4931,9 +4974,9 @@ function ProtectionKeyController() {
     } else if (keySystem.systemString === _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_9__["default"].CLEARKEY_KEYSTEM_STRING) {
       licenseServerData = Object(_servers_ClearKey__WEBPACK_IMPORTED_MODULE_8__["default"])(context).getInstance();
     }
-
     return licenseServerData;
   }
+
   /**
    * Allows application-specific retrieval of ClearKey keys.
    *
@@ -4946,8 +4989,6 @@ function ProtectionKeyController() {
    * @memberof module:ProtectionKeyController
    * @instance
    */
-
-
   function processClearKeyLicenseRequest(clearkeyKeySystem, protData, message) {
     try {
       return clearkeyKeySystem.getClearKeysFromProtectionData(protData, message);
@@ -4956,32 +4997,25 @@ function ProtectionKeyController() {
       return null;
     }
   }
-
   function setProtectionData(protectionDataSet) {
     var getProtectionData = function getProtectionData(keySystemString) {
       var protData = null;
-
       if (protectionDataSet) {
         protData = keySystemString in protectionDataSet ? protectionDataSet[keySystemString] : null;
       }
-
       return protData;
     };
-
     for (var i = 0; i < keySystems.length; i++) {
       var keySystem = keySystems[i];
-
       if (keySystem.hasOwnProperty('init')) {
         keySystem.init(getProtectionData(keySystem.systemString));
       }
     }
   }
-
   function _getProtDataForKeySystem(systemString, protDataSet) {
     if (!protDataSet) return null;
     return systemString in protDataSet ? protDataSet[systemString] : null;
   }
-
   function _getSessionId(protData, cp) {
     // Get sessionId from protectionData or from manifest (ContentProtection)
     if (protData && protData.sessionId) {
@@ -4989,14 +5023,11 @@ function ProtectionKeyController() {
     } else if (cp && cp.sessionId) {
       return cp.sessionId;
     }
-
     return null;
   }
-
   function _getSessionType(protData, sessionType) {
     return protData && protData.sessionType ? protData.sessionType : sessionType;
   }
-
   instance = {
     initialize: initialize,
     setProtectionData: setProtectionData,
@@ -5013,10 +5044,8 @@ function ProtectionKeyController() {
   };
   return instance;
 }
-
 ProtectionKeyController.__dashjs_factory_name = 'ProtectionKeyController';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(ProtectionKeyController));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(ProtectionKeyController)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -5067,14 +5096,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var uuid = 'e2719d58-a985-b3c9-781a-b030af78d30e';
 var systemString = _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_KEYSTEM_STRING;
 var schemeIdURI = 'urn:uuid:' + uuid;
-
 function KeySystemClearKey(config) {
   config = config || {};
   var instance;
   var BASE64 = config.BASE64;
+
   /**
    * Returns desired clearkeys (as specified in the CDM message) from protection data
    *
@@ -5085,38 +5115,29 @@ function KeySystemClearKey(config) {
    * protection data
    * @memberof KeySystemClearKey
    */
-
   function getClearKeysFromProtectionData(protectionData, message) {
     var clearkeySet = null;
-
     if (protectionData) {
       // ClearKey is the only system that does not require a license server URL, so we
       // handle it here when keys are specified in protection data
       var jsonMsg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message)));
       var keyPairs = [];
-
       for (var i = 0; i < jsonMsg.kids.length; i++) {
         var clearkeyID = jsonMsg.kids[i];
         var clearkey = protectionData.clearkeys && protectionData.clearkeys.hasOwnProperty(clearkeyID) ? protectionData.clearkeys[clearkeyID] : null;
-
         if (!clearkey) {
           throw new Error('DRM: ClearKey keyID (' + clearkeyID + ') is not known!');
-        } // KeyIDs from CDM are not base64 padded.  Keys may or may not be padded
-
-
+        }
+        // KeyIDs from CDM are not base64 padded.  Keys may or may not be padded
         keyPairs.push(new _vo_KeyPair__WEBPACK_IMPORTED_MODULE_0__["default"](clearkeyID, clearkey));
       }
-
       clearkeySet = new _vo_ClearKeyKeySet__WEBPACK_IMPORTED_MODULE_1__["default"](keyPairs);
     }
-
     return clearkeySet;
   }
-
   function getInitData(cp, cencContentProtection) {
     try {
       var initData = _CommonEncryption__WEBPACK_IMPORTED_MODULE_2__["default"].parseInitDataFromContentProtection(cp, BASE64);
-
       if (!initData && cencContentProtection) {
         var cencDefaultKid = cencDefaultKidToBase64Representation(cencContentProtection['cenc:default_KID']);
         var data = {
@@ -5124,13 +5145,11 @@ function KeySystemClearKey(config) {
         };
         initData = new TextEncoder().encode(JSON.stringify(data));
       }
-
       return initData;
     } catch (e) {
       return null;
     }
   }
-
   function cencDefaultKidToBase64Representation(cencDefaultKid) {
     try {
       var kid = cencDefaultKid.replace(/-/g, '');
@@ -5142,32 +5161,24 @@ function KeySystemClearKey(config) {
       return null;
     }
   }
-
-  function getRequestHeadersFromMessage()
-  /*message*/
-  {
+  function getRequestHeadersFromMessage( /*message*/
+  ) {
     // Set content type to application/json by default
     return {
       'Content-Type': 'application/json'
     };
   }
-
   function getLicenseRequestFromMessage(message) {
     return JSON.stringify(JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message))));
   }
-
-  function getLicenseServerURLFromInitData()
-  /*initData*/
-  {
+  function getLicenseServerURLFromInitData( /*initData*/
+  ) {
     return null;
   }
-
-  function getCDMData()
-  /*cdmData*/
-  {
+  function getCDMData( /*cdmData*/
+  ) {
     return null;
   }
-
   instance = {
     uuid: uuid,
     schemeIdURI: schemeIdURI,
@@ -5181,10 +5192,8 @@ function KeySystemClearKey(config) {
   };
   return instance;
 }
-
 KeySystemClearKey.__dashjs_factory_name = 'KeySystemClearKey';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemClearKey));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemClearKey)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -5242,25 +5251,21 @@ var uuid = '9a04f079-9840-4286-ab92-e65be0885f95';
 var systemString = _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_1__["default"].PLAYREADY_KEYSTEM_STRING;
 var schemeIdURI = 'urn:uuid:' + uuid;
 var PRCDMData = '<PlayReadyCDMData type="LicenseAcquisition"><LicenseAcquisition version="1.0" Proactive="false"><CustomData encoding="base64encoded">%CUSTOMDATA%</CustomData></LicenseAcquisition></PlayReadyCDMData>';
-
 function KeySystemPlayReady(config) {
   config = config || {};
   var instance;
   var messageFormat = 'utf-16';
   var BASE64 = config.BASE64;
   var settings = config.settings;
-
   function checkConfig() {
     if (!BASE64 || !BASE64.hasOwnProperty('decodeArray') || !BASE64.hasOwnProperty('decodeArray')) {
       throw new Error('Missing config parameter(s)');
     }
   }
-
   function getRequestHeadersFromMessage(message) {
     var msg, xmlDoc;
     var headers = {};
     var parser = new DOMParser();
-
     if (settings && settings.get().streaming.protection.detectPlayreadyMessageFormat) {
       // If message format configured/defaulted to utf-16 AND number of bytes is odd, assume 'unwrapped' raw CDM message.
       if (messageFormat === 'utf-16' && message && message.byteLength % 2 === 1) {
@@ -5268,53 +5273,43 @@ function KeySystemPlayReady(config) {
         return headers;
       }
     }
-
     var dataview = messageFormat === 'utf-16' ? new Uint16Array(message) : new Uint8Array(message);
     msg = String.fromCharCode.apply(null, dataview);
     xmlDoc = parser.parseFromString(msg, 'application/xml');
     var headerNameList = xmlDoc.getElementsByTagName('name');
     var headerValueList = xmlDoc.getElementsByTagName('value');
-
     for (var i = 0; i < headerNameList.length; i++) {
       headers[headerNameList[i].childNodes[0].nodeValue] = headerValueList[i].childNodes[0].nodeValue;
-    } // Some versions of the PlayReady CDM return 'Content' instead of 'Content-Type'.
+    }
+    // Some versions of the PlayReady CDM return 'Content' instead of 'Content-Type'.
     // this is NOT w3c conform and license servers may reject the request!
     // -> rename it to proper w3c definition!
-
-
     if (headers.hasOwnProperty('Content')) {
       headers['Content-Type'] = headers.Content;
       delete headers.Content;
-    } // Set Content-Type header by default if not provided in the the CDM message (<PlayReadyKeyMessage/>)
+    }
+    // Set Content-Type header by default if not provided in the the CDM message (<PlayReadyKeyMessage/>)
     // or if the message contains directly the challenge itself (Ex: LG SmartTVs)
-
-
     if (!headers.hasOwnProperty('Content-Type')) {
       headers['Content-Type'] = 'text/xml; charset=utf-8';
     }
-
     return headers;
   }
-
   function getLicenseRequestFromMessage(message) {
     var licenseRequest = null;
     var parser = new DOMParser();
-
     if (settings && settings.get().streaming.protection.detectPlayreadyMessageFormat) {
       // If message format configured/defaulted to utf-16 AND number of bytes is odd, assume 'unwrapped' raw CDM message.
       if (messageFormat === 'utf-16' && message && message.byteLength % 2 === 1) {
         return message;
       }
     }
-
     var dataview = messageFormat === 'utf-16' ? new Uint16Array(message) : new Uint8Array(message);
     checkConfig();
     var msg = String.fromCharCode.apply(null, dataview);
     var xmlDoc = parser.parseFromString(msg, 'application/xml');
-
     if (xmlDoc.getElementsByTagName('PlayReadyKeyMessage')[0]) {
       var Challenge = xmlDoc.getElementsByTagName('Challenge')[0].childNodes[0].nodeValue;
-
       if (Challenge) {
         licenseRequest = BASE64.decode(Challenge);
       }
@@ -5324,55 +5319,47 @@ function KeySystemPlayReady(config) {
       // (note that the xmlDoc at this point may be unreadable since it may have been interpreted as UTF-16)
       return message;
     }
-
     return licenseRequest;
   }
-
   function getLicenseServerURLFromInitData(initData) {
     if (initData) {
       var data = new DataView(initData);
       var numRecords = data.getUint16(4, true);
       var offset = 6;
       var parser = new DOMParser();
-
       for (var i = 0; i < numRecords; i++) {
         // Parse the PlayReady Record header
         var recordType = data.getUint16(offset, true);
         offset += 2;
         var recordLength = data.getUint16(offset, true);
         offset += 2;
-
         if (recordType !== 0x0001) {
           offset += recordLength;
           continue;
         }
-
         var recordData = initData.slice(offset, offset + recordLength);
         var record = String.fromCharCode.apply(null, new Uint16Array(recordData));
-        var xmlDoc = parser.parseFromString(record, 'application/xml'); // First try <LA_URL>
+        var xmlDoc = parser.parseFromString(record, 'application/xml');
 
+        // First try <LA_URL>
         if (xmlDoc.getElementsByTagName('LA_URL')[0]) {
           var laurl = xmlDoc.getElementsByTagName('LA_URL')[0].childNodes[0].nodeValue;
-
           if (laurl) {
             return laurl;
           }
-        } // Optionally, try <LUI_URL>
+        }
 
-
+        // Optionally, try <LUI_URL>
         if (xmlDoc.getElementsByTagName('LUI_URL')[0]) {
           var luiurl = xmlDoc.getElementsByTagName('LUI_URL')[0].childNodes[0].nodeValue;
-
           if (luiurl) {
             return luiurl;
           }
         }
       }
     }
-
     return null;
   }
-
   function getInitData(cpData) {
     // * desc@ getInitData
     // *   generate PSSH data from PROHeader defined in MPD file
@@ -5383,23 +5370,19 @@ function KeySystemPlayReady(config) {
     // *   protection system data size (4) - length of decoded PROHeader
     // *   decoded PROHeader data from MPD file
     var PSSHBoxType = new Uint8Array([0x70, 0x73, 0x73, 0x68, 0x00, 0x00, 0x00, 0x00]); //'PSSH' 8 bytes
-
     var playreadySystemID = new Uint8Array([0x9a, 0x04, 0xf0, 0x79, 0x98, 0x40, 0x42, 0x86, 0xab, 0x92, 0xe6, 0x5b, 0xe0, 0x88, 0x5f, 0x95]);
     var byteCursor = 0;
     var uint8arraydecodedPROHeader = null;
     var PROSize, PSSHSize, PSSHBoxBuffer, PSSHBox, PSSHData;
     checkConfig();
-
     if (!cpData) {
       return null;
-    } // Handle common encryption PSSH
-
-
+    }
+    // Handle common encryption PSSH
     if ('pssh' in cpData) {
       return _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].parseInitDataFromContentProtection(cpData, BASE64);
-    } // Handle native MS PlayReady ContentProtection elements
-
-
+    }
+    // Handle native MS PlayReady ContentProtection elements
     if ('pro' in cpData) {
       uint8arraydecodedPROHeader = BASE64.decodeArray(cpData.pro.__text);
     } else if ('prheader' in cpData) {
@@ -5407,7 +5390,6 @@ function KeySystemPlayReady(config) {
     } else {
       return null;
     }
-
     PROSize = uint8arraydecodedPROHeader.length;
     PSSHSize = 0x4 + PSSHBoxType.length + playreadySystemID.length + 0x4 + PROSize;
     PSSHBoxBuffer = new ArrayBuffer(PSSHSize);
@@ -5425,6 +5407,7 @@ function KeySystemPlayReady(config) {
     byteCursor += PROSize;
     return PSSHBox.buffer;
   }
+
   /**
    * It seems that some PlayReady implementations return their XML-based CDM
    * messages using UTF16, while others return them as UTF8.  Use this function
@@ -5433,49 +5416,44 @@ function KeySystemPlayReady(config) {
    * @param {string} format the expected message format.  Either "utf-8" or "utf-16".
    * @throws {Error} Specified message format is not one of "utf8" or "utf16"
    */
-
-
   function setPlayReadyMessageFormat(format) {
     if (format !== 'utf-8' && format !== 'utf-16') {
       throw new Error('Specified message format is not one of "utf-8" or "utf-16"');
     }
-
     messageFormat = format;
   }
+
   /**
    * Get Playready Custom data
    */
-
-
   function getCDMData(_cdmData) {
     var customData, cdmData, cdmDataBytes, i;
     checkConfig();
-    if (!_cdmData) return null; // Convert custom data into multibyte string
+    if (!_cdmData) return null;
 
+    // Convert custom data into multibyte string
     customData = [];
-
     for (i = 0; i < _cdmData.length; ++i) {
       customData.push(_cdmData.charCodeAt(i));
       customData.push(0);
     }
+    customData = String.fromCharCode.apply(null, customData);
 
-    customData = String.fromCharCode.apply(null, customData); // Encode in Base 64 the custom data string
+    // Encode in Base 64 the custom data string
+    customData = BASE64.encode(customData);
 
-    customData = BASE64.encode(customData); // Initialize CDM data with Base 64 encoded custom data
+    // Initialize CDM data with Base 64 encoded custom data
     // (see https://msdn.microsoft.com/en-us/library/dn457361.aspx)
+    cdmData = PRCDMData.replace('%CUSTOMDATA%', customData);
 
-    cdmData = PRCDMData.replace('%CUSTOMDATA%', customData); // Convert CDM data into multibyte characters
-
+    // Convert CDM data into multibyte characters
     cdmDataBytes = [];
-
     for (i = 0; i < cdmData.length; ++i) {
       cdmDataBytes.push(cdmData.charCodeAt(i));
       cdmDataBytes.push(0);
     }
-
     return new Uint8Array(cdmDataBytes).buffer;
   }
-
   instance = {
     uuid: uuid,
     schemeIdURI: schemeIdURI,
@@ -5489,10 +5467,8 @@ function KeySystemPlayReady(config) {
   };
   return instance;
 }
-
 KeySystemPlayReady.__dashjs_factory_name = 'KeySystemPlayReady';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemPlayReady));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemPlayReady)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -5543,10 +5519,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var uuid = '1077efec-c0b2-4d02-ace3-3c1e52e2fb4b';
 var systemString = _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_KEYSTEM_STRING;
 var schemeIdURI = 'urn:uuid:' + uuid;
-
 function KeySystemW3CClearKey(config) {
   var instance;
   var BASE64 = config.BASE64;
@@ -5561,61 +5537,45 @@ function KeySystemW3CClearKey(config) {
    * protection data
    * @memberof KeySystemClearKey
    */
-
   function getClearKeysFromProtectionData(protectionData, message) {
     var clearkeySet = null;
-
     if (protectionData) {
       // ClearKey is the only system that does not require a license server URL, so we
       // handle it here when keys are specified in protection data
       var jsonMsg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message)));
       var keyPairs = [];
-
       for (var i = 0; i < jsonMsg.kids.length; i++) {
         var clearkeyID = jsonMsg.kids[i];
         var clearkey = protectionData.clearkeys && protectionData.clearkeys.hasOwnProperty(clearkeyID) ? protectionData.clearkeys[clearkeyID] : null;
-
         if (!clearkey) {
           throw new Error('DRM: ClearKey keyID (' + clearkeyID + ') is not known!');
-        } // KeyIDs from CDM are not base64 padded.  Keys may or may not be padded
-
-
+        }
+        // KeyIDs from CDM are not base64 padded.  Keys may or may not be padded
         keyPairs.push(new _vo_KeyPair__WEBPACK_IMPORTED_MODULE_0__["default"](clearkeyID, clearkey));
       }
-
       clearkeySet = new _vo_ClearKeyKeySet__WEBPACK_IMPORTED_MODULE_1__["default"](keyPairs);
       logger.warn('ClearKey schemeIdURI is using W3C Common PSSH systemID (1077efec-c0b2-4d02-ace3-3c1e52e2fb4b) in Content Protection. See DASH-IF IOP v4.1 section 7.6.2.4');
     }
-
     return clearkeySet;
   }
-
   function getInitData(cp) {
     return _CommonEncryption__WEBPACK_IMPORTED_MODULE_2__["default"].parseInitDataFromContentProtection(cp, BASE64);
   }
-
-  function getRequestHeadersFromMessage()
-  /*message*/
-  {
+  function getRequestHeadersFromMessage( /*message*/
+  ) {
     return null;
   }
-
   function getLicenseRequestFromMessage(message) {
     return new Uint8Array(message);
   }
-
-  function getLicenseServerURLFromInitData()
-  /*initData*/
-  {
+  function getLicenseServerURLFromInitData( /*initData*/
+  ) {
     return null;
   }
-
-  function getCDMData()
-  /*cdmData*/
-  {
+  function getCDMData( /*cdmData*/
+  ) {
     return null;
   }
-
   instance = {
     uuid: uuid,
     schemeIdURI: schemeIdURI,
@@ -5629,10 +5589,8 @@ function KeySystemW3CClearKey(config) {
   };
   return instance;
 }
-
 KeySystemW3CClearKey.__dashjs_factory_name = 'KeySystemW3CClearKey';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemW3CClearKey));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemW3CClearKey)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -5686,41 +5644,32 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
 var uuid = 'edef8ba9-79d6-4ace-a3c8-27dcd51d21ed';
 var systemString = _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_1__["default"].WIDEVINE_KEYSTEM_STRING;
 var schemeIdURI = 'urn:uuid:' + uuid;
-
 function KeySystemWidevine(config) {
   config = config || {};
   var instance;
   var BASE64 = config.BASE64;
-
   function getInitData(cp) {
     return _CommonEncryption__WEBPACK_IMPORTED_MODULE_0__["default"].parseInitDataFromContentProtection(cp, BASE64);
   }
-
-  function getRequestHeadersFromMessage()
-  /*message*/
-  {
+  function getRequestHeadersFromMessage( /*message*/
+  ) {
     return null;
   }
-
   function getLicenseRequestFromMessage(message) {
     return new Uint8Array(message);
   }
-
-  function getLicenseServerURLFromInitData()
-  /*initData*/
-  {
+  function getLicenseServerURLFromInitData( /*initData*/
+  ) {
     return null;
   }
-
-  function getCDMData()
-  /*cdmData*/
-  {
+  function getCDMData( /*cdmData*/
+  ) {
     return null;
   }
-
   instance = {
     uuid: uuid,
     schemeIdURI: schemeIdURI,
@@ -5733,10 +5682,8 @@ function KeySystemWidevine(config) {
   };
   return instance;
 }
-
 KeySystemWidevine.__dashjs_factory_name = 'KeySystemWidevine';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemWidevine));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(KeySystemWidevine)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -5750,24 +5697,19 @@ KeySystemWidevine.__dashjs_factory_name = 'KeySystemWidevine';
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core_errors_ErrorsBase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../core/errors/ErrorsBase */ "./src/core/errors/ErrorsBase.js");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
+function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
+function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
+function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
+function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
+function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -5799,95 +5741,76 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 /**
  * @class
  */
-
 var ProtectionErrors = /*#__PURE__*/function (_ErrorsBase) {
-  _inherits(ProtectionErrors, _ErrorsBase);
-
-  var _super = _createSuper(ProtectionErrors);
-
   function ProtectionErrors() {
     var _this;
-
     _classCallCheck(this, ProtectionErrors);
+    _this = _callSuper(this, ProtectionErrors);
 
-    _this = _super.call(this);
     /**
      *  Generid key Error code
      */
-
     _this.MEDIA_KEYERR_CODE = 100;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-
     _this.MEDIA_KEYERR_UNKNOWN_CODE = 101;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-
     _this.MEDIA_KEYERR_CLIENT_CODE = 102;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-
     _this.MEDIA_KEYERR_SERVICE_CODE = 103;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-
     _this.MEDIA_KEYERR_OUTPUT_CODE = 104;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-
     _this.MEDIA_KEYERR_HARDWARECHANGE_CODE = 105;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-
     _this.MEDIA_KEYERR_DOMAIN_CODE = 106;
+
     /**
      *  Error code returned when an error occured in keymessage event for ProtectionModel_01b
      */
-
     _this.MEDIA_KEY_MESSAGE_ERROR_CODE = 107;
     /**
      *  Error code returned when challenge is invalid in keymessage event (event triggered by CDM)
      */
-
     _this.MEDIA_KEY_MESSAGE_NO_CHALLENGE_ERROR_CODE = 108;
     /**
      *  Error code returned when License server certificate has not been successfully updated
      */
-
     _this.SERVER_CERTIFICATE_UPDATED_ERROR_CODE = 109;
     /**
      *  Error code returned when license validity has expired
      */
-
     _this.KEY_STATUS_CHANGED_EXPIRED_ERROR_CODE = 110;
     /**
      *  Error code returned when no licenser url is defined
      */
-
     _this.MEDIA_KEY_MESSAGE_NO_LICENSE_SERVER_URL_ERROR_CODE = 111;
     /**
      *  Error code returned when key system access is denied
      */
-
     _this.KEY_SYSTEM_ACCESS_DENIED_ERROR_CODE = 112;
     /**
      *  Error code returned when key session has not been successfully created
      */
-
     _this.KEY_SESSION_CREATED_ERROR_CODE = 113;
     /**
      *  Error code returned when license request failed after a keymessage event has been triggered
      */
-
     _this.MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE = 114;
     _this.MEDIA_KEYERR_UNKNOWN_MESSAGE = 'An unspecified error occurred. This value is used for errors that don\'t match any of the other codes.';
     _this.MEDIA_KEYERR_CLIENT_MESSAGE = 'The Key System could not be installed or updated.';
@@ -5905,10 +5828,9 @@ var ProtectionErrors = /*#__PURE__*/function (_ErrorsBase) {
     _this.MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE = 'DRM: licenser error! --';
     return _this;
   }
-
-  return ProtectionErrors;
+  _inherits(ProtectionErrors, _ErrorsBase);
+  return _createClass(ProtectionErrors);
 }(_core_errors_ErrorsBase__WEBPACK_IMPORTED_MODULE_0__["default"]);
-
 var protectionErrors = new ProtectionErrors();
 /* harmony default export */ __webpack_exports__["default"] = (protectionErrors);
 
@@ -5976,33 +5898,34 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 function ProtectionModel_01b(config) {
   config = config || {};
   var context = this.context;
   var eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
-
   var events = config.events;
   var debug = config.debug;
   var api = config.api;
   var errHandler = config.errHandler;
-  var instance, logger, videoElement, keySystem, protectionKeyController, // With this version of the EME APIs, sessionIds are not assigned to
-  // sessions until the first key message is received.  We are assuming
-  // that in the case of multiple sessions, key messages will be received
-  // in the order that generateKeyRequest() is called.
-  // Holding spot for newly-created sessions until we determine whether or
-  // not the CDM supports sessionIds
-  pendingSessions, // List of sessions that have been initialized.  Only the first position will
-  // be used in the case that the CDM does not support sessionIds
-  sessions, // Not all CDMs support the notion of sessionIds.  Without sessionIds
-  // there is no way for us to differentiate between sessions, therefore
-  // we must only allow a single session.  Once we receive the first key
-  // message we can set this flag to determine if more sessions are allowed
-  moreSessionsAllowed, // This is our main event handler for all desired HTMLMediaElement events
-  // related to EME.  These events are translated into our API-independent
-  // versions of the same events
-  eventHandler;
-
+  var instance, logger, videoElement, keySystem, protectionKeyController,
+    // With this version of the EME APIs, sessionIds are not assigned to
+    // sessions until the first key message is received.  We are assuming
+    // that in the case of multiple sessions, key messages will be received
+    // in the order that generateKeyRequest() is called.
+    // Holding spot for newly-created sessions until we determine whether or
+    // not the CDM supports sessionIds
+    pendingSessions,
+    // List of sessions that have been initialized.  Only the first position will
+    // be used in the case that the CDM does not support sessionIds
+    sessions,
+    // Not all CDMs support the notion of sessionIds.  Without sessionIds
+    // there is no way for us to differentiate between sessions, therefore
+    // we must only allow a single session.  Once we receive the first key
+    // message we can set this flag to determine if more sessions are allowed
+    moreSessionsAllowed,
+    // This is our main event handler for all desired HTMLMediaElement events
+    // related to EME.  These events are translated into our API-independent
+    // versions of the same events
+    eventHandler;
   function setup() {
     logger = debug.getLogger(instance);
     videoElement = null;
@@ -6012,78 +5935,67 @@ function ProtectionModel_01b(config) {
     protectionKeyController = Object(_controllers_ProtectionKeyController__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
     eventHandler = createEventHandler();
   }
-
   function reset() {
     if (videoElement) {
       removeEventListeners();
     }
-
     for (var i = 0; i < sessions.length; i++) {
       closeKeySession(sessions[i]);
     }
-
     eventBus.trigger(events.TEARDOWN_COMPLETE);
   }
-
   function getAllInitData() {
     var retVal = [];
-
     for (var i = 0; i < pendingSessions.length; i++) {
       retVal.push(pendingSessions[i].initData);
     }
-
     for (var _i = 0; _i < sessions.length; _i++) {
       retVal.push(sessions[_i].initData);
     }
-
     return retVal;
   }
-
   function getSessions() {
     return sessions.concat(pendingSessions);
   }
-
   function requestKeySystemAccess(ksConfigurations) {
     return new Promise(function (resolve, reject) {
       var ve = videoElement;
-
       if (!ve) {
         // Must have a video element to do this capability tests
         ve = document.createElement('video');
-      } // Try key systems in order, first one with supported key system configuration
+      }
+
+      // Try key systems in order, first one with supported key system configuration
       // is used
-
-
       var found = false;
-
       for (var ksIdx = 0; ksIdx < ksConfigurations.length; ksIdx++) {
         var systemString = ksConfigurations[ksIdx].ks.systemString;
         var configs = ksConfigurations[ksIdx].configs;
         var supportedAudio = null;
-        var supportedVideo = null; // Try key system configs in order, first one with supported audio/video
-        // is used
+        var supportedVideo = null;
 
+        // Try key system configs in order, first one with supported audio/video
+        // is used
         for (var configIdx = 0; configIdx < configs.length; configIdx++) {
           //let audios = configs[configIdx].audioCapabilities;
-          var videos = configs[configIdx].videoCapabilities; // Look for supported video container/codecs
-
+          var videos = configs[configIdx].videoCapabilities;
+          // Look for supported video container/codecs
           if (videos && videos.length !== 0) {
             supportedVideo = []; // Indicates that we have a requested video config
-
             for (var videoIdx = 0; videoIdx < videos.length; videoIdx++) {
               if (ve.canPlayType(videos[videoIdx].contentType, systemString) !== '') {
                 supportedVideo.push(videos[videoIdx]);
               }
             }
-          } // No supported audio or video in this configuration OR we have
+          }
+
+          // No supported audio or video in this configuration OR we have
           // requested audio or video configuration that is not supported
-
-
           if (!supportedAudio && !supportedVideo || supportedAudio && supportedAudio.length === 0 || supportedVideo && supportedVideo.length === 0) {
             continue;
-          } // This configuration is supported
+          }
 
-
+          // This configuration is supported
           found = true;
           var ksConfig = new _vo_KeySystemConfiguration__WEBPACK_IMPORTED_MODULE_4__["default"](supportedAudio, supportedVideo);
           var ks = protectionKeyController.getKeySystemBySystemString(systemString);
@@ -6097,7 +6009,6 @@ function ProtectionModel_01b(config) {
           break;
         }
       }
-
       if (!found) {
         var errorMessage = 'Key system access denied! -- No valid audio/video content configurations detected!';
         eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
@@ -6109,30 +6020,28 @@ function ProtectionModel_01b(config) {
       }
     });
   }
-
   function selectKeySystem(keySystemAccess) {
     keySystem = keySystemAccess.keySystem;
     return Promise.resolve(keySystem);
   }
-
   function setMediaElement(mediaElement) {
     if (videoElement === mediaElement) {
       return;
-    } // Replacing the previous element
+    }
 
-
+    // Replacing the previous element
     if (videoElement) {
-      removeEventListeners(); // Close any open sessions - avoids memory leak on LG webOS 2016/2017 TVs
+      removeEventListeners();
 
+      // Close any open sessions - avoids memory leak on LG webOS 2016/2017 TVs
       for (var i = 0; i < sessions.length; i++) {
         closeKeySession(sessions[i]);
       }
-
       sessions = [];
     }
+    videoElement = mediaElement;
 
-    videoElement = mediaElement; // Only if we are not detaching from the existing element
-
+    // Only if we are not detaching from the existing element
     if (videoElement) {
       videoElement.addEventListener(api.keyerror, eventHandler);
       videoElement.addEventListener(api.needkey, eventHandler);
@@ -6141,13 +6050,12 @@ function ProtectionModel_01b(config) {
       eventBus.trigger(events.VIDEO_ELEMENT_SELECTED);
     }
   }
-
   function createKeySession(ksInfo) {
     if (!keySystem) {
       throw new Error('Can not create sessions until you have selected a key system');
-    } // Determine if creating a new session is allowed
+    }
 
-
+    // Determine if creating a new session is allowed
     if (moreSessionsAllowed || sessions.length === 0) {
       var newSession = {
         // Implements SessionToken
@@ -6167,18 +6075,17 @@ function ProtectionModel_01b(config) {
           return 'temporary';
         }
       };
-      pendingSessions.push(newSession); // Send our request to the CDM
+      pendingSessions.push(newSession);
 
+      // Send our request to the CDM
       videoElement[api.generateKeyRequest](keySystem.systemString, new Uint8Array(ksInfo.initData));
       return newSession;
     } else {
       throw new Error('Multiple sessions not allowed!');
     }
   }
-
   function updateKeySession(sessionToken, message) {
     var sessionId = sessionToken.sessionId;
-
     if (!protectionKeyController.isClearKey(keySystem)) {
       // Send our request to the CDM
       videoElement[api.addKey](keySystem.systemString, new Uint8Array(message), new Uint8Array(sessionToken.initData), sessionId);
@@ -6188,10 +6095,8 @@ function ProtectionModel_01b(config) {
         videoElement[api.addKey](keySystem.systemString, message.keyPairs[i].key, message.keyPairs[i].keyID, sessionId);
       }
     }
-
     eventBus.trigger(events.KEY_SESSION_UPDATED);
   }
-
   function closeKeySession(sessionToken) {
     // Send our request to the CDM
     try {
@@ -6203,30 +6108,19 @@ function ProtectionModel_01b(config) {
       });
     }
   }
-
-  function setServerCertificate()
-  /*serverCertificate*/
-  {
-    /* Not supported */
+  function setServerCertificate( /*serverCertificate*/
+  ) {/* Not supported */
   }
-
-  function loadKeySession()
-  /*ksInfo*/
-  {
-    /* Not supported */
+  function loadKeySession( /*ksInfo*/
+  ) {/* Not supported */
   }
-
-  function removeKeySession()
-  /*sessionToken*/
-  {
-    /* Not supported */
+  function removeKeySession( /*sessionToken*/
+  ) {/* Not supported */
   }
-
   function createEventHandler() {
     return {
       handleEvent: function handleEvent(event) {
         var sessionToken = null;
-
         switch (event.type) {
           case api.needkey:
             var initData = ArrayBuffer.isView(event.initData) ? event.initData.buffer : event.initData;
@@ -6234,68 +6128,54 @@ function ProtectionModel_01b(config) {
               key: new _vo_NeedKey__WEBPACK_IMPORTED_MODULE_1__["default"](initData, 'cenc')
             });
             break;
-
           case api.keyerror:
             sessionToken = findSessionByID(sessions, event.sessionId);
-
             if (!sessionToken) {
               sessionToken = findSessionByID(pendingSessions, event.sessionId);
             }
-
             if (sessionToken) {
               var code = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_CODE;
               var msg = '';
-
               switch (event.errorCode.code) {
                 case 1:
                   code = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_UNKNOWN_CODE;
                   msg += 'MEDIA_KEYERR_UNKNOWN - ' + _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_UNKNOWN_MESSAGE;
                   break;
-
                 case 2:
                   code = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_CLIENT_CODE;
                   msg += 'MEDIA_KEYERR_CLIENT - ' + _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_CLIENT_MESSAGE;
                   break;
-
                 case 3:
                   code = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_SERVICE_CODE;
                   msg += 'MEDIA_KEYERR_SERVICE - ' + _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_SERVICE_MESSAGE;
                   break;
-
                 case 4:
                   code = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_OUTPUT_CODE;
                   msg += 'MEDIA_KEYERR_OUTPUT - ' + _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_OUTPUT_MESSAGE;
                   break;
-
                 case 5:
                   code = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_HARDWARECHANGE_CODE;
                   msg += 'MEDIA_KEYERR_HARDWARECHANGE - ' + _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_HARDWARECHANGE_MESSAGE;
                   break;
-
                 case 6:
                   code = _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_DOMAIN_CODE;
                   msg += 'MEDIA_KEYERR_DOMAIN - ' + _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_DOMAIN_MESSAGE;
                   break;
               }
-
-              msg += '  System Code = ' + event.systemCode; // TODO: Build error string based on key error
-
+              msg += '  System Code = ' + event.systemCode;
+              // TODO: Build error string based on key error
               eventBus.trigger(events.KEY_ERROR, {
                 error: new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_2__["default"](code, msg, sessionToken)
               });
             } else {
               logger.error('No session token found for key error');
             }
-
             break;
-
           case api.keyadded:
             sessionToken = findSessionByID(sessions, event.sessionId);
-
             if (!sessionToken) {
               sessionToken = findSessionByID(pendingSessions, event.sessionId);
             }
-
             if (sessionToken) {
               logger.debug('DRM: Key added.');
               eventBus.trigger(events.KEY_ADDED, {
@@ -6304,18 +6184,16 @@ function ProtectionModel_01b(config) {
             } else {
               logger.debug('No session token found for key added');
             }
-
             break;
-
           case api.keymessage:
             // If this CDM does not support session IDs, we will be limited
             // to a single session
-            moreSessionsAllowed = event.sessionId !== null && event.sessionId !== undefined; // SessionIDs supported
+            moreSessionsAllowed = event.sessionId !== null && event.sessionId !== undefined;
 
+            // SessionIDs supported
             if (moreSessionsAllowed) {
               // Attempt to find an uninitialized token with this sessionId
               sessionToken = findSessionByID(sessions, event.sessionId);
-
               if (!sessionToken && pendingSessions.length > 0) {
                 // This is the first message for our latest session, so set the
                 // sessionId and add it to our list
@@ -6330,17 +6208,16 @@ function ProtectionModel_01b(config) {
               // SessionIDs not supported
               sessionToken = pendingSessions.shift();
               sessions.push(sessionToken);
-
               if (pendingSessions.length !== 0) {
                 errHandler.error(new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_2__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEY_MESSAGE_ERROR_CODE, _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEY_MESSAGE_ERROR_MESSAGE));
               }
             }
-
             if (sessionToken) {
-              var message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message; // For ClearKey, the spec mandates that you pass this message to the
+              var message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
+
+              // For ClearKey, the spec mandates that you pass this message to the
               // addKey method, so we always save it to the token since there is no
               // way to tell which key system is in use
-
               sessionToken.keyMessage = message;
               eventBus.trigger(events.INTERNAL_KEY_MESSAGE, {
                 data: new _vo_KeyMessage__WEBPACK_IMPORTED_MODULE_3__["default"](sessionToken, message, event.defaultURL)
@@ -6348,12 +6225,12 @@ function ProtectionModel_01b(config) {
             } else {
               logger.warn('No session token found for key message');
             }
-
             break;
         }
       }
     };
   }
+
   /**
    * Helper function to retrieve the stored session token based on a given
    * sessionId value
@@ -6362,31 +6239,25 @@ function ProtectionModel_01b(config) {
    * @param {*} sessionId - the sessionId to search for
    * @returns {*} the session token with the given sessionId
    */
-
-
   function findSessionByID(sessionArray, sessionId) {
     if (!sessionId || !sessionArray) {
       return null;
     } else {
       var len = sessionArray.length;
-
       for (var i = 0; i < len; i++) {
         if (sessionArray[i].sessionId == sessionId) {
           return sessionArray[i];
         }
       }
-
       return null;
     }
   }
-
   function removeEventListeners() {
     videoElement.removeEventListener(api.keyerror, eventHandler);
     videoElement.removeEventListener(api.needkey, eventHandler);
     videoElement.removeEventListener(api.keymessage, eventHandler);
     videoElement.removeEventListener(api.keyadded, eventHandler);
   }
-
   instance = {
     getAllInitData: getAllInitData,
     getSessions: getSessions,
@@ -6405,10 +6276,8 @@ function ProtectionModel_01b(config) {
   setup();
   return instance;
 }
-
 ProtectionModel_01b.__dashjs_factory_name = 'ProtectionModel_01b';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getClassFactory(ProtectionModel_01b));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getClassFactory(ProtectionModel_01b)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -6478,16 +6347,13 @@ var SYSTEM_STRING_PRIORITY = {};
 SYSTEM_STRING_PRIORITY[_constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].PLAYREADY_KEYSTEM_STRING] = [_constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].PLAYREADY_KEYSTEM_STRING, _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].PLAYREADY_RECOMMENDATION_KEYSTEM_STRING];
 SYSTEM_STRING_PRIORITY[_constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].WIDEVINE_KEYSTEM_STRING] = [_constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].WIDEVINE_KEYSTEM_STRING];
 SYSTEM_STRING_PRIORITY[_constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].CLEARKEY_KEYSTEM_STRING] = [_constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].CLEARKEY_KEYSTEM_STRING];
-
 function ProtectionModel_21Jan2015(config) {
   config = config || {};
   var context = this.context;
   var eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
-
   var events = config.events;
   var debug = config.debug;
   var instance, logger, keySystem, videoElement, mediaKeys, sessions, eventHandler, protectionKeyController;
-
   function setup() {
     logger = debug.getLogger(instance);
     keySystem = null;
@@ -6497,57 +6363,47 @@ function ProtectionModel_21Jan2015(config) {
     protectionKeyController = Object(_controllers_ProtectionKeyController__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
     eventHandler = createEventHandler();
   }
-
   function reset() {
     var numSessions = sessions.length;
     var session;
-
     if (numSessions !== 0) {
-      (function () {
-        // Called when we are done closing a session.  Success or fail
-        var done = function done(session) {
-          removeSession(session);
-
-          if (sessions.length === 0) {
-            if (videoElement) {
-              videoElement.removeEventListener('encrypted', eventHandler);
-              videoElement.setMediaKeys(null).then(function () {
-                eventBus.trigger(events.TEARDOWN_COMPLETE);
-              });
-            } else {
+      // Called when we are done closing a session.  Success or fail
+      var done = function done(session) {
+        removeSession(session);
+        if (sessions.length === 0) {
+          if (videoElement) {
+            videoElement.removeEventListener('encrypted', eventHandler);
+            videoElement.setMediaKeys(null).then(function () {
               eventBus.trigger(events.TEARDOWN_COMPLETE);
-            }
-          }
-        };
-
-        for (var i = 0; i < numSessions; i++) {
-          session = sessions[i];
-
-          (function (s) {
-            // Override closed promise resolver
-            session.session.closed.then(function () {
-              done(s);
-            }); // Close the session and handle errors, otherwise promise
-            // resolver above will be called
-
-            _closeKeySessionInternal(session)["catch"](function () {
-              done(s);
             });
-          })(session);
+          } else {
+            eventBus.trigger(events.TEARDOWN_COMPLETE);
+          }
         }
-      })();
+      };
+      for (var i = 0; i < numSessions; i++) {
+        session = sessions[i];
+        (function (s) {
+          // Override closed promise resolver
+          session.session.closed.then(function () {
+            done(s);
+          });
+          // Close the session and handle errors, otherwise promise
+          // resolver above will be called
+          _closeKeySessionInternal(session)["catch"](function () {
+            done(s);
+          });
+        })(session);
+      }
     } else {
       eventBus.trigger(events.TEARDOWN_COMPLETE);
     }
   }
-
   function stop() {
     // Close and remove not usable sessions
     var session;
-
     for (var i = 0; i < sessions.length; i++) {
       session = sessions[i];
-
       if (!session.getUsable()) {
         _closeKeySessionInternal(session)["catch"](function () {
           removeSession(session);
@@ -6555,28 +6411,24 @@ function ProtectionModel_21Jan2015(config) {
       }
     }
   }
-
   function getAllInitData() {
     var retVal = [];
-
     for (var i = 0; i < sessions.length; i++) {
       if (sessions[i].initData) {
         retVal.push(sessions[i].initData);
       }
     }
-
     return retVal;
   }
-
   function getSessions() {
     return sessions;
   }
-
   function requestKeySystemAccess(ksConfigurations) {
     return new Promise(function (resolve, reject) {
       _requestKeySystemAccessInternal(ksConfigurations, 0, resolve, reject);
     });
   }
+
   /**
    * Initializes access to a key system. Once we found a valid configuration we get a mediaKeySystemAccess object
    * @param ksConfigurations
@@ -6585,8 +6437,6 @@ function ProtectionModel_21Jan2015(config) {
    * @param reject
    * @private
    */
-
-
   function _requestKeySystemAccessInternal(ksConfigurations, idx, resolve, reject) {
     // In case requestMediaKeySystemAccess is not available we can not proceed and dispatch an error
     if (navigator.requestMediaKeySystemAccess === undefined || typeof navigator.requestMediaKeySystemAccess !== 'function') {
@@ -6598,17 +6448,19 @@ function ProtectionModel_21Jan2015(config) {
         error: msg
       });
       return;
-    } // If a systemStringPriority is defined by the application we use these values. Otherwise we use the default system string
+    }
+
+    // If a systemStringPriority is defined by the application we use these values. Otherwise we use the default system string
     // This is useful for DRM systems such as Playready for which multiple system strings are possible for instance com.microsoft.playready and com.microsoft.playready.recommendation
-
-
     var protDataSystemStringPriority = ksConfigurations[idx].protData && ksConfigurations[idx].protData.systemStringPriority ? ksConfigurations[idx].protData.systemStringPriority : null;
     var configs = ksConfigurations[idx].configs;
     var currentKeySystem = ksConfigurations[idx].ks;
-    var systemString = currentKeySystem.systemString; // Use the default values in case no values are provided by the application
+    var systemString = currentKeySystem.systemString;
 
-    var systemStringsToApply = protDataSystemStringPriority ? protDataSystemStringPriority : SYSTEM_STRING_PRIORITY[systemString] ? SYSTEM_STRING_PRIORITY[systemString] : [systemString]; // Check all the available system strings and the available configurations for support
+    // Use the default values in case no values are provided by the application
+    var systemStringsToApply = protDataSystemStringPriority ? protDataSystemStringPriority : SYSTEM_STRING_PRIORITY[systemString] ? SYSTEM_STRING_PRIORITY[systemString] : [systemString];
 
+    // Check all the available system strings and the available configurations for support
     _checkAccessForKeySystem(systemStringsToApply, configs).then(function (mediaKeySystemAccess) {
       var configuration = typeof mediaKeySystemAccess.getConfiguration === 'function' ? mediaKeySystemAccess.getConfiguration() : null;
       var keySystemAccess = new _vo_KeySystemAccess__WEBPACK_IMPORTED_MODULE_5__["default"](currentKeySystem, configuration);
@@ -6633,6 +6485,7 @@ function ProtectionModel_21Jan2015(config) {
       }
     });
   }
+
   /**
    * For a specific key system: Iterate over the possible system strings and resolve once a valid configuration was found
    * @param {array} systemStringsToApply
@@ -6640,13 +6493,12 @@ function ProtectionModel_21Jan2015(config) {
    * @return {Promise}
    * @private
    */
-
-
   function _checkAccessForKeySystem(systemStringsToApply, configs) {
     return new Promise(function (resolve, reject) {
       _checkAccessForSystemStrings(systemStringsToApply, configs, 0, resolve, reject);
     });
   }
+
   /**
    * Recursively iterate over the possible system strings until a supported configuration is found or we ran out of options
    * @param {array} systemStringsToApply
@@ -6656,8 +6508,6 @@ function ProtectionModel_21Jan2015(config) {
    * @param {function} reject
    * @private
    */
-
-
   function _checkAccessForSystemStrings(systemStringsToApply, configs, idx, resolve, reject) {
     var systemString = systemStringsToApply[idx];
     logger.debug("Requesting key system access for system string ".concat(systemString));
@@ -6672,19 +6522,17 @@ function ProtectionModel_21Jan2015(config) {
       }
     });
   }
+
   /**
    * Selects a key system by creating the mediaKeys and adding them to the video element
    * @param keySystemAccess
    * @return {Promise<unknown>}
    */
-
-
   function selectKeySystem(keySystemAccess) {
     return new Promise(function (resolve, reject) {
       keySystemAccess.mksa.createMediaKeys().then(function (mkeys) {
         keySystem = keySystemAccess.keySystem;
         mediaKeys = mkeys;
-
         if (videoElement) {
           return videoElement.setMediaKeys(mediaKeys);
         } else {
@@ -6699,34 +6547,30 @@ function ProtectionModel_21Jan2015(config) {
       });
     });
   }
-
   function setMediaElement(mediaElement) {
-    if (videoElement === mediaElement) return; // Replacing the previous element
+    if (videoElement === mediaElement) return;
 
+    // Replacing the previous element
     if (videoElement) {
       videoElement.removeEventListener('encrypted', eventHandler);
-
       if (videoElement.setMediaKeys) {
         videoElement.setMediaKeys(null);
       }
     }
+    videoElement = mediaElement;
 
-    videoElement = mediaElement; // Only if we are not detaching from the existing element
-
+    // Only if we are not detaching from the existing element
     if (videoElement) {
       videoElement.addEventListener('encrypted', eventHandler);
-
       if (videoElement.setMediaKeys && mediaKeys) {
         videoElement.setMediaKeys(mediaKeys);
       }
     }
   }
-
   function setServerCertificate(serverCertificate) {
     if (!keySystem || !mediaKeys) {
       throw new Error('Can not set server certificate until you have selected a key system');
     }
-
     mediaKeys.setServerCertificate(serverCertificate).then(function () {
       logger.info('DRM: License server certificate successfully updated.');
       eventBus.trigger(events.SERVER_CERTIFICATE_UPDATED);
@@ -6736,20 +6580,19 @@ function ProtectionModel_21Jan2015(config) {
       });
     });
   }
+
   /**
    * Create a key session, a session token and initialize a request by calling generateRequest
    * @param ksInfo
    */
-
-
   function createKeySession(ksInfo) {
     if (!keySystem || !mediaKeys) {
       throw new Error('Can not create sessions until you have selected a key system');
     }
-
     var session = mediaKeys.createSession(ksInfo.sessionType);
-    var sessionToken = createSessionToken(session, ksInfo); // The "keyids" type is used for Clearkey when keys are provided directly in the protection data and a request to a license server is not needed
+    var sessionToken = createSessionToken(session, ksInfo);
 
+    // The "keyids" type is used for Clearkey when keys are provided directly in the protection data and a request to a license server is not needed
     var dataType = keySystem.systemString === _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].CLEARKEY_KEYSTEM_STRING && (ksInfo.initData || ksInfo.protData && ksInfo.protData.clearkeys) ? _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].INITIALIZATION_DATA_TYPE_KEYIDS : _constants_ProtectionConstants__WEBPACK_IMPORTED_MODULE_6__["default"].INITIALIZATION_DATA_TYPE_CENC;
     session.generateRequest(dataType, ksInfo.initData).then(function () {
       logger.debug('DRM: Session created.  SessionID = ' + sessionToken.getSessionId());
@@ -6764,14 +6607,13 @@ function ProtectionModel_21Jan2015(config) {
       });
     });
   }
-
   function updateKeySession(sessionToken, message) {
-    var session = sessionToken.session; // Send our request to the key session
+    var session = sessionToken.session;
 
+    // Send our request to the key session
     if (protectionKeyController.isClearKey(keySystem)) {
       message = message.toJWK();
     }
-
     session.update(message).then(function () {
       eventBus.trigger(events.KEY_SESSION_UPDATED);
     })["catch"](function (error) {
@@ -6780,24 +6622,23 @@ function ProtectionModel_21Jan2015(config) {
       });
     });
   }
-
   function loadKeySession(ksInfo) {
     if (!keySystem || !mediaKeys) {
       throw new Error('Can not load sessions until you have selected a key system');
     }
+    var sessionId = ksInfo.sessionId;
 
-    var sessionId = ksInfo.sessionId; // Check if session Id is not already loaded or loading
-
+    // Check if session Id is not already loaded or loading
     for (var i = 0; i < sessions.length; i++) {
       if (sessionId === sessions[i].sessionId) {
         logger.warn('DRM: Ignoring session ID because we have already seen it!');
         return;
       }
     }
-
     var session = mediaKeys.createSession(ksInfo.sessionType);
-    var sessionToken = createSessionToken(session, ksInfo); // Load persisted session data into our newly created session object
+    var sessionToken = createSessionToken(session, ksInfo);
 
+    // Load persisted session data into our newly created session object
     session.load(sessionId).then(function (success) {
       if (success) {
         logger.debug('DRM: Session loaded.  SessionID = ' + sessionToken.getSessionId());
@@ -6819,7 +6660,6 @@ function ProtectionModel_21Jan2015(config) {
       });
     });
   }
-
   function removeKeySession(sessionToken) {
     var session = sessionToken.session;
     session.remove().then(function () {
@@ -6834,7 +6674,6 @@ function ProtectionModel_21Jan2015(config) {
       });
     });
   }
-
   function closeKeySession(sessionToken) {
     // Send our request to the key session
     _closeKeySessionInternal(sessionToken)["catch"](function (error) {
@@ -6845,19 +6684,20 @@ function ProtectionModel_21Jan2015(config) {
       });
     });
   }
-
   function _closeKeySessionInternal(sessionToken) {
-    var session = sessionToken.session; // Remove event listeners
+    var session = sessionToken.session;
 
+    // Remove event listeners
     session.removeEventListener('keystatuseschange', sessionToken);
-    session.removeEventListener('message', sessionToken); // Send our request to the key session
+    session.removeEventListener('message', sessionToken);
 
+    // Send our request to the key session
     return session.close();
-  } // This is our main event handler for all desired HTMLMediaElement events
+  }
+
+  // This is our main event handler for all desired HTMLMediaElement events
   // related to EME.  These events are translated into our API-independent
   // versions of the same events
-
-
   function createEventHandler() {
     return {
       handleEvent: function handleEvent(event) {
@@ -6869,13 +6709,11 @@ function ProtectionModel_21Jan2015(config) {
                 key: new _vo_NeedKey__WEBPACK_IMPORTED_MODULE_1__["default"](initData, event.initDataType)
               });
             }
-
             break;
         }
       }
     };
   }
-
   function removeSession(token) {
     // Remove from our session list
     for (var i = 0; i < sessions.length; i++) {
@@ -6885,11 +6723,9 @@ function ProtectionModel_21Jan2015(config) {
       }
     }
   }
-
   function parseKeyStatus(args) {
     // Edge and Chrome implement different version of keystatues, param are not on same order
     var status, keyId;
-
     if (args && args.length > 0) {
       if (args[0]) {
         if (typeof args[0] === 'string') {
@@ -6898,7 +6734,6 @@ function ProtectionModel_21Jan2015(config) {
           keyId = args[0];
         }
       }
-
       if (args[1]) {
         if (typeof args[1] === 'string') {
           status = args[1];
@@ -6907,15 +6742,14 @@ function ProtectionModel_21Jan2015(config) {
         }
       }
     }
-
     return {
       status: status,
       keyId: keyId
     };
-  } // Function to create our session token objects which manage the EME
+  }
+
+  // Function to create our session token objects which manage the EME
   // MediaKeySession and session-specific event handler
-
-
   function createSessionToken(session, ksInfo) {
     var token = {
       // Implements SessionToken
@@ -6935,21 +6769,18 @@ function ProtectionModel_21Jan2015(config) {
             });
             event.target.keyStatuses.forEach(function () {
               var keyStatus = parseKeyStatus(arguments);
-
               switch (keyStatus.status) {
                 case 'expired':
                   eventBus.trigger(events.INTERNAL_KEY_STATUS_CHANGED, {
                     error: new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_3__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_2__["default"].KEY_STATUS_CHANGED_EXPIRED_ERROR_CODE, _errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_2__["default"].KEY_STATUS_CHANGED_EXPIRED_ERROR_MESSAGE)
                   });
                   break;
-
                 default:
                   eventBus.trigger(events.INTERNAL_KEY_STATUS_CHANGED, keyStatus);
                   break;
               }
             });
             break;
-
           case 'message':
             var message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
             eventBus.trigger(events.INTERNAL_KEY_MESSAGE, {
@@ -6977,30 +6808,31 @@ function ProtectionModel_21Jan2015(config) {
         var usable = false;
         session.keyStatuses.forEach(function () {
           var keyStatus = parseKeyStatus(arguments);
-
           if (keyStatus.status === 'usable') {
             usable = true;
           }
         });
         return usable;
       }
-    }; // Add all event listeners
+    };
 
+    // Add all event listeners
     session.addEventListener('keystatuseschange', token);
-    session.addEventListener('message', token); // Register callback for session closed Promise
+    session.addEventListener('message', token);
 
+    // Register callback for session closed Promise
     session.closed.then(function () {
       removeSession(token);
       logger.debug('DRM: Session closed.  SessionID = ' + token.getSessionId());
       eventBus.trigger(events.KEY_SESSION_CLOSED, {
         data: token.getSessionId()
       });
-    }); // Add to our session list
+    });
 
+    // Add to our session list
     sessions.push(token);
     return token;
   }
-
   instance = {
     getAllInitData: getAllInitData,
     getSessions: getSessions,
@@ -7019,10 +6851,8 @@ function ProtectionModel_21Jan2015(config) {
   setup();
   return instance;
 }
-
 ProtectionModel_21Jan2015.__dashjs_factory_name = 'ProtectionModel_21Jan2015';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getClassFactory(ProtectionModel_21Jan2015));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getClassFactory(ProtectionModel_21Jan2015)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -7093,12 +6923,10 @@ function ProtectionModel_3Feb2014(config) {
   config = config || {};
   var context = this.context;
   var eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
-
   var events = config.events;
   var debug = config.debug;
   var api = config.api;
   var instance, logger, videoElement, keySystem, mediaKeys, keySystemAccess, sessions, eventHandler, protectionKeyController;
-
   function setup() {
     logger = debug.getLogger(instance);
     videoElement = null;
@@ -7109,17 +6937,14 @@ function ProtectionModel_3Feb2014(config) {
     protectionKeyController = Object(_controllers_ProtectionKeyController__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
     eventHandler = createEventHandler();
   }
-
   function reset() {
     try {
       for (var i = 0; i < sessions.length; i++) {
         closeKeySession(sessions[i]);
       }
-
       if (videoElement) {
         videoElement.removeEventListener(api.needkey, eventHandler);
       }
-
       eventBus.trigger(events.TEARDOWN_COMPLETE);
     } catch (error) {
       eventBus.trigger(events.TEARDOWN_COMPLETE, {
@@ -7127,72 +6952,64 @@ function ProtectionModel_3Feb2014(config) {
       });
     }
   }
-
   function getAllInitData() {
     var retVal = [];
-
     for (var i = 0; i < sessions.length; i++) {
       retVal.push(sessions[i].initData);
     }
-
     return retVal;
   }
-
   function getSessions() {
     return sessions;
   }
-
   function requestKeySystemAccess(ksConfigurations) {
     return new Promise(function (resolve, reject) {
       // Try key systems in order, first one with supported key system configuration
       // is used
       var found = false;
-
       for (var ksIdx = 0; ksIdx < ksConfigurations.length; ksIdx++) {
         var systemString = ksConfigurations[ksIdx].ks.systemString;
         var configs = ksConfigurations[ksIdx].configs;
         var supportedAudio = null;
-        var supportedVideo = null; // Try key system configs in order, first one with supported audio/video
-        // is used
+        var supportedVideo = null;
 
+        // Try key system configs in order, first one with supported audio/video
+        // is used
         for (var configIdx = 0; configIdx < configs.length; configIdx++) {
           var audios = configs[configIdx].audioCapabilities;
-          var videos = configs[configIdx].videoCapabilities; // Look for supported audio container/codecs
+          var videos = configs[configIdx].videoCapabilities;
 
+          // Look for supported audio container/codecs
           if (audios && audios.length !== 0) {
             supportedAudio = []; // Indicates that we have a requested audio config
-
             for (var audioIdx = 0; audioIdx < audios.length; audioIdx++) {
               if (window[api.MediaKeys].isTypeSupported(systemString, audios[audioIdx].contentType)) {
                 supportedAudio.push(audios[audioIdx]);
               }
             }
-          } // Look for supported video container/codecs
+          }
 
-
+          // Look for supported video container/codecs
           if (videos && videos.length !== 0) {
             supportedVideo = []; // Indicates that we have a requested video config
-
             for (var videoIdx = 0; videoIdx < videos.length; videoIdx++) {
               if (window[api.MediaKeys].isTypeSupported(systemString, videos[videoIdx].contentType)) {
                 supportedVideo.push(videos[videoIdx]);
               }
             }
-          } // No supported audio or video in this configuration OR we have
+          }
+
+          // No supported audio or video in this configuration OR we have
           // requested audio or video configuration that is not supported
-
-
           if (!supportedAudio && !supportedVideo || supportedAudio && supportedAudio.length === 0 || supportedVideo && supportedVideo.length === 0) {
             continue;
-          } // This configuration is supported
+          }
 
-
+          // This configuration is supported
           found = true;
           var ksConfig = new _vo_KeySystemConfiguration__WEBPACK_IMPORTED_MODULE_5__["default"](supportedAudio, supportedVideo);
           var ks = protectionKeyController.getKeySystemBySystemString(systemString);
-
           var _keySystemAccess = new _vo_KeySystemAccess__WEBPACK_IMPORTED_MODULE_6__["default"](ks, ksConfig);
-
           eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
             data: _keySystemAccess
           });
@@ -7202,7 +7019,6 @@ function ProtectionModel_3Feb2014(config) {
           break;
         }
       }
-
       if (!found) {
         var errorMessage = 'Key system access denied! -- No valid audio/video content configurations detected!';
         eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
@@ -7214,18 +7030,15 @@ function ProtectionModel_3Feb2014(config) {
       }
     });
   }
-
   function selectKeySystem(ksAccess) {
     return new Promise(function (resolve, reject) {
       try {
         mediaKeys = ksAccess.mediaKeys = new window[api.MediaKeys](ksAccess.keySystem.systemString);
         keySystem = ksAccess.keySystem;
         keySystemAccess = ksAccess;
-
         if (videoElement) {
           setMediaKeys();
         }
-
         resolve(keySystem);
       } catch (error) {
         reject({
@@ -7234,66 +7047,61 @@ function ProtectionModel_3Feb2014(config) {
       }
     });
   }
-
   function setMediaElement(mediaElement) {
-    if (videoElement === mediaElement) return; // Replacing the previous element
+    if (videoElement === mediaElement) return;
 
+    // Replacing the previous element
     if (videoElement) {
       videoElement.removeEventListener(api.needkey, eventHandler);
     }
+    videoElement = mediaElement;
 
-    videoElement = mediaElement; // Only if we are not detaching from the existing element
-
+    // Only if we are not detaching from the existing element
     if (videoElement) {
       videoElement.addEventListener(api.needkey, eventHandler);
-
       if (mediaKeys) {
         setMediaKeys();
       }
     }
   }
-
   function createKeySession(ksInfo) {
     if (!keySystem || !mediaKeys || !keySystemAccess) {
       throw new Error('Can not create sessions until you have selected a key system');
-    } // Use the first video capability for the contentType.
+    }
+
+    // Use the first video capability for the contentType.
     // TODO:  Not sure if there is a way to concatenate all capability data into a RFC6386-compatible format
+
     // If player is trying to playback Audio only stream - don't error out.
-
-
     var capabilities = null;
-
     if (keySystemAccess.ksConfiguration.videoCapabilities && keySystemAccess.ksConfiguration.videoCapabilities.length > 0) {
       capabilities = keySystemAccess.ksConfiguration.videoCapabilities[0];
     }
-
     if (capabilities === null && keySystemAccess.ksConfiguration.audioCapabilities && keySystemAccess.ksConfiguration.audioCapabilities.length > 0) {
       capabilities = keySystemAccess.ksConfiguration.audioCapabilities[0];
     }
-
     if (capabilities === null) {
       throw new Error('Can not create sessions for unknown content types.');
     }
-
     var contentType = capabilities.contentType;
     var session = mediaKeys.createSession(contentType, new Uint8Array(ksInfo.initData), ksInfo.cdmData ? new Uint8Array(ksInfo.cdmData) : null);
-    var sessionToken = createSessionToken(session, ksInfo); // Add all event listeners
+    var sessionToken = createSessionToken(session, ksInfo);
 
+    // Add all event listeners
     session.addEventListener(api.error, sessionToken);
     session.addEventListener(api.message, sessionToken);
     session.addEventListener(api.ready, sessionToken);
-    session.addEventListener(api.close, sessionToken); // Add to our session list
+    session.addEventListener(api.close, sessionToken);
 
+    // Add to our session list
     sessions.push(sessionToken);
     logger.debug('DRM: Session created.  SessionID = ' + sessionToken.getSessionId());
     eventBus.trigger(events.KEY_SESSION_CREATED, {
       data: sessionToken
     });
   }
-
   function updateKeySession(sessionToken, message) {
     var session = sessionToken.session;
-
     if (!protectionKeyController.isClearKey(keySystem)) {
       // Send our request to the key session
       session.update(new Uint8Array(message));
@@ -7301,54 +7109,44 @@ function ProtectionModel_3Feb2014(config) {
       // For clearkey, message is a ClearKeyKeySet
       session.update(new Uint8Array(message.toJWK()));
     }
-
     eventBus.trigger(events.KEY_SESSION_UPDATED);
   }
+
   /**
    * Close the given session and release all associated keys.  Following
    * this call, the sessionToken becomes invalid
    *
    * @param {Object} sessionToken - the session token
    */
-
-
   function closeKeySession(sessionToken) {
-    var session = sessionToken.session; // Remove event listeners
+    var session = sessionToken.session;
 
+    // Remove event listeners
     session.removeEventListener(api.error, sessionToken);
     session.removeEventListener(api.message, sessionToken);
     session.removeEventListener(api.ready, sessionToken);
-    session.removeEventListener(api.close, sessionToken); // Remove from our session list
+    session.removeEventListener(api.close, sessionToken);
 
+    // Remove from our session list
     for (var i = 0; i < sessions.length; i++) {
       if (sessions[i] === sessionToken) {
         sessions.splice(i, 1);
         break;
       }
-    } // Send our request to the key session
+    }
 
-
+    // Send our request to the key session
     session[api.release]();
   }
-
-  function setServerCertificate()
-  /*serverCertificate*/
-  {
-    /* Not supported */
+  function setServerCertificate( /*serverCertificate*/
+  ) {/* Not supported */
   }
-
-  function loadKeySession()
-  /*ksInfo*/
-  {
-    /* Not supported */
+  function loadKeySession( /*ksInfo*/
+  ) {/* Not supported */
   }
-
-  function removeKeySession()
-  /*sessionToken*/
-  {
-    /* Not supported */
+  function removeKeySession( /*sessionToken*/
+  ) {/* Not supported */
   }
-
   function createEventHandler() {
     return {
       handleEvent: function handleEvent(event) {
@@ -7360,35 +7158,32 @@ function ProtectionModel_3Feb2014(config) {
                 key: new _vo_NeedKey__WEBPACK_IMPORTED_MODULE_1__["default"](initData, 'cenc')
               });
             }
-
             break;
         }
       }
     };
-  } // IE11 does not let you set MediaKeys until it has entered a certain
+  }
+
+  // IE11 does not let you set MediaKeys until it has entered a certain
   // readyState, so we need this logic to ensure we don't set the keys
   // too early
-
-
   function setMediaKeys() {
     var boundDoSetKeys = null;
-
     var doSetKeys = function doSetKeys() {
       videoElement.removeEventListener('loadedmetadata', boundDoSetKeys);
       videoElement[api.setMediaKeys](mediaKeys);
       eventBus.trigger(events.VIDEO_ELEMENT_SELECTED);
     };
-
     if (videoElement.readyState >= 1) {
       doSetKeys();
     } else {
       boundDoSetKeys = doSetKeys.bind(this);
       videoElement.addEventListener('loadedmetadata', boundDoSetKeys);
     }
-  } // Function to create our session token objects which manage the EME
+  }
+
+  // Function to create our session token objects which manage the EME
   // MediaKeySession and session-specific event handler
-
-
   function createSessionToken(keySession, ksInfo) {
     return {
       // Implements SessionToken
@@ -7414,24 +7209,20 @@ function ProtectionModel_3Feb2014(config) {
         switch (event.type) {
           case api.error:
             var errorStr = 'KeyError'; // TODO: Make better string from event
-
             eventBus.trigger(events.KEY_ERROR, {
               error: new _vo_DashJSError__WEBPACK_IMPORTED_MODULE_2__["default"](_errors_ProtectionErrors__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEYERR_CODE, errorStr, this)
             });
             break;
-
           case api.message:
             var message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
             eventBus.trigger(events.INTERNAL_KEY_MESSAGE, {
               data: new _vo_KeyMessage__WEBPACK_IMPORTED_MODULE_4__["default"](this, message, event.destinationURL)
             });
             break;
-
           case api.ready:
             logger.debug('DRM: Key added.');
             eventBus.trigger(events.KEY_ADDED);
             break;
-
           case api.close:
             logger.debug('DRM: Session closed.  SessionID = ' + this.getSessionId());
             eventBus.trigger(events.KEY_SESSION_CLOSED, {
@@ -7442,7 +7233,6 @@ function ProtectionModel_3Feb2014(config) {
       }
     };
   }
-
   instance = {
     getAllInitData: getAllInitData,
     getSessions: getSessions,
@@ -7461,10 +7251,8 @@ function ProtectionModel_3Feb2014(config) {
   setup();
   return instance;
 }
-
 ProtectionModel_3Feb2014.__dashjs_factory_name = 'ProtectionModel_3Feb2014';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getClassFactory(ProtectionModel_3Feb2014));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getClassFactory(ProtectionModel_3Feb2014)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -7521,53 +7309,35 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 function ClearKey() {
   var instance;
-
-  function getServerURLFromMessage(url
-  /* message, messageType*/
-  ) {
+  function getServerURLFromMessage(url /* message, messageType*/) {
     return url;
   }
-
-  function getHTTPMethod()
-  /*messageType*/
-  {
+  function getHTTPMethod( /*messageType*/
+  ) {
     return 'POST';
   }
-
-  function getResponseType()
-  /*keySystemStr*/
-  {
+  function getResponseType( /*keySystemStr*/
+  ) {
     return 'json';
   }
-
-  function getLicenseMessage(serverResponse
-  /*, keySystemStr, messageType*/
-  ) {
+  function getLicenseMessage(serverResponse /*, keySystemStr, messageType*/) {
     if (!serverResponse.hasOwnProperty('keys')) {
       return null;
     }
-
     var keyPairs = [];
-
     for (var i = 0; i < serverResponse.keys.length; i++) {
       var keypair = serverResponse.keys[i];
       var keyid = keypair.kid.replace(/=/g, '');
       var key = keypair.k.replace(/=/g, '');
       keyPairs.push(new _vo_KeyPair__WEBPACK_IMPORTED_MODULE_0__["default"](keyid, key));
     }
-
     return new _vo_ClearKeyKeySet__WEBPACK_IMPORTED_MODULE_1__["default"](keyPairs);
   }
-
-  function getErrorResponse(serverResponse
-  /*, keySystemStr, messageType*/
-  ) {
+  function getErrorResponse(serverResponse /*, keySystemStr, messageType*/) {
     return String.fromCharCode.apply(null, new Uint8Array(serverResponse));
   }
-
   instance = {
     getServerURLFromMessage: getServerURLFromMessage,
     getHTTPMethod: getHTTPMethod,
@@ -7577,10 +7347,8 @@ function ClearKey() {
   };
   return instance;
 }
-
 ClearKey.__dashjs_factory_name = 'ClearKey';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(ClearKey));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(ClearKey)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -7656,44 +7424,28 @@ function DRMToday(config) {
     }
   };
   var instance;
-
   function checkConfig() {
     if (!BASE64 || !BASE64.hasOwnProperty('decodeArray')) {
       throw new Error('Missing config parameter(s)');
     }
   }
-
-  function getServerURLFromMessage(url
-  /*, message, messageType*/
-  ) {
+  function getServerURLFromMessage(url /*, message, messageType*/) {
     return url;
   }
-
-  function getHTTPMethod()
-  /*messageType*/
-  {
+  function getHTTPMethod( /*messageType*/
+  ) {
     return 'POST';
   }
-
-  function getResponseType(keySystemStr
-  /*, messageType*/
-  ) {
+  function getResponseType(keySystemStr /*, messageType*/) {
     return keySystems[keySystemStr].responseType;
   }
-
-  function getLicenseMessage(serverResponse, keySystemStr
-  /*, messageType*/
-  ) {
+  function getLicenseMessage(serverResponse, keySystemStr /*, messageType*/) {
     checkConfig();
     return keySystems[keySystemStr].getLicenseMessage(serverResponse);
   }
-
-  function getErrorResponse(serverResponse, keySystemStr
-  /*, messageType*/
-  ) {
+  function getErrorResponse(serverResponse, keySystemStr /*, messageType*/) {
     return keySystems[keySystemStr].getErrorResponse(serverResponse);
   }
-
   instance = {
     getServerURLFromMessage: getServerURLFromMessage,
     getHTTPMethod: getHTTPMethod,
@@ -7703,10 +7455,8 @@ function DRMToday(config) {
   };
   return instance;
 }
-
 DRMToday.__dashjs_factory_name = 'DRMToday';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(DRMToday));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(DRMToday)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -7761,16 +7511,15 @@ __webpack_require__.r(__webpack_exports__);
  * @class
  * @ignore
  */
+
 function PlayReady() {
   var instance;
   var soap = 'http://schemas.xmlsoap.org/soap/envelope/';
-
   function uintToString(arrayBuffer) {
     var encodedString = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
     var decodedString = decodeURIComponent(escape(encodedString));
     return decodedString;
   }
-
   function parseServerResponse(serverResponse) {
     if (window.DOMParser) {
       var stringResponse = uintToString(serverResponse);
@@ -7779,22 +7528,18 @@ function PlayReady() {
       var envelope = xmlDoc ? xmlDoc.getElementsByTagNameNS(soap, 'Envelope')[0] : null;
       var body = envelope ? envelope.getElementsByTagNameNS(soap, 'Body')[0] : null;
       var fault = body ? body.getElementsByTagNameNS(soap, 'Fault')[0] : null;
-
       if (fault) {
         return null;
       }
     }
-
     return serverResponse;
   }
-
   function parseErrorResponse(serverResponse) {
     var faultstring = '';
     var statusCode = '';
     var message = '';
     var idStart = -1;
     var idEnd = -1;
-
     if (window.DOMParser) {
       var stringResponse = uintToString(serverResponse);
       var parser = new window.DOMParser();
@@ -7805,14 +7550,11 @@ function PlayReady() {
       var detail = fault ? fault.getElementsByTagName('detail')[0] : null;
       var exception = detail ? detail.getElementsByTagName('Exception')[0] : null;
       var node = null;
-
       if (fault === null) {
         return stringResponse;
       }
-
       node = fault.getElementsByTagName('faultstring')[0].firstChild;
       faultstring = node ? node.nodeValue : null;
-
       if (exception !== null) {
         node = exception.getElementsByTagName('StatusCode')[0];
         statusCode = node ? node.firstChild.nodeValue : null;
@@ -7823,46 +7565,29 @@ function PlayReady() {
         message = message ? message.substring(idStart, idEnd) : '';
       }
     }
-
     var errorString = "code: ".concat(statusCode, ", name: ").concat(faultstring);
-
     if (message) {
       errorString += ", message: ".concat(message);
     }
-
     return errorString;
   }
-
-  function getServerURLFromMessage(url
-  /*, message, messageType*/
-  ) {
+  function getServerURLFromMessage(url /*, message, messageType*/) {
     return url;
   }
-
-  function getHTTPMethod()
-  /*messageType*/
-  {
+  function getHTTPMethod( /*messageType*/
+  ) {
     return 'POST';
   }
-
-  function getResponseType()
-  /*keySystemStr, messageType*/
-  {
+  function getResponseType( /*keySystemStr, messageType*/
+  ) {
     return 'arraybuffer';
   }
-
-  function getLicenseMessage(serverResponse
-  /*, keySystemStr, messageType*/
-  ) {
+  function getLicenseMessage(serverResponse /*, keySystemStr, messageType*/) {
     return parseServerResponse.call(this, serverResponse);
   }
-
-  function getErrorResponse(serverResponse
-  /*, keySystemStr, messageType*/
-  ) {
+  function getErrorResponse(serverResponse /*, keySystemStr, messageType*/) {
     return parseErrorResponse.call(this, serverResponse);
   }
-
   instance = {
     getServerURLFromMessage: getServerURLFromMessage,
     getHTTPMethod: getHTTPMethod,
@@ -7872,10 +7597,8 @@ function PlayReady() {
   };
   return instance;
 }
-
 PlayReady.__dashjs_factory_name = 'PlayReady';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(PlayReady));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(PlayReady)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -7924,37 +7647,23 @@ __webpack_require__.r(__webpack_exports__);
  */
 function Widevine() {
   var instance;
-
-  function getServerURLFromMessage(url
-  /*, message, messageType*/
-  ) {
+  function getServerURLFromMessage(url /*, message, messageType*/) {
     return url;
   }
-
-  function getHTTPMethod()
-  /*messageType*/
-  {
+  function getHTTPMethod( /*messageType*/
+  ) {
     return 'POST';
   }
-
-  function getResponseType()
-  /*keySystemStr, messageType*/
-  {
+  function getResponseType( /*keySystemStr, messageType*/
+  ) {
     return 'arraybuffer';
   }
-
-  function getLicenseMessage(serverResponse
-  /*, keySystemStr, messageType*/
-  ) {
+  function getLicenseMessage(serverResponse /*, keySystemStr, messageType*/) {
     return serverResponse;
   }
-
-  function getErrorResponse(serverResponse
-  /*, keySystemStr, messageType*/
-  ) {
+  function getErrorResponse(serverResponse /*, keySystemStr, messageType*/) {
     return String.fromCharCode.apply(null, new Uint8Array(serverResponse));
   }
-
   instance = {
     getServerURLFromMessage: getServerURLFromMessage,
     getHTTPMethod: getHTTPMethod,
@@ -7964,10 +7673,8 @@ function Widevine() {
   };
   return instance;
 }
-
 Widevine.__dashjs_factory_name = 'Widevine';
-/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(Widevine));
-/* jshint ignore:line */
+/* harmony default export */ __webpack_exports__["default"] = (dashjs.FactoryMaker.getSingletonFactory(Widevine)); /* jshint ignore:line */
 
 /***/ }),
 
@@ -7980,12 +7687,12 @@ Widevine.__dashjs_factory_name = 'Widevine';
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8016,7 +7723,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc A collection of ClearKey encryption keys with an (optional) associated
  *  type
@@ -8032,19 +7738,17 @@ var ClearKeyKeySet = /*#__PURE__*/function () {
    */
   function ClearKeyKeySet(keyPairs, type) {
     _classCallCheck(this, ClearKeyKeySet);
-
     if (type && type !== 'persistent' && type !== 'temporary') throw new Error('Invalid ClearKey key set type!  Must be one of \'persistent\' or \'temporary\'');
     this.keyPairs = keyPairs;
     this.type = type;
   }
+
   /**
    * Convert this key set to its JSON Web Key (JWK) representation
    *
    * @return {ArrayBuffer} JWK object UTF-8 encoded as ArrayBuffer
    */
-
-
-  _createClass(ClearKeyKeySet, [{
+  return _createClass(ClearKeyKeySet, [{
     key: "toJWK",
     value: function toJWK() {
       var i;
@@ -8052,7 +7756,6 @@ var ClearKeyKeySet = /*#__PURE__*/function () {
       var jwk = {
         keys: []
       };
-
       for (i = 0; i < numKeys; i++) {
         var key = {
           kty: 'oct',
@@ -8062,28 +7765,20 @@ var ClearKeyKeySet = /*#__PURE__*/function () {
         };
         jwk.keys.push(key);
       }
-
       if (this.type) {
         jwk.type = this.type;
       }
-
       var jwkString = JSON.stringify(jwk);
-      var len = jwkString.length; // Convert JSON string to ArrayBuffer
+      var len = jwkString.length;
 
+      // Convert JSON string to ArrayBuffer
       var buf = new ArrayBuffer(len);
       var bView = new Uint8Array(buf);
-
-      for (i = 0; i < len; i++) {
-        bView[i] = jwkString.charCodeAt(i);
-      }
-
+      for (i = 0; i < len; i++) bView[i] = jwkString.charCodeAt(i);
       return buf;
     }
   }]);
-
-  return ClearKeyKeySet;
 }();
-
 /* harmony default export */ __webpack_exports__["default"] = (ClearKeyKeySet);
 
 /***/ }),
@@ -8097,8 +7792,12 @@ var ClearKeyKeySet = /*#__PURE__*/function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8129,12 +7828,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc EME-independent KeyMessage
  * @ignore
  */
-var KeyMessage =
+var KeyMessage = /*#__PURE__*/_createClass(
 /**
  * @param {SessionToken} sessionToken the session
  * to which the key message is associated
@@ -8146,13 +7844,11 @@ var KeyMessage =
  */
 function KeyMessage(sessionToken, message, defaultURL, messageType) {
   _classCallCheck(this, KeyMessage);
-
   this.sessionToken = sessionToken;
   this.message = message;
   this.defaultURL = defaultURL;
   this.messageType = messageType ? messageType : 'license-request';
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (KeyMessage);
 
 /***/ }),
@@ -8166,8 +7862,12 @@ function KeyMessage(sessionToken, message, defaultURL, messageType) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8198,12 +7898,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc Represents a 128-bit keyID and 128-bit encryption key
  * @ignore
  */
-var KeyPair =
+var KeyPair = /*#__PURE__*/_createClass(
 /**
  * @param {string} keyID 128-bit key ID, base64 encoded, with no padding
  * @param {string} key 128-bit encryption key, base64 encoded, with no padding
@@ -8212,11 +7911,9 @@ var KeyPair =
  */
 function KeyPair(keyID, key) {
   _classCallCheck(this, KeyPair);
-
   this.keyID = keyID;
   this.key = key;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (KeyPair);
 
 /***/ }),
@@ -8230,8 +7927,12 @@ function KeyPair(keyID, key) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8262,14 +7963,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc Creates a new key system access token.  Represents a valid key system for
  * given piece of content and key system requirements.  Used to initialize license
  * acquisition operations.
  * @ignore
  */
-var KeySystemAccess =
+var KeySystemAccess = /*#__PURE__*/_createClass(
 /**
  * @param {MediaPlayer.dependencies.protection.KeySystem} keySystem the key system
  * @param {KeySystemConfiguration} ksConfiguration the
@@ -8280,11 +7980,9 @@ var KeySystemAccess =
  */
 function KeySystemAccess(keySystem, ksConfiguration) {
   _classCallCheck(this, KeySystemAccess);
-
   this.keySystem = keySystem;
   this.ksConfiguration = ksConfiguration;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (KeySystemAccess);
 
 /***/ }),
@@ -8298,8 +7996,12 @@ function KeySystemAccess(keySystem, ksConfiguration) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8330,13 +8032,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc Represents a set of configurations that describe the capabilities desired for
  *  support by a given CDM
  * @ignore
  */
-var KeySystemConfiguration =
+var KeySystemConfiguration = /*#__PURE__*/_createClass(
 /**
  * @param {Array.<MediaCapability>} audioCapabilities array of
  * desired audio capabilities.  Higher preference capabilities should be placed earlier
@@ -8354,22 +8055,17 @@ var KeySystemConfiguration =
  */
 function KeySystemConfiguration(audioCapabilities, videoCapabilities, distinctiveIdentifier, persistentState, sessionTypes) {
   _classCallCheck(this, KeySystemConfiguration);
-
   this.initDataTypes = ['cenc'];
-
   if (audioCapabilities && audioCapabilities.length) {
     this.audioCapabilities = audioCapabilities;
   }
-
   if (videoCapabilities && videoCapabilities.length) {
     this.videoCapabilities = videoCapabilities;
   }
-
   this.distinctiveIdentifier = distinctiveIdentifier;
   this.persistentState = persistentState;
   this.sessionTypes = sessionTypes;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (KeySystemConfiguration);
 
 /***/ }),
@@ -8383,8 +8079,12 @@ function KeySystemConfiguration(audioCapabilities, videoCapabilities, distinctiv
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8415,12 +8115,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc Defines a license request
  * @ignore
  */
-var LicenseRequest =
+var LicenseRequest = /*#__PURE__*/_createClass(
 /**
  * Defines a license request
  *
@@ -8428,48 +8127,46 @@ var LicenseRequest =
  */
 function LicenseRequest(url, method, responseType, headers, withCredentials, messageType, sessionId, data) {
   _classCallCheck(this, LicenseRequest);
-
   /**
    * The license request url
    */
   this.url = url;
+
   /**
    * The HTTP method
    */
-
   this.method = method;
+
   /**
    * The HTTP response type
    */
-
   this.responseType = responseType;
+
   /**
    * The HTP request headers
    */
-
   this.headers = headers;
+
   /**
    * Wether request is done using credentials (cross-site cookies)
    */
-
   this.withCredentials = withCredentials;
+
   /**
    * The license request message type (see https://www.w3.org/TR/encrypted-media/#dom-mediakeymessagetype)
    */
-
   this.messageType = messageType;
+
   /**
    * The corresponding EME session ID
    */
-
   this.sessionId = sessionId;
+
   /**
    * The license request data
    */
-
   this.data = data;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (LicenseRequest);
 
 /***/ }),
@@ -8483,8 +8180,12 @@ function LicenseRequest(url, method, responseType, headers, withCredentials, mes
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8515,11 +8216,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc Defines a license response
  */
-var LicenseResponse =
+var LicenseResponse = /*#__PURE__*/_createClass(
 /**
  * Defines a license request
  *
@@ -8528,23 +8228,21 @@ var LicenseResponse =
  */
 function LicenseResponse(url, headers, data) {
   _classCallCheck(this, LicenseResponse);
-
   /**
    * The url that was loaded, that can be redirected from original request url
    */
   this.url = url;
+
   /**
    * The HTP response headers
    */
-
   this.headers = headers;
+
   /**
    * The license response data
    */
-
   this.data = data;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (LicenseResponse);
 
 /***/ }),
@@ -8558,8 +8256,12 @@ function LicenseResponse(url, headers, data) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8590,12 +8292,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc A media capability
  * @ignore
  */
-var MediaCapability =
+var MediaCapability = /*#__PURE__*/_createClass(
 /**
  * @param {string} contentType MIME type and codecs (RFC6386)
  * @param {string} robustness
@@ -8604,11 +8305,9 @@ var MediaCapability =
  */
 function MediaCapability(contentType, robustness) {
   _classCallCheck(this, MediaCapability);
-
   this.contentType = contentType;
   this.robustness = robustness;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (MediaCapability);
 
 /***/ }),
@@ -8622,8 +8321,12 @@ function MediaCapability(contentType, robustness) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8654,12 +8357,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc NeedKey
  * @ignore
  */
-var NeedKey =
+var NeedKey = /*#__PURE__*/_createClass(
 /**
  * @param {ArrayBuffer} initData the initialization data
  * @param {string} initDataType initialization data type
@@ -8667,11 +8369,9 @@ var NeedKey =
  */
 function NeedKey(initData, initDataType) {
   _classCallCheck(this, NeedKey);
-
   this.initData = initData;
   this.initDataType = initDataType;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (NeedKey);
 
 /***/ }),
@@ -8685,8 +8385,12 @@ function NeedKey(initData, initDataType) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8717,19 +8421,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @class
  * @ignore
  */
-var DashJSError = function DashJSError(code, message, data) {
+var DashJSError = /*#__PURE__*/_createClass(function DashJSError(code, message, data) {
   _classCallCheck(this, DashJSError);
-
   this.code = code || null;
   this.message = message || null;
   this.data = data || null;
-};
-
+});
 /* harmony default export */ __webpack_exports__["default"] = (DashJSError);
 
 /***/ }),
@@ -8745,8 +8446,12 @@ var DashJSError = function DashJSError(code, message, data) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HTTPRequest", function() { return HTTPRequest; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HTTPRequestTrace", function() { return HTTPRequestTrace; });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8777,20 +8482,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @classdesc This Object holds reference to the HTTPRequest for manifest, fragment and xlink loading.
  * Members which are not defined in ISO23009-1 Annex D should be prefixed by a _ so that they are ignored
  * by Metrics Reporting code.
  * @ignore
  */
-var HTTPRequest =
+var HTTPRequest = /*#__PURE__*/_createClass(
 /**
  * @class
  */
 function HTTPRequest() {
   _classCallCheck(this, HTTPRequest);
-
   /**
    * Identifier of the TCP connection on which the HTTP request was sent.
    * @public
@@ -8808,111 +8511,93 @@ function HTTPRequest() {
    * - other
    * @public
    */
-
   this.type = null;
   /**
    * The original URL (before any redirects or failures)
    * @public
    */
-
   this.url = null;
   /**
    * The actual URL requested, if different from above
    * @public
    */
-
   this.actualurl = null;
   /**
    * The contents of the byte-range-spec part of the HTTP Range header.
    * @public
    */
-
   this.range = null;
   /**
    * Real-Time | The real time at which the request was sent.
    * @public
    */
-
   this.trequest = null;
   /**
    * Real-Time | The real time at which the first byte of the response was received.
    * @public
    */
-
   this.tresponse = null;
   /**
    * The HTTP response code.
    * @public
    */
-
   this.responsecode = null;
   /**
    * The duration of the throughput trace intervals (ms), for successful requests only.
    * @public
    */
-
   this.interval = null;
   /**
    * Throughput traces, for successful requests only.
    * @public
    */
-
   this.trace = [];
+
   /**
    * Type of stream ("audio" | "video" etc..)
    * @public
    */
-
   this._stream = null;
   /**
    * Real-Time | The real time at which the request finished.
    * @public
    */
-
   this._tfinish = null;
   /**
    * The duration of the media requests, if available, in seconds.
    * @public
    */
-
   this._mediaduration = null;
   /**
    * The media segment quality
    * @public
    */
-
   this._quality = null;
   /**
    * all the response headers from request.
    * @public
    */
-
   this._responseHeaders = null;
   /**
    * The selected service location for the request. string.
    * @public
    */
-
   this._serviceLocation = null;
   /**
    * The type of the loader that was used. Distinguish between fetch loader and xhr loader
    */
-
   this._fileLoaderType = null;
-};
+});
 /**
  * @classdesc This Object holds reference to the progress of the HTTPRequest.
  * @ignore
  */
-
-
-var HTTPRequestTrace =
+var HTTPRequestTrace = /*#__PURE__*/_createClass(
 /**
  * @class
  */
 function HTTPRequestTrace() {
   _classCallCheck(this, HTTPRequestTrace);
-
   /**
    * Real-Time | Measurement stream start.
    * @public
@@ -8922,16 +8607,13 @@ function HTTPRequestTrace() {
    * Measurement stream duration (ms).
    * @public
    */
-
   this.d = null;
   /**
    * List of integers counting the bytes received in each trace interval within the measurement stream.
    * @public
    */
-
   this.b = [];
-};
-
+});
 HTTPRequest.GET = 'GET';
 HTTPRequest.HEAD = 'HEAD';
 HTTPRequest.MPD_TYPE = 'MPD';

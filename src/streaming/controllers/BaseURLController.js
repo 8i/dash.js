@@ -37,6 +37,7 @@ import FactoryMaker from '../../core/FactoryMaker';
 import EventBus from '../../core/EventBus';
 import Events from '../../core/events/Events';
 import MediaPlayerEvents from '../MediaPlayerEvents';
+import {offsetToSeconds} from '../../dash/utils/TimelineConverter';
 
 function BaseURLController() {
 

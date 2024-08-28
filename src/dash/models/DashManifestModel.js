@@ -50,6 +50,7 @@ import Errors from '../../core/errors/Errors';
 import {THUMBNAILS_SCHEME_ID_URIS} from '../../streaming/thumbnail/ThumbnailTracks';
 import MpdLocation from '../vo/MpdLocation';
 import PatchLocation from '../vo/PatchLocation';
+import {offsetToSeconds} from '../utils/TimelineConverter';
 
 function DashManifestModel() {
     let instance,

@@ -7,10 +7,10 @@
     "main": "dist/dash.all.min.js",
     "types": "index.d.ts",
     "scripts": {
-        "dev": "tsc && webpack --config build/webpack.dev.js --mode development --watch --progress",
+        "dev": "webpack --config build/webpack.dev.js --mode development --watch --progress",
         "start": "webpack serve --config build/webpack.dev.js",
         "lint": "eslint src/**/*.js test/unit/mocks/*.js test/unit/*.js --fix",
-        "build": "tsc && rimraf dist && webpack --config build/webpack.prod.js",
+        "build": "rimraf dist && webpack --config build/webpack.prod.js",
         "postbuild": "cp index.d.ts dash.d.ts",
         "doc": "jsdoc -c build/jsdoc/jsdoc_conf.json -d docs/jsdoc",
         "test": "karma start karma.unit.conf.js",

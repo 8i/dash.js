@@ -425,7 +425,7 @@ function Stream(config) {
     function _isMediaSupported(mediaInfo) {
         const type = mediaInfo ? mediaInfo.type : null;
         let msg;
-        
+
         if (type === Constants.MESH) {
             // TODO: Validate the mime-type to make sure we actually support it
             return true;
@@ -777,7 +777,7 @@ function Stream(config) {
                 const mediaInfo = streamProcessors[i].getMediaInfo();
                 if (type === Constants.AUDIO ||
                     type === Constants.VIDEO ||
-                    type === Constants.MESH  ||
+                    type === Constants.MESH ||
                     (type === Constants.TEXT && mediaInfo.isFragmented)) {
                     let mediaInfo = streamProcessors[i].getMediaInfo();
                     if (mediaInfo) {
@@ -827,7 +827,7 @@ function Stream(config) {
         // if there is at least one buffer controller that has not completed buffering yet do nothing
         for (let i = 0; i < ln; i++) {
             //if audio or video buffer is not buffering completed state, do not send STREAM_BUFFERING_COMPLETED
-            if (!processors[i].isBufferingCompleted() && (processors[i].getType() === Constants.AUDIO || processors[i].getType() === Constants.VIDEO  || processors[i].getType() === Constants.MESH)) {
+            if (!processors[i].isBufferingCompleted() && (processors[i].getType() === Constants.AUDIO || processors[i].getType() === Constants.VIDEO || processors[i].getType() === Constants.MESH)) {
                 logger.debug('onBufferingCompleted - One streamProcessor has finished but', processors[i].getType(), 'one is not buffering completed');
                 return;
             }

@@ -46,6 +46,7 @@ class CoreEvents extends EventsBase {
         this.BYTES_APPENDED_END_FRAGMENT = 'bytesAppendedEndFragment';
         this.BUFFER_REPLACEMENT_STARTED = 'bufferReplacementStarted';
         this.CHECK_FOR_EXISTENCE_COMPLETED = 'checkForExistenceCompleted';
+        this.CMSD_STATIC_HEADER = 'cmsdStaticHeader';
         this.CURRENT_TRACK_CHANGED = 'currentTrackChanged';
         this.DATA_UPDATE_COMPLETED = 'dataUpdateCompleted';
         this.INBAND_EVENTS = 'inbandEvents';
@@ -64,8 +65,10 @@ class CoreEvents extends EventsBase {
         this.QUOTA_EXCEEDED = 'quotaExceeded';
         this.SEGMENT_LOCATION_BLACKLIST_ADD = 'segmentLocationBlacklistAdd';
         this.SEGMENT_LOCATION_BLACKLIST_CHANGED = 'segmentLocationBlacklistChanged';
-        this.SERVICE_LOCATION_BLACKLIST_ADD = 'serviceLocationBlacklistAdd';
-        this.SERVICE_LOCATION_BLACKLIST_CHANGED = 'serviceLocationBlacklistChanged';
+        this.SERVICE_LOCATION_BASE_URL_BLACKLIST_ADD = 'serviceLocationBlacklistAdd';
+        this.SERVICE_LOCATION_BASE_URL_BLACKLIST_CHANGED = 'serviceLocationBlacklistChanged';
+        this.SERVICE_LOCATION_LOCATION_BLACKLIST_ADD = 'serviceLocationLocationBlacklistAdd';
+        this.SERVICE_LOCATION_LOCATION_BLACKLIST_CHANGED = 'serviceLocationLocationBlacklistChanged';
         this.SET_FRAGMENTED_TEXT_AFTER_DISABLED = 'setFragmentedTextAfterDisabled';
         this.SET_NON_FRAGMENTED_TEXT = 'setNonFragmentedText';
         this.SOURCE_BUFFER_ERROR = 'sourceBufferError';

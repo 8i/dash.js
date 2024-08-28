@@ -7,103 +7,18 @@
 		exports["dashjs"] = factory();
 	else
 		root["dashjs"] = factory();
-})(window, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/dist/";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/mss/index.js");
-/******/ })
-/************************************************************************/
-/******/ ({
+})(self, function() {
+return /******/ (function() { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
 /***/ "./externals/BigInteger.js":
 /*!*********************************!*\
   !*** ./externals/BigInteger.js ***!
   \*********************************/
-/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = function (undefined) {
+/* module decorator */ module = __webpack_require__.nmd(module);
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = function (undefined) {
   "use strict";
 
   var BASE = 1e7,
@@ -1494,73 +1409,8 @@ if (true) {
   !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
     return bigInt;
   }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/module.js */ "./node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/module.js")(module)))
-
-/***/ }),
-
-/***/ "./node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-
-/***/ "./node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/module.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/module.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if (!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if (!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
 
 /***/ }),
 
@@ -1568,8 +1418,7 @@ module.exports = function(module) {
 /*!***************************************!*\
   !*** ./src/core/errors/ErrorsBase.js ***!
   \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1639,8 +1488,7 @@ var ErrorsBase = /*#__PURE__*/function () {
 /*!***************************************!*\
   !*** ./src/core/events/EventsBase.js ***!
   \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1710,8 +1558,7 @@ var EventsBase = /*#__PURE__*/function () {
 /*!**********************************************!*\
   !*** ./src/mss/MssFragmentInfoController.js ***!
   \**********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1807,8 +1654,8 @@ function MssFragmentInfoController(config) {
     var timescale = adaptation.SegmentTemplate.timescale;
     var request = new _streaming_vo_FragmentRequest__WEBPACK_IMPORTED_MODULE_0__["default"]();
     request.mediaType = type;
-    request.type = _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_1__["HTTPRequest"].MSS_FRAGMENT_INFO_SEGMENT_TYPE;
-    // request.range = segment.mediaRange;
+    request.type = _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_1__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE; // request.range = segment.mediaRange;
+
     request.startTime = segment.t / timescale;
     request.duration = segment.d / timescale;
     request.timescale = timescale;
@@ -1894,8 +1741,7 @@ MssFragmentInfoController.__dashjs_factory_name = 'MssFragmentInfoController';
 /*!*********************************************!*\
   !*** ./src/mss/MssFragmentMoofProcessor.js ***!
   \*********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2236,8 +2082,7 @@ MssFragmentMoofProcessor.__dashjs_factory_name = 'MssFragmentMoofProcessor';
 /*!*********************************************!*\
   !*** ./src/mss/MssFragmentMoovProcessor.js ***!
   \*********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2806,8 +2651,7 @@ MssFragmentMoovProcessor.__dashjs_factory_name = 'MssFragmentMoovProcessor';
 /*!*****************************************!*\
   !*** ./src/mss/MssFragmentProcessor.js ***!
   \*****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2939,12 +2783,12 @@ function MssFragmentProcessor(config) {
     ISOBoxer.addBoxProcessor('saio', saioProcessor);
     ISOBoxer.addBoxProcessor('saiz', saizProcessor);
     ISOBoxer.addBoxProcessor('senc', sencProcessor);
-    mssFragmentMoovProcessor = Object(_MssFragmentMoovProcessor__WEBPACK_IMPORTED_MODULE_1__["default"])(context).create({
+    mssFragmentMoovProcessor = (0,_MssFragmentMoovProcessor__WEBPACK_IMPORTED_MODULE_1__["default"])(context).create({
       protectionController: protectionController,
       constants: config.constants,
       ISOBoxer: ISOBoxer
     });
-    mssFragmentMoofProcessor = Object(_MssFragmentMoofProcessor__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create({
+    mssFragmentMoofProcessor = (0,_MssFragmentMoofProcessor__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create({
       dashMetrics: dashMetrics,
       playbackController: playbackController,
       ISOBoxer: ISOBoxer,
@@ -2963,7 +2807,7 @@ function MssFragmentProcessor(config) {
     if (e.request.type === 'MediaSegment') {
       // MediaSegment => convert to Smooth Streaming moof format
       mssFragmentMoofProcessor.convertFragment(e, streamProcessor);
-    } else if (e.request.type === _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_2__["HTTPRequest"].MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
+    } else if (e.request.type === _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_2__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
       // FragmentInfo (live) => update segments list
       mssFragmentMoofProcessor.updateSegmentList(e, streamProcessor);
 
@@ -2987,8 +2831,7 @@ MssFragmentProcessor.__dashjs_factory_name = 'MssFragmentProcessor';
 /*!*******************************!*\
   !*** ./src/mss/MssHandler.js ***!
   \*******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -3046,25 +2889,18 @@ function MssHandler(config) {
   var events = config.events;
   var constants = config.constants;
   var initSegmentType = config.initSegmentType;
-  var dashMetrics = config.dashMetrics;
   var playbackController = config.playbackController;
   var streamController = config.streamController;
-  var protectionController = config.protectionController;
-  var mssFragmentProcessor = Object(_MssFragmentProcessor__WEBPACK_IMPORTED_MODULE_3__["default"])(context).create({
-    dashMetrics: dashMetrics,
-    playbackController: playbackController,
-    protectionController: protectionController,
-    streamController: streamController,
-    eventBus: eventBus,
-    constants: constants,
-    ISOBoxer: config.ISOBoxer,
-    debug: config.debug,
-    errHandler: config.errHandler
-  });
-  var mssParser, fragmentInfoControllers, instance;
+  var mssParser, mssFragmentProcessor, fragmentInfoControllers, instance;
+
   function setup() {
     fragmentInfoControllers = [];
   }
+
+  function createMssFragmentProcessor() {
+    mssFragmentProcessor = (0,_MssFragmentProcessor__WEBPACK_IMPORTED_MODULE_3__["default"])(context).create(config);
+  }
+
   function getStreamProcessor(type) {
     return streamController.getActiveStreamProcessors().filter(function (processor) {
       return processor.getType() === type;
@@ -3096,7 +2932,7 @@ function MssHandler(config) {
       if (processor.getType() === constants.VIDEO || processor.getType() === constants.AUDIO || processor.getType() === constants.TEXT) {
         var fragmentInfoController = getFragmentInfoController(processor.getType());
         if (!fragmentInfoController) {
-          fragmentInfoController = Object(_MssFragmentInfoController__WEBPACK_IMPORTED_MODULE_2__["default"])(context).create({
+          fragmentInfoController = (0,_MssFragmentInfoController__WEBPACK_IMPORTED_MODULE_2__["default"])(context).create({
             streamProcessor: processor,
             baseURLController: config.baseURLController,
             debug: config.debug
@@ -3155,7 +2991,8 @@ function MssHandler(config) {
 
     // Process moof to transcode it from MSS to DASH (or to update segment timeline for SegmentInfo fragments)
     mssFragmentProcessor.processFragment(e, streamProcessor);
-    if (e.request.type === _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__["HTTPRequest"].MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
+
+    if (e.request.type === _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
       // If FragmentInfo loaded, then notify corresponding MssFragmentInfoController
       var fragmentInfoController = getFragmentInfoController(e.request.mediaType);
       if (fragmentInfoController) {
@@ -3215,12 +3052,13 @@ function MssHandler(config) {
     stopFragmentInfoControllers();
   }
   function createMssParser() {
-    mssParser = Object(_parser_MssParser__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create(config);
+    mssParser = (0,_parser_MssParser__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create(config);
     return mssParser;
   }
   instance = {
     reset: reset,
     createMssParser: createMssParser,
+    createMssFragmentProcessor: createMssFragmentProcessor,
     registerEvents: registerEvents
   };
   setup();
@@ -3238,8 +3076,7 @@ dashjs.FactoryMaker.updateClassFactory(MssHandler.__dashjs_factory_name, factory
 /*!*************************************!*\
   !*** ./src/mss/errors/MssErrors.js ***!
   \*************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -3319,70 +3156,11 @@ var mssErrors = new MssErrors();
 
 /***/ }),
 
-/***/ "./src/mss/index.js":
-/*!**************************!*\
-  !*** ./src/mss/index.js ***!
-  \**************************/
-/*! exports provided: default, MssHandler */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var _MssHandler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MssHandler */ "./src/mss/MssHandler.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MssHandler", function() { return _MssHandler__WEBPACK_IMPORTED_MODULE_0__["default"]; });
-
-/**
- * The copyright in this software is being made available under the BSD License,
- * included below. This software may be subject to other third party and contributor
- * rights, including patent rights, and no such rights are granted under this license.
- *
- * Copyright (c) 2013, Dash Industry Forum.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice, this
- *  list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *  this list of conditions and the following disclaimer in the documentation and/or
- *  other materials provided with the distribution.
- *  * Neither the name of Dash Industry Forum nor the names of its
- *  contributors may be used to endorse or promote products derived from this software
- *  without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY
- *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- *  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- *  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- *  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *  POSSIBILITY OF SUCH DAMAGE.
- */
-
-
-
-// Shove both of these into the global scope
-var context = typeof window !== 'undefined' && window || global;
-var dashjs = context.dashjs;
-if (!dashjs) {
-  dashjs = context.dashjs = {};
-}
-dashjs.MssHandler = _MssHandler__WEBPACK_IMPORTED_MODULE_0__["default"];
-/* harmony default export */ __webpack_exports__["default"] = (dashjs);
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/global.js */ "./node_modules/.pnpm/webpack@4.47.0_webpack-cli@4.10.0/node_modules/webpack/buildin/global.js")))
-
-/***/ }),
-
 /***/ "./src/mss/parser/MssParser.js":
 /*!*************************************!*\
   !*** ./src/mss/parser/MssParser.js ***!
   \*************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -4171,8 +3949,7 @@ MssParser.__dashjs_factory_name = 'MssParser';
 /*!********************************************!*\
   !*** ./src/streaming/MediaPlayerEvents.js ***!
   \********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -4243,6 +4020,12 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
     _this.AST_IN_FUTURE = 'astInFuture';
 
     /**
+     * Triggered when the BaseURLs have been updated.
+     * @event MediaPlayerEvents#BASE_URLS_UPDATED
+     */
+
+    _this.BASE_URLS_UPDATED = 'baseUrlsUpdated';
+    /**
      * Triggered when the video element's buffer state changes to stalled.
      * Check mediaType in payload to determine type (Video, Audio, FragmentedText).
      * @event MediaPlayerEvents#BUFFER_EMPTY
@@ -4268,6 +4051,24 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      */
     _this.BUFFER_LEVEL_UPDATED = 'bufferLevelUpdated';
 
+    /**
+     * Triggered when a font signalled by a DVB Font Download has been added to the document FontFaceSet interface.
+     * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_ADDED
+     */
+
+    _this.DVB_FONT_DOWNLOAD_ADDED = 'dvbFontDownloadAdded';
+    /**
+     * Triggered when a font signalled by a DVB Font Download has successfully downloaded and the FontFace can be used.
+     * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_COMPLETE
+     */
+
+    _this.DVB_FONT_DOWNLOAD_COMPLETE = 'dvbFontDownloadComplete';
+    /**
+     * Triggered when a font signalled by a DVB Font Download could not be successfully downloaded, so the FontFace will not be used.
+     * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_FAILED
+     */
+
+    _this.DVB_FONT_DOWNLOAD_FAILED = 'dvbFontDownloadFailed';
     /**
      * Triggered when a dynamic stream changed to static (transition phase between Live and On-Demand).
      * @event MediaPlayerEvents#DYNAMIC_TO_STATIC
@@ -4309,7 +4110,19 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
     _this.LOG = 'log';
 
     /**
-     * Triggered when the manifest load is complete
+     * Triggered when the manifest load is started
+     * @event MediaPlayerEvents#MANIFEST_LOADING_STARTED
+     */
+
+    _this.MANIFEST_LOADING_STARTED = 'manifestLoadingStarted';
+    /**
+     * Triggered when the manifest loading is finished, providing the request object information
+     * @event MediaPlayerEvents#MANIFEST_LOADING_FINISHED
+     */
+
+    _this.MANIFEST_LOADING_FINISHED = 'manifestLoadingFinished';
+    /**
+     * Triggered when the manifest load is complete, providing the payload
      * @event MediaPlayerEvents#MANIFEST_LOADED
      */
     _this.MANIFEST_LOADED = 'manifestLoaded';
@@ -4416,6 +4229,24 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      */
     _this.TEXT_TRACK_ADDED = 'textTrackAdded';
 
+    /**
+     * Triggered when a text track should be shown
+     * @event MediaPlayerEvents#CUE_ENTER
+     */
+
+    _this.CUE_ENTER = 'cueEnter';
+    /**
+     * Triggered when a text track should be hidden
+     * @event MediaPlayerEvents#CUE_ENTER
+     */
+
+    _this.CUE_EXIT = 'cueExit';
+    /**
+     * Triggered when a throughput measurement based on the last segment request has been stored
+     * @event MediaPlayerEvents#THROUGHPUT_MEASUREMENT_STORED
+     */
+
+    _this.THROUGHPUT_MEASUREMENT_STORED = 'throughputMeasurementStored';
     /**
      * Triggered when a ttml chunk is parsed.
      * @event MediaPlayerEvents#TTML_PARSED
@@ -4600,6 +4431,24 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      * @event MediaPlayerEvents#CONTENT_STEERING_REQUEST_COMPLETED
      */
     _this.CONTENT_STEERING_REQUEST_COMPLETED = 'contentSteeringRequestCompleted';
+    /**
+     * Triggered when an inband prft (ProducerReferenceTime) boxes has been received.
+     * @event MediaPlayerEvents#INBAND_PRFT
+     */
+
+    _this.INBAND_PRFT = 'inbandPrft';
+    /**
+     * The streaming attribute of the Managed Media Source is true
+     * @type {string}
+     */
+
+    _this.MANAGED_MEDIA_SOURCE_START_STREAMING = 'managedMediaSourceStartStreaming';
+    /**
+     * The streaming attribute of the Managed Media Source is false
+     * @type {string}
+     */
+
+    _this.MANAGED_MEDIA_SOURCE_END_STREAMING = 'managedMediaSourceEndStreaming';
     return _this;
   }
   _inherits(MediaPlayerEvents, _EventsBase);
@@ -4614,8 +4463,7 @@ var mediaPlayerEvents = new MediaPlayerEvents();
 /*!*****************************************!*\
   !*** ./src/streaming/vo/DashJSError.js ***!
   \*****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -4673,8 +4521,7 @@ var DashJSError = /*#__PURE__*/_createClass(function DashJSError(code, message, 
 /*!***************************************!*\
   !*** ./src/streaming/vo/DataChunk.js ***!
   \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -4742,8 +4589,7 @@ function DataChunk() {
 /*!*********************************************!*\
   !*** ./src/streaming/vo/FragmentRequest.js ***!
   \*********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -4822,12 +4668,12 @@ var FragmentRequest = /*#__PURE__*/function () {
   return _createClass(FragmentRequest, [{
     key: "isInitializationRequest",
     value: function isInitializationRequest() {
-      return this.type && this.type === _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__["HTTPRequest"].INIT_SEGMENT_TYPE;
+      return this.type && this.type === _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE;
     }
   }, {
     key: "setInfo",
     value: function setInfo(info) {
-      this.type = info && info.init ? _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__["HTTPRequest"].INIT_SEGMENT_TYPE : _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__["HTTPRequest"].MEDIA_SEGMENT_TYPE;
+      this.type = info && info.init ? _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE : _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.MEDIA_SEGMENT_TYPE;
       this.url = info && info.url ? info.url : null;
       this.range = info && info.range ? info.range.start + '-' + info.range.end : null;
       this.mediaType = info && info.mediaType ? info.mediaType : null;
@@ -4844,19 +4690,16 @@ FragmentRequest.ACTION_COMPLETE = 'complete';
 /*!*************************************************!*\
   !*** ./src/streaming/vo/metrics/HTTPRequest.js ***!
   \*************************************************/
-/*! exports provided: HTTPRequest, HTTPRequestTrace */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HTTPRequest", function() { return HTTPRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HTTPRequestTrace", function() { return HTTPRequestTrace; });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "HTTPRequest": function() { return /* binding */ HTTPRequest; },
+/* harmony export */   "HTTPRequestTrace": function() { return /* binding */ HTTPRequestTrace; }
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -4959,6 +4802,12 @@ function HTTPRequest() {
   this.trace = [];
 
   /**
+   * The CMSD static and dynamic values retrieved from CMSD response headers.
+   * @public
+   */
+
+  this.cmsd = null;
+  /**
    * Type of stream ("audio" | "video" etc..)
    * @public
    */
@@ -5036,6 +4885,156 @@ HTTPRequest.OTHER_TYPE = 'other';
 
 /***/ })
 
-/******/ })["default"];
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			id: moduleId,
+/******/ 			loaded: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	!function() {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/node module decorator */
+/******/ 	!function() {
+/******/ 		__webpack_require__.nmd = function(module) {
+/******/ 			module.paths = [];
+/******/ 			if (!module.children) module.children = [];
+/******/ 			return module;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+!function() {
+"use strict";
+/*!**************************!*\
+  !*** ./src/mss/index.js ***!
+  \**************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MssHandler": function() { return /* reexport safe */ _MssHandler__WEBPACK_IMPORTED_MODULE_0__["default"]; }
+/* harmony export */ });
+/* harmony import */ var _MssHandler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MssHandler */ "./src/mss/MssHandler.js");
+/**
+ * The copyright in this software is being made available under the BSD License,
+ * included below. This software may be subject to other third party and contributor
+ * rights, including patent rights, and no such rights are granted under this license.
+ *
+ * Copyright (c) 2013, Dash Industry Forum.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *  * Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation and/or
+ *  other materials provided with the distribution.
+ *  * Neither the name of Dash Industry Forum nor the names of its
+ *  contributors may be used to endorse or promote products derived from this software
+ *  without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY
+ *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ *  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ *  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ *  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ */
+ // Shove both of these into the global scope
+
+var context = typeof window !== 'undefined' && window || __webpack_require__.g;
+var dashjs = context.dashjs;
+
+if (!dashjs) {
+  dashjs = context.dashjs = {};
+}
+
+dashjs.MssHandler = _MssHandler__WEBPACK_IMPORTED_MODULE_0__["default"];
+/* harmony default export */ __webpack_exports__["default"] = (dashjs);
+
+}();
+__webpack_exports__ = __webpack_exports__["default"];
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
 });
 //# sourceMappingURL=dash.mss.debug.js.map

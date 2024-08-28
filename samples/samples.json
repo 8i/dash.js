@@ -512,6 +512,19 @@
                     "Video",
                     "Audio"
                 ]
+            },
+            {
+                "title": "Subtitle Event Handling",
+                "description": "Example showing how to consume subtitle events raised by dash.js. This way you can render the subtitles yourself.",
+                "href": "captioning/events.html",
+                "image": "lib/img/sintel-1.jpg",
+                "labels": [
+                    "VoD",
+                    "External caption",
+                    "Video",
+                    "Audio",
+                    "Events"
+                ]
             }
         ]
     },
@@ -723,6 +736,28 @@
                 "description": "An example which shows how to connect a TimingObject to a dash.js player to synchronize playback across devices.",
                 "href": "advanced/timing-object.html",
                 "image": "lib/img/bbb-2.jpg",
+                "labels": [
+                    "VoD",
+                    "Video",
+                    "Audio"
+                ]
+            },
+            {
+                "title": "Preload content",
+                "description": "This example shows how to use preload feature of dash.js, which allows to initialize streaming and start downloading the content before the player is attached to an HTML5 video element. This feature can be used to optimize content-insertion on platforms which provide only a single decoder.",
+                "href": "advanced/preload.html",
+                "image": "lib/img/livesim-1.jpg",
+                "labels": [
+                    "VoD",
+                    "Video",
+                    "Audio"
+                ]
+            },
+            {
+                "title": "Segment manipulation",
+                "description": "This sample shows how to use dash.js to modify the segment before the data is appended to the Sourcebuffer.",
+                "href": "advanced/modify-segment-response.html",
+                "image": "lib/img/bbb-1.jpg",
                 "labels": [
                     "VoD",
                     "Video",

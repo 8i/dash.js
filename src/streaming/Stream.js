@@ -225,17 +225,6 @@ function Stream(config) {
         });
     }
 
-    /**
-     *
-     * @param {object} mediaSource
-     * @param {array} previousBufferSinks
-     * @return {Promise<Array>}
-     * @private
-     */
-    function _initializeMedia(mediaSource, previousBufferSinks) {
-        return _commonMediaInitialization(mediaSource, previousBufferSinks);
-    }
-
     function startPreloading(mediaSource, previousBuffers) {
         return new Promise((resolve, reject) => {
 
@@ -266,6 +255,17 @@ function Stream(config) {
      *
      * @param {object} mediaSource
      * @param {array} previousBufferSinks
+     * @return {Promise<Array>}
+     * @private
+     */
+    function _initializeMedia(mediaSource, previousBufferSinks) {
+        return _commonMediaInitialization(mediaSource, previousBufferSinks);
+    }
+
+    /**
+     *
+     * @param {object} mediaSource
+     * @param {array} previousBufferSinks
      * @return {Promise<array>}
      * @private
      */
@@ -277,14 +277,18 @@ function Stream(config) {
             _addInlineEvents();
 
             let element = videoModel.getElement();
-
+            const promises = [];
             MEDIA_TYPES.forEach((mediaType) => {
-                if (mediaType !== Constants.VIDEO || (!element || (element && (/^VIDEO$/i).test(element.nodeName)))) {
-                    _initializeMediaForType(mediaType, mediaSource);
+                // If we are preloading without a video element we can not start texttrack handling.
+                if (!(mediaType === Constants.TEXT && !mediaSource) && (mediaType !== Constants.VIDEO || (!element || (element && (/^VIDEO$/i).test(element.nodeName))))) {
+                    promises.push(_initializeMediaForType(mediaType, mediaSource));
                 }
             });
 
-            _createBufferSinks(previousBufferSinks)
+            Promise.all(promises)
+                .then(() => {
+                    return _createBufferSinks(previousBufferSinks)
+                })
                 .then((bufferSinks) => {
                     isUpdating = false;
 
@@ -296,8 +300,10 @@ function Stream(config) {
                         _checkIfInitializationCompleted();
                     }
 
-                    // All mediaInfos for texttracks are added to the TextSourceBuffer by now. We can start creating the tracks
-                    textController.createTracks(streamInfo);
+                    if (mediaSource) {
+                        // All mediaInfos for texttracks are added to the TextSourceBuffer by now. We can start creating the tracks
+                        textController.createTracks(streamInfo);
+                    }
 
                     resolve(bufferSinks);
                 })
@@ -305,9 +311,28 @@ function Stream(config) {
                     reject(e);
                 });
         });
-
     }
 
+    /**
+     * We call this function if segments have been preloaded without a video element. Once the video element is attached MSE is available
+     * @param mediaSource
+     * @returns {Promise<unknown>}
+     */
+    function initializeForTextWithMediaSource(mediaSource) {
+        return new Promise((resolve, reject) => {
+            _initializeMediaForType(Constants.TEXT, mediaSource)
+                .then(() => {
+                    return createBufferSinkForText()
+                })
+                .then(() => {
+                    textController.createTracks(streamInfo);
+                    resolve()
+                })
+                .catch((e) => {
+                    reject(e);
+                })
+        })
+    }
 
     /**
      * Initialize for a given media type. Creates a corresponding StreamProcessor
@@ -324,7 +349,7 @@ function Stream(config) {
 
         if (!allMediaForType || allMediaForType.length === 0) {
             logger.info('No ' + type + ' data.');
-            return;
+            return Promise.resolve();
         }
 
         if (type === Constants.VIDEO) {
@@ -357,7 +382,7 @@ function Stream(config) {
             return !mediaInfo.isEmbedded;
         });
         if (allMediaForType.length === 0) {
-            return;
+            return Promise.resolve();
         }
 
         if (type === Constants.IMAGE) {
@@ -374,7 +399,7 @@ function Stream(config) {
                 segmentBaseController: config.segmentBaseController
             });
             thumbnailController.initialize();
-            return;
+            return Promise.resolve();
         }
 
         eventBus.trigger(Events.STREAM_INITIALIZING, {
@@ -391,9 +416,10 @@ function Stream(config) {
         if (initialMediaInfo) {
             abrController.updateTopQualityIndex(initialMediaInfo);
             // In case of mixed fragmented and embedded text tracks, check if initial selected text track is not an embedded track
-            streamProcessor.selectMediaInfo((type !== Constants.TEXT || !initialMediaInfo.isEmbedded) ? initialMediaInfo : allMediaForType[0]);
+            return streamProcessor.selectMediaInfo((type !== Constants.TEXT || !initialMediaInfo.isEmbedded) ? initialMediaInfo : allMediaForType[0]);
         }
 
+        return Promise.resolve();
     }
 
     function _isMediaSupported(mediaInfo) {
@@ -426,7 +452,6 @@ function Stream(config) {
 
     /**
      * Creates the StreamProcessor for a given media type.
-     * @param {object} initialMediaInfo
      * @param {array} allMediaForType
      * @param {object} mediaSource
      * @private
@@ -503,6 +528,15 @@ function Stream(config) {
         });
     }
 
+    function createBufferSinkForText() {
+        const sp = _getProcessorByType(Constants.TEXT);
+        if (sp) {
+            return sp.createBufferSinks()
+        }
+
+        return Promise.resolve();
+    }
+
     /**
      * Partially resets some of the Stream elements. This function is called when preloading of streams is canceled or a stream switch occurs.
      * @memberof Stream#
@@ -533,21 +567,38 @@ function Stream(config) {
     }
 
     function setMediaSource(mediaSource) {
-        for (let i = 0; i < streamProcessors.length;) {
-            if (_isMediaSupported(streamProcessors[i].getMediaInfo())) {
-                streamProcessors[i].setMediaSource(mediaSource);
-                i++;
-            } else {
-                streamProcessors[i].reset();
-                streamProcessors.splice(i, 1);
+        return new Promise((resolve, reject) => {
+            const promises = [];
+            for (let i = 0; i < streamProcessors.length;) {
+                if (_isMediaSupported(streamProcessors[i].getMediaInfo())) {
+                    promises.push(streamProcessors[i].setMediaSource(mediaSource));
+                    i++;
+                } else {
+                    streamProcessors[i].reset();
+                    streamProcessors.splice(i, 1);
+                }
             }
-        }
 
-        if (streamProcessors.length === 0) {
-            const msg = 'No streams to play.';
-            errHandler.error(new DashJSError(Errors.MANIFEST_ERROR_ID_NOSTREAMS_CODE, msg + 'nostreams', manifestModel.getValue()));
-            logger.fatal(msg);
-        }
+            Promise.all(promises)
+                .then(() => {
+                    for (let i = 0; i < streamProcessors.length; i++) {
+                        //Adding of new tracks to a stream processor isn't guaranteed by the spec after the METADATA_LOADED state
+                        //so do this after the buffers are created above.
+                        streamProcessors[i].dischargePreBuffer();
+                    }
+
+                    if (streamProcessors.length === 0) {
+                        const msg = 'No streams to play.';
+                        errHandler.error(new DashJSError(Errors.MANIFEST_ERROR_ID_NOSTREAMS_CODE, msg + 'nostreams', manifestModel.getValue()));
+                        logger.fatal(msg);
+                    }
+                    resolve();
+                })
+                .catch((e) => {
+                    logger.error(e);
+                    reject(e);
+                })
+        })
     }
 
     function resetInitialSettings(keepBuffers) {
@@ -858,6 +909,12 @@ function Stream(config) {
                 const currentMediaInfo = streamProcessor.getMediaInfo();
                 promises.push(streamProcessor.updateStreamInfo(streamInfo));
                 let allMediaForType = adapter.getAllMediaInfoForType(streamInfo, streamProcessor.getType());
+
+                // Filter out embedded text track before updating media info in  StreamProcessor
+                allMediaForType = allMediaForType.filter(mediaInfo => {
+                    return !mediaInfo.isEmbedded;
+                });
+
                 // Check if AdaptationSet has not been removed in MPD update
                 if (allMediaForType) {
                     // Remove the current mediaInfo objects before adding the updated ones
@@ -883,7 +940,7 @@ function Stream(config) {
                         let processor = getProcessorForMediaInfo(trackChangedEvent.oldMediaInfo);
                         if (!processor) return;
                         promises.push(processor.prepareTrackSwitch());
-                        processor.selectMediaInfo(mediaInfo);
+                        promises.push(processor.selectMediaInfo(mediaInfo));
                     }
 
                     return Promise.all(promises)
@@ -937,7 +994,7 @@ function Stream(config) {
         }
 
         // If the current period is unencrypted and the upcoming one is encrypted we need to reset sourcebuffers.
-        return !!(adaptation.ContentProtection || (adaptation.Representation && adaptation.Representation.length > 0 && adaptation.Representation[0].ContentProtection));
+        return !!(adaptation.ContentProtection || (adaptation.Representation_asArray && adaptation.Representation_asArray.length > 0 && adaptation.Representation_asArray[0].ContentProtection));
     }
 
     function compareCodecs(newStream, type, previousStream = null) {
@@ -1005,6 +1062,7 @@ function Stream(config) {
         getHasAudioTrack,
         getHasVideoTrack,
         startPreloading,
+        initializeForTextWithMediaSource,
         getThumbnailController,
         getBitrateListFor,
         updateData,

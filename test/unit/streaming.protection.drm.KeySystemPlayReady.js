@@ -3,17 +3,14 @@ import BASE64 from '../../externals/base64';
 import Settings from '../../src/core/Settings';
 
 const expect = require('chai').expect;
-const jsdom = require('jsdom').JSDOM;
 
 describe('KeySystemPlayready', function () {
 
 
-    let  context = {};
+    let context = {};
     let settings = Settings(context).getInstance();
-    let keySystem,
-        DOMParser;
+    let keySystem;
     let cdmData = null;
-
 
 
     const protData = {
@@ -25,19 +22,15 @@ describe('KeySystemPlayready', function () {
     describe('Not well initialized', () => {
         beforeEach(function () {
             keySystem = KeySystemPlayReady(context).getInstance();
-            if (typeof DOMParser === 'undefined') {
-                global.DOMParser = new jsdom().window.DOMParser;
-            }
         });
 
         afterEach(function () {
             keySystem = null;
-            global.DOMParser = undefined;
             context = {};
         });
 
         it('should exist', () => {
-            expect(KeySystemPlayReady).to.exist;   // jshint ignore:line
+            expect(KeySystemPlayReady).to.exist;
         });
 
         it('should throw an exception when getting an instance while the config attribute has not been set properly', function () {
@@ -55,15 +48,11 @@ describe('KeySystemPlayready', function () {
 
     describe('Well initialized', () => {
         beforeEach(function () {
-            keySystem = KeySystemPlayReady(context).getInstance({BASE64: BASE64, settings: settings});
-            if (typeof DOMParser === 'undefined') {
-                global.DOMParser = new jsdom().window.DOMParser;
-            }
+            keySystem = KeySystemPlayReady(context).getInstance({ BASE64: BASE64, settings: settings });
         });
 
         afterEach(function () {
             keySystem = null;
-            global.DOMParser = undefined;
             context = {};
         });
 
@@ -78,22 +67,22 @@ describe('KeySystemPlayready', function () {
 
         it('should return null when getCDMData is called and protData is undefined', function () {
             const cdmData = keySystem.getCDMData();
-            expect(cdmData).to.be.null;   // jshint ignore:line
+            expect(cdmData).to.be.null;
         });
 
         it('should return null when getInitData is called without parameter', function () {
             const initData = keySystem.getInitData();
-            expect(initData).to.be.null;   // jshint ignore:line
+            expect(initData).to.be.null;
         });
 
         it('should return null when getLicenseServerURLFromInitData is called without parameter', function () {
             const licenseServerUrl = keySystem.getLicenseServerURLFromInitData();
-            expect(licenseServerUrl).to.be.null;   // jshint ignore:line
+            expect(licenseServerUrl).to.be.null;
         });
 
         it('should return null when getLicenseRequestFromMessage is called without parameter', function () {
             const licenseRequest = keySystem.getLicenseRequestFromMessage();
-            expect(licenseRequest).to.be.undefined;   // jshint ignore:line
+            expect(licenseRequest).to.be.undefined;
         });
 
         it('should return at least Content-Type header when getRequestHeadersFromMessage is called without parameter', function () {
@@ -103,8 +92,8 @@ describe('KeySystemPlayready', function () {
 
         it('should return the correct cdmData', function () {
             cdmData = keySystem.getCDMData(protData.cdmData);
-            expect(keySystem).to.be.defined;   // jshint ignore:line
-            expect(cdmData).to.be.not.null;   // jshint ignore:line
+            expect(keySystem).to.be.defined;
+            expect(cdmData).to.be.not.null;
             expect(cdmData).to.be.instanceOf(ArrayBuffer);
             var cdmDataString = String.fromCharCode.apply(null, new Uint16Array(cdmData));
             expect(cdmDataString).to.equal(expectedCDMData);

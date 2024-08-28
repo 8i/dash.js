@@ -52,6 +52,7 @@ import AbrController from './controllers/AbrController';
 import SchemeLoaderFactory from './net/SchemeLoaderFactory';
 import VideoModel from './models/VideoModel';
 import CmcdModel from './models/CmcdModel';
+import CmsdModel from './models/CmsdModel';
 import DOMStorage from './utils/DOMStorage';
 import Debug from './../core/Debug';
 import Errors from './../core/errors/Errors';
@@ -131,6 +132,7 @@ function MediaPlayer() {
         streamingInitialized,
         playbackInitialized,
         autoPlay,
+        providedStartTime,
         abrController,
         schemeLoaderFactory,
         timelineConverter,
@@ -156,6 +158,7 @@ function MediaPlayer() {
         dashMetrics,
         manifestModel,
         cmcdModel,
+        cmsdModel,
         videoModel,
         uriFragmentModel,
         domStorage,
@@ -174,6 +177,7 @@ function MediaPlayer() {
         playbackInitialized = false;
         streamingInitialized = false;
         autoPlay = true;
+        providedStartTime = NaN;
         protectionController = null;
         offlineController = null;
         protectionData = null;
@@ -335,6 +339,8 @@ function MediaPlayer() {
 
             cmcdModel = CmcdModel(context).getInstance();
 
+            cmsdModel = CmsdModel(context).getInstance();
+
             dashMetrics = DashMetrics(context).getInstance({
                 settings: settings
             });
@@ -355,7 +361,8 @@ function MediaPlayer() {
             }
 
             baseURLController.setConfig({
-                adapter
+                adapter,
+                contentSteeringController
             });
 
             serviceDescriptionController.setConfig({
@@ -388,6 +395,17 @@ function MediaPlayer() {
                 playbackController,
                 serviceDescriptionController
             });
+
+            contentSteeringController.setConfig({
+                adapter,
+                errHandler,
+                dashMetrics,
+                mediaPlayerModel,
+                manifestModel,
+                serviceDescriptionController,
+                eventBus,
+                requestModifier: RequestModifier(context).getInstance()
+            })
 
             restoreDefaultUTCTimingSources();
             setAutoPlay(autoPlay !== undefined ? autoPlay : true);
@@ -520,6 +538,28 @@ function MediaPlayer() {
 
     ---------------------------------------------------------------------------
     */
+
+    /**
+     * Causes the player to begin streaming the media as set by the {@link module:MediaPlayer#attachSource attachSource()}
+     * method in preparation for playing. It specifically does not require a view to be attached with {@link module:MediaPlayer#attachSource attachView()} to begin preloading.
+     * When a view is attached after preloading, the buffered data is transferred to the attached mediaSource buffers.
+     *
+     * @see {@link module:MediaPlayer#attachSource attachSource()}
+     * @see {@link module:MediaPlayer#attachView attachView()}
+     * @memberof module:MediaPlayer
+     * @throws {@link module:MediaPlayer~SOURCE_NOT_ATTACHED_ERROR SOURCE_NOT_ATTACHED_ERROR} if called before attachSource function
+     * @instance
+     */
+    function preload() {
+        if (videoModel.getElement() || streamingInitialized) {
+            return;
+        }
+        if (source) {
+            _initializePlayback(providedStartTime);
+        } else {
+            throw SOURCE_NOT_ATTACHED_ERROR;
+        }
+    }
 
     /**
      * The play method initiates playback of the media defined by the {@link module:MediaPlayer#attachSource attachSource()} method.
@@ -1390,7 +1430,7 @@ function MediaPlayer() {
             _detectMss();
 
             if (streamController) {
-                streamController.switchToVideoElement();
+                streamController.switchToVideoElement(providedStartTime);
             }
         }
 
@@ -1398,7 +1438,7 @@ function MediaPlayer() {
             _resetPlaybackControllers();
         }
 
-        _initializePlayback();
+        _initializePlayback(providedStartTime);
     }
 
     /**
@@ -1574,15 +1614,16 @@ function MediaPlayer() {
 
     /**
      * @param {MediaInfo} track - instance of {@link MediaInfo}
+     * @param {boolean} [noSettingsSave] - specify if settings from the track must not be saved for incoming track selection
      * @memberof module:MediaPlayer
      * @throws {@link module:MediaPlayer~STREAMING_NOT_INITIALIZED_ERROR STREAMING_NOT_INITIALIZED_ERROR} if called before initializePlayback function
      * @instance
      */
-    function setCurrentTrack(track) {
+    function setCurrentTrack(track, noSettingsSave = false) {
         if (!streamingInitialized) {
             throw STREAMING_NOT_INITIALIZED_ERROR;
         }
-        mediaController.setTrack(track);
+        mediaController.setTrack(track, noSettingsSave);
     }
 
     /*
@@ -1769,9 +1810,7 @@ function MediaPlayer() {
     ---------------------------------------------------------------------------
     */
     /**
-     * Allows application to retrieve a manifest.  Manifest loading is asynchro
-     * nous and
-     * requires the app-provided callback function
+     * Allows application to retrieve a manifest.  Manifest loading is asynchronous and requires the app-provided callback function
      *
      * @param {string} url - url the manifest url
      * @param {function} callback - A Callback function provided when retrieving manifests
@@ -1848,12 +1887,15 @@ function MediaPlayer() {
             uriFragmentModel.initialize(urlOrManifest);
         }
 
-        if (startTime == null || isNaN(startTime)) {
+        if (startTime == null) {
             startTime = NaN;
         }
 
-        startTime = Math.max(0, startTime);
+        if (!isNaN(startTime)) {
+            startTime = Math.max(0, startTime);
+        }
 
+        providedStartTime = startTime;
         source = urlOrManifest;
 
         if (streamingInitialized || playbackInitialized) {
@@ -1861,8 +1903,44 @@ function MediaPlayer() {
         }
 
         if (isReady()) {
-            _initializePlayback(startTime);
+            _initializePlayback(providedStartTime);
         }
+    }
+
+    /**
+     *  Reload the manifest that the player is currently using.
+     *
+     *  @memberof module:MediaPlayer
+     *  @param {function} callback - A Callback function provided when retrieving manifests
+     *  @instance
+     */
+    function refreshManifest(callback) {
+        if (!mediaPlayerInitialized) {
+            throw MEDIA_PLAYER_NOT_INITIALIZED_ERROR;
+        }
+
+        if (!isReady()) {
+            return callback(null, SOURCE_NOT_ATTACHED_ERROR);
+        }
+
+        let self = this;
+
+        if (typeof callback === 'function') {
+            const handler = function (e) {
+                eventBus.off(Events.INTERNAL_MANIFEST_LOADED, handler, self);
+
+                if (e.error) {
+                    callback(null, e.error);
+                    return;
+                }
+
+                callback(e.manifest);
+            };
+
+            eventBus.on(Events.INTERNAL_MANIFEST_LOADED, handler, self);
+        }
+
+        streamController.refreshManifest();
     }
 
     /**
@@ -2022,6 +2100,39 @@ function MediaPlayer() {
         }
     }
 
+
+    /**
+     * Returns all BaseURLs that are available including synthesized elements (e.g by content steering)
+     * @returns {BaseURL[]}
+     */
+    function getAvailableBaseUrls() {
+        const manifest = manifestModel.getValue();
+
+        if (!manifest) {
+            return [];
+        }
+
+        return baseURLController.getBaseUrls(manifest);
+    }
+
+
+    /**
+     * Returns the available location elements including synthesized elements (e.g by content steering)
+     * @returns {MpdLocation[]}
+     */
+    function getAvailableLocations() {
+        const manifest = manifestModel.getValue();
+
+        if (!manifest) {
+            return [];
+        }
+
+        const manifestLocations = adapter.getLocation(manifest);
+        const synthesizedElements = contentSteeringController.getSynthesizedLocationElements(manifestLocations);
+
+        return manifestLocations.concat(synthesizedElements);
+    }
+
     //***********************************
     // PRIVATE METHODS
     //***********************************
@@ -2050,6 +2161,7 @@ function MediaPlayer() {
         }
         textController.reset();
         cmcdModel.reset();
+        cmsdModel.reset();
     }
 
     function _createPlaybackControllers() {
@@ -2066,6 +2178,7 @@ function MediaPlayer() {
                 manifestModel,
                 adapter,
                 mediaController,
+                baseURLController,
                 videoModel,
                 settings
             });
@@ -2137,6 +2250,7 @@ function MediaPlayer() {
             domStorage,
             mediaPlayerModel,
             customParametersModel,
+            cmsdModel,
             dashMetrics,
             adapter,
             videoModel,
@@ -2149,24 +2263,16 @@ function MediaPlayer() {
             playbackController
         });
 
-        contentSteeringController.setConfig({
-            adapter,
-            errHandler,
-            dashMetrics,
-            mediaPlayerModel,
-            manifestModel,
-            abrController,
-            eventBus,
-            requestModifier: RequestModifier(context).getInstance()
-        })
+        cmsdModel.setConfig({});
 
-        // initialises controller
+        // initializes controller
         abrController.initialize();
         streamController.initialize(autoPlay, protectionData);
         textController.initialize();
         gapController.initialize();
         catchupController.initialize();
         cmcdModel.initialize();
+        cmsdModel.initialize();
         contentSteeringController.initialize();
         segmentBaseController.initialize();
     }
@@ -2294,10 +2400,11 @@ function MediaPlayer() {
             const manifestUpdater = ManifestUpdater(context).create();
 
             manifestUpdater.setConfig({
-                manifestModel: manifestModel,
-                adapter: adapter,
-                manifestLoader: manifestLoader,
-                errHandler: errHandler
+                manifestModel,
+                adapter,
+                manifestLoader,
+                errHandler,
+                contentSteeringController
             });
 
             offlineController = OfflineController(context).create({
@@ -2379,7 +2486,9 @@ function MediaPlayer() {
         extend,
         attachView,
         attachSource,
+        refreshManifest,
         isReady,
+        preload,
         play,
         isPaused,
         pause,
@@ -2401,6 +2510,8 @@ function MediaPlayer() {
         getActiveStream,
         getDVRWindowSize,
         getDVRSeekOffset,
+        getAvailableBaseUrls,
+        getAvailableLocations,
         getTargetLiveDelay,
         convertToTimeCode,
         formatUTC,

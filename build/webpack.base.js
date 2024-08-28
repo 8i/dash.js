@@ -5,6 +5,7 @@ const out_dir = '../dist';
 
 const config = {
     devtool: 'source-map',
+    target: ['web', 'es5'],
     output: {
         path: path.resolve(__dirname, out_dir),
         publicPath: '/dist/',
@@ -33,7 +34,13 @@ const config = {
                 ]
             }
         ]
-    }
+    },
+    //Webpack 5 no longer polyfills Node.js core modules automatically
+    resolve: {
+        fallback: {
+            stream: require.resolve('stream-browserify'),
+        },
+    },
 }
 
 module.exports = {config};

@@ -3,6 +3,7 @@ import VoHelper from './helpers/VOHelper';
 import Constants from '../../src/streaming/constants/Constants';
 import VideoModelMock from './mocks/VideoModelMock';
 import MediaControllerMock from './mocks/MediaControllerMock';
+import BaseURLControllerMock from './mocks/BaseURLControllerMock';
 import AdapterMock from './mocks/AdapterMock';
 import Settings from '../../src/core/Settings';
 
@@ -18,35 +19,11 @@ describe('TextController', function () {
     const streamInfo = voHelper.getDummyStreamInfo();
     let mediaControllerMock = new MediaControllerMock();
     let dashAdapterMock = new AdapterMock();
+    let baseURLControllerMock = new BaseURLControllerMock();
     const settings = Settings(context).getInstance();
     let textController;
 
-    beforeEach(function () {
-        if (typeof document === 'undefined') {
-            global.document = {
-                getElementById: function () {
-                    return 1;
-                },
-                head: {
-                    removeChild: function () {
-                    }
-                }
-            };
-        }
-        if (typeof window === 'undefined') {
-            global.window = {};
-        }
-        if (typeof navigator === 'undefined') {
-            global.navigator = {};
-        }
-    });
-
     afterEach(function () {
-        if (typeof window !== 'undefined' && global !== window) {
-            delete global.document;
-        }
-        delete global.window;
-        delete global.navigator;
         settings.reset();
     });
 
@@ -54,10 +31,13 @@ describe('TextController', function () {
         textController = TextController(context).create({
             videoModel: videoModelMock,
             mediaController: mediaControllerMock,
+            baseURLController: baseURLControllerMock,
             adapter: dashAdapterMock,
             streamInfo,
             settings
         });
+
+        textController.initialize();
 
         textController.initializeForStream(streamInfo);
 

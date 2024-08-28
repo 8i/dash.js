@@ -48,10 +48,6 @@ describe('BufferController', function () {
     const mediaInfo = { codec: 'video/webm; codecs="vp8, vorbis"' };
 
     beforeEach(function () {
-        global.navigator = {
-            userAgent: 'node.js'
-        };
-
         mediaSourceMock = new MediaSourceMock();
         bufferController = BufferController(context).create({
             streamInfo: streamInfo,
@@ -71,8 +67,6 @@ describe('BufferController', function () {
     });
 
     afterEach(function () {
-        delete global.navigator;
-
         bufferController.reset();
         bufferController = null;
 
@@ -90,7 +84,7 @@ describe('BufferController', function () {
         it('should not create a preBufferSink if mediaInfo is undefined', function (done) {
             bufferController.createBufferSink()
                 .then((sink) => {
-                    expect(sink).to.be.null;  // jshint ignore:line
+                    expect(sink).to.be.null;
                     done();
                 })
                 .catch((e) => {
@@ -162,10 +156,10 @@ describe('BufferController', function () {
             bufferController.createBufferSink(mediaInfo)
                 .then(() => {
                     const buffer = mediaSourceMock.buffers[0];
-                    expect(buffer).to.exist; // jshint ignore:line
+                    expect(buffer).to.exist;
 
                     bufferController.reset(false, false);
-                    expect(buffer.aborted).to.be.true; // jshint ignore:line
+                    expect(buffer.aborted).to.be.true;
                     done();
                 })
                 .catch((e) => {
@@ -205,7 +199,7 @@ describe('BufferController', function () {
             };
             eventBus.on(Events.INIT_FRAGMENT_LOADED, onInitDataLoaded, this);
 
-            expect(mediaSourceMock.buffers[0].chunk).to.be.null; // jshint ignore:line
+            expect(mediaSourceMock.buffers[0].chunk).to.be.null;
             // send event
             eventBus.trigger(Events.INIT_FRAGMENT_LOADED, event);
         });
@@ -238,7 +232,7 @@ describe('BufferController', function () {
             };
             eventBus.on(Events.INIT_FRAGMENT_LOADED, onInitDataLoaded, this);
 
-            expect(cache).to.not.exist; // jshint ignore:line
+            expect(cache).to.not.exist;
             // send event
             eventBus.trigger(Events.INIT_FRAGMENT_LOADED, event);
         });
@@ -273,7 +267,7 @@ describe('BufferController', function () {
             };
             eventBus.on(Events.MEDIA_FRAGMENT_LOADED, onMediaFragmentLoaded, this);
 
-            expect(mediaSourceMock.buffers[0].chunk).to.be.null; // jshint ignore:line
+            expect(mediaSourceMock.buffers[0].chunk).to.be.null;
             // send event
             eventBus.trigger(Events.MEDIA_FRAGMENT_LOADED, event);
         });
@@ -427,7 +421,7 @@ describe('BufferController', function () {
                 end: 11
             });
             let range = bufferController.getRangeAt(10);
-            expect(range).to.be.null; // jshint ignore:line
+            expect(range).to.be.null;
         });
 
         it('should return range of buffered data - time not in range (little gap)', function () {

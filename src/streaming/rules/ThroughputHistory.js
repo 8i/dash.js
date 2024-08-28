@@ -31,12 +31,14 @@
 
 import Constants from '../constants/Constants';
 import FactoryMaker from '../../core/FactoryMaker';
+import EventBus from '../../core/EventBus';
+import MediaPlayerEvents from '../MediaPlayerEvents';
 
 // throughput generally stored in kbit/s
 // latency generally stored in ms
 
 function ThroughputHistory(config) {
-
+    const context = this.context;
     config = config || {};
     // sliding window constants
     const MAX_MEASUREMENTS_TO_KEEP = 20;
@@ -53,6 +55,7 @@ function ThroughputHistory(config) {
     const EWMA_LATENCY_FAST_HALF_LIFE_COUNT = 1;
 
     const settings = config.settings;
+    const eventBus = EventBus(context).getInstance();
 
     let throughputDict,
         latencyDict,
@@ -100,6 +103,18 @@ function ThroughputHistory(config) {
             throughput = Math.round((8 * downloadBytes) / throughputMeasureTime); // bits/ms = kbits/s
         }
 
+        // Get estimated throughput (etp, in kbits/s) from CMSD response headers
+        if (httpRequest.cmsd) {
+            const etp = httpRequest.cmsd.dynamic && httpRequest.cmsd.dynamic.etp ? httpRequest.cmsd.dynamic.etp : null;
+            if (etp) {
+                // Apply weight ratio on etp
+                const etpWeightRatio = settings.get().streaming.cmsd.abr.etpWeightRatio;
+                if (etpWeightRatio > 0 && etpWeightRatio <= 1) {
+                    throughput = (throughput * (1 - etpWeightRatio)) + (etp * etpWeightRatio);
+                }
+            }
+        }
+
         checkSettingsForMediaType(mediaType);
 
         if (isCachedResponse(mediaType, latencyTimeInMilliseconds, downloadTimeInMilliseconds)) {
@@ -117,6 +132,11 @@ function ThroughputHistory(config) {
         }
 
         throughputDict[mediaType].push(throughput);
+        eventBus.trigger(MediaPlayerEvents.THROUGHPUT_MEASUREMENT_STORED, {
+            throughput,
+            mediaType,
+            httpRequest
+        })
         if (throughputDict[mediaType].length > MAX_MEASUREMENTS_TO_KEEP) {
             throughputDict[mediaType].shift();
         }

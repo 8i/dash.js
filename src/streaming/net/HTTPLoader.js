@@ -34,6 +34,7 @@ import {HTTPRequest} from '../vo/metrics/HTTPRequest';
 import FactoryMaker from '../../core/FactoryMaker';
 import DashJSError from '../vo/DashJSError';
 import CmcdModel from '../models/CmcdModel';
+import CmsdModel from '../models/CmsdModel';
 import Utils from '../../core/Utils';
 import Debug from '../../core/Debug';
 import EventBus from '../../core/EventBus';
@@ -70,6 +71,7 @@ function HTTPLoader(cfg) {
         retryRequests,
         downloadErrorToRequestTypeMap,
         cmcdModel,
+        cmsdModel,
         customParametersModel,
         lowLatencyThroughputModel,
         logger;
@@ -80,6 +82,7 @@ function HTTPLoader(cfg) {
         delayedRequests = [];
         retryRequests = [];
         cmcdModel = CmcdModel(context).getInstance();
+        cmsdModel = CmsdModel(context).getInstance();
         lowLatencyThroughputModel = LowLatencyThroughputModel(context).getInstance();
         customParametersModel = CustomParametersModel(context).getInstance();
 
@@ -102,6 +105,7 @@ function HTTPLoader(cfg) {
         let requestStartTime = new Date();
         let lastTraceTime = requestStartTime;
         let lastTraceReceivedCount = 0;
+        let progressTimeout = null;
         let fileLoaderType = null;
         let httpRequest;
 
@@ -109,29 +113,38 @@ function HTTPLoader(cfg) {
             throw new Error('config object is not correct or missing');
         }
 
-        const handleLoaded = function (success) {
-            needFailureReport = false;
-
+        const addHttpRequestMetric = function(success) {
             request.requestStartDate = requestStartTime;
             request.requestEndDate = new Date();
             request.firstByteDate = request.firstByteDate || requestStartTime;
             request.fileLoaderType = fileLoaderType;
 
-            if (!request.checkExistenceOnly) {
-                const responseUrl = httpRequest.response ? httpRequest.response.responseURL : null;
-                const responseStatus = httpRequest.response ? httpRequest.response.status : null;
-                const responseHeaders = httpRequest.response && httpRequest.response.getAllResponseHeaders ? httpRequest.response.getAllResponseHeaders() :
-                    httpRequest.response ? httpRequest.response.responseHeaders : [];
+            const responseUrl = httpRequest.response ? httpRequest.response.responseURL : null;
+            const responseStatus = httpRequest.response ? httpRequest.response.status : null;
+            const responseHeaders = httpRequest.response && httpRequest.response.getAllResponseHeaders ? httpRequest.response.getAllResponseHeaders() :
+                httpRequest.response ? httpRequest.response.responseHeaders : null;
+    
+            const cmsd = responseHeaders && settings.get().streaming.cmsd && settings.get().streaming.cmsd.enabled ? cmsdModel.parseResponseHeaders(responseHeaders, request.mediaType) : null;
+    
+            dashMetrics.addHttpRequest(request, responseUrl, responseStatus, responseHeaders, success ? traces : null, cmsd);
+        }
+    
+        const handleLoaded = function (success) {
+            needFailureReport = false;
 
-                dashMetrics.addHttpRequest(request, responseUrl, responseStatus, responseHeaders, success ? traces : null);
+            addHttpRequestMetric(success);
 
-                if (request.type === HTTPRequest.MPD_TYPE) {
-                    dashMetrics.addManifestUpdate(request);
-                }
+            if (request.type === HTTPRequest.MPD_TYPE) {
+                dashMetrics.addManifestUpdate(request);
+                eventBus.trigger(Events.MANIFEST_LOADING_FINISHED, { request });
             }
         };
 
         const onloadend = function () {
+            if (progressTimeout) {
+                clearTimeout(progressTimeout);
+                progressTimeout = null;
+            }
             if (requests.indexOf(httpRequest) === -1) {
                 return;
             } else {
@@ -178,7 +191,7 @@ function HTTPLoader(cfg) {
                     }));
 
                     if (config.error) {
-                        config.error(request, 'error', httpRequest.response.statusText);
+                        config.error(request, 'error', httpRequest.response.statusText, httpRequest.response);
                     }
 
                     if (config.complete) {
@@ -215,6 +228,21 @@ function HTTPLoader(cfg) {
                 lastTraceReceivedCount = event.loaded;
             }
 
+            if (progressTimeout) {
+                clearTimeout(progressTimeout);
+                progressTimeout = null;
+            }
+
+            if (settings.get().streaming.fragmentRequestProgressTimeout > 0) {
+                progressTimeout = setTimeout(function () {
+                    // No more progress => abort request and treat as an error
+                    logger.warn('Abort request ' + httpRequest.url + ' due to progress timeout');
+                    httpRequest.response.onabort = null;
+                    httpRequest.loader.abort(httpRequest);
+                    onloadend();
+                }, settings.get().streaming.fragmentRequestProgressTimeout);
+            }
+
             if (config.progress && event) {
                 config.progress(event);
             }
@@ -235,6 +263,12 @@ function HTTPLoader(cfg) {
         };
 
         const onabort = function () {
+            addHttpRequestMetric(true);
+
+            if (progressTimeout) {
+                clearTimeout(progressTimeout);
+                progressTimeout = null;
+            }
             if (config.abort) {
                 config.abort(request);
             }
@@ -281,14 +315,25 @@ function HTTPLoader(cfg) {
                 headers = cmcdModel.getHeaderParameters(request);
             }
         }
-        request.url = modifiedUrl;
-        const verb = request.checkExistenceOnly ? HTTPRequest.HEAD : HTTPRequest.GET;
+
         const withCredentials = customParametersModel.getXHRWithCredentialsForType(request.type);
 
+        // Add queryParams that came from pathway cloning
+        if (request.queryParams) {
+            const queryParams = Object.keys(request.queryParams).map((key) => {
+                return {
+                    key,
+                    value: request.queryParams[key]
+                }
+            })
+            modifiedUrl = Utils.addAditionalQueryParameterToUrl(modifiedUrl, queryParams);
+        }
+
+        request.url = modifiedUrl;
 
         httpRequest = {
             url: modifiedUrl,
-            method: verb,
+            method: HTTPRequest.GET,
             withCredentials: withCredentials,
             request: request,
             onload: onload,

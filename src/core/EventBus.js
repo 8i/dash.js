@@ -28,8 +28,8 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import FactoryMaker from './FactoryMaker';
-import MediaPlayerEvents from '../streaming/MediaPlayerEvents';
+import FactoryMaker from './FactoryMaker.js';
+import MediaPlayerEvents from '../streaming/MediaPlayerEvents.js';
 
 const EVENT_PRIORITY_LOW = 0;
 const EVENT_PRIORITY_HIGH = 5000;
@@ -49,7 +49,9 @@ function EventBus() {
 
         let priority = options.priority || EVENT_PRIORITY_LOW;
 
-        if (getHandlerIdx(type, listener, scope) >= 0) return;
+        if (getHandlerIdx(type, listener, scope) >= 0) {
+            return;
+        }
 
         handlers[type] = handlers[type] || [];
 
@@ -82,18 +84,26 @@ function EventBus() {
     }
 
     function off(type, listener, scope) {
-        if (!type || !listener || !handlers[type]) return;
+        if (!type || !listener || !handlers[type]) {
+            return;
+        }
         const idx = getHandlerIdx(type, listener, scope);
-        if (idx < 0) return;
+        if (idx < 0) {
+            return;
+        }
         handlers[type][idx] = null;
     }
 
     function trigger(type, payload = {}, filters = {}) {
-        if (!type || !handlers[type]) return;
+        if (!type || !handlers[type]) {
+            return;
+        }
 
         payload = payload || {};
 
-        if (payload.hasOwnProperty('type')) throw new Error('\'type\' is a reserved word for event dispatching');
+        if (payload.hasOwnProperty('type')) {
+            throw new Error('\'type\' is a reserved word for event dispatching');
+        }
 
         payload.type = type;
 
@@ -128,7 +138,9 @@ function EventBus() {
 
         let idx = -1;
 
-        if (!handlers[type]) return idx;
+        if (!handlers[type]) {
+            return idx;
+        }
 
         handlers[type].some((item, index) => {
             if (item && item.callback === listener && (!scope || scope === item.scope)) {

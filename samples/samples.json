@@ -165,6 +165,17 @@
                     "Video",
                     "Audio"
                 ]
+            },
+            {
+                "title": "Live stream with MPD Patching",
+                "description": "Example showing how dash.js handles live streams with updates to the MPD provided via MPD patching",
+                "href": "live-streaming/mpd-patching.html",
+                "image": "lib/img/livesim-1.jpg",
+                "labels": [
+                    "Live",
+                    "Video",
+                    "Audio"
+                ]
             }
         ]
     },
@@ -249,6 +260,17 @@
                 "description": "Example showing how to aggressively replace segments in the buffer when switching up in quality.",
                 "href": "abr/fastswitch.html",
                 "image": "lib/img/bbb-2.jpg",
+                "labels": [
+                    "VoD",
+                    "Video",
+                    "Audio"
+                ]
+            },
+            {
+                "title": "Average throughput calculation modes ",
+                "description": "Example illustrating how to change the throughput calculation mode used in dash.js.",
+                "href": "abr/average-calculation-mode.html",
+                "image": "lib/img/bbb-4.jpg",
                 "labels": [
                     "VoD",
                     "Video",
@@ -570,6 +592,18 @@
                     "Video",
                     "Audio"
                 ]
+            },
+            {
+                "title": "Multi Audio - Initial Track with language and accessibility",
+                "description": "This example illustrates how to select a default audio language and accessibility for playback.",
+                "href": "multi-audio/multi-audio-default-lang-acc.html",
+                "image": "http://webapi.streaming.dolby.com/v0_9/sources/media/v01/img/dolbyaudio_black2.png",
+                "labels": [
+                    "VoD",
+                    "Multi Audio",
+                    "Video",
+                    "Audio"
+                ]
             }
         ]
     },
@@ -642,10 +676,10 @@
                 ]
             },
             {
-                "title": "Extending Dash.js",
-                "description": "This sample shows how to use dash.js extend mechanism to add custom HTTP headers and modify URL's of the requests done by the player.",
-                "href": "advanced/extend.html",
-                "image": "lib/img/bbb-4.jpg",
+                "title": "Network interceptor",
+                "description": "This sample shows how to apply network request and response interceptor based on CommonMediaLibray API.",
+                "href": "network-interceptor/index.html",
+                "image": "lib/img/bbb-1.jpg",
                 "labels": [
                     "VoD",
                     "Video",
@@ -664,9 +698,31 @@
                 ]
             },
             {
+                "title": "CMCD Reporting from manifest",
+                "description": "This sample shows how to use dash.js in order to enhance requests to the CDN with Common Media Client Data (CMCD - CTA 5005). Configuring it from manifest file.",
+                "href": "advanced/cmcd-from-manifest.html",
+                "image": "lib/img/bbb-1.jpg",
+                "labels": [
+                    "VoD",
+                    "Video",
+                    "Audio"
+                ]
+            },
+            {
                 "title": "Custom Capabilities Filters",
                 "description": "This sample shows how to filter representations.",
                 "href": "advanced/custom-capabilities-filters.html",
+                "image": "lib/img/bbb-2.jpg",
+                "labels": [
+                    "VoD",
+                    "Video",
+                    "Audio"
+                ]
+            },
+            {
+                "title": "Custom Capabilities Filter - MediaCapabilitiesAPI",
+                "description": "This sample shows how to filter representations based on responses from Media Capabilities API.",
+                "href": "advanced/custom-capabilities-filter-mca.html",
                 "image": "lib/img/bbb-2.jpg",
                 "labels": [
                     "VoD",
@@ -752,17 +808,6 @@
                     "Video",
                     "Audio"
                 ]
-            },
-            {
-                "title": "Segment manipulation",
-                "description": "This sample shows how to use dash.js to modify the segment before the data is appended to the Sourcebuffer.",
-                "href": "advanced/modify-segment-response.html",
-                "image": "lib/img/bbb-1.jpg",
-                "labels": [
-                    "VoD",
-                    "Video",
-                    "Audio"
-                ]
             }
         ]
     },
@@ -806,6 +851,22 @@
                 "title": "Mediaplayer only",
                 "description": "A sample showing how to use the dash.mediaplayer bundle. This bundle does not contain any code for playback of DRM protected content.",
                 "href": "module-builds/mediaplayer-only.html",
+                "image": "lib/img/bbb-1.jpg",
+                "labels": [
+                    "Module",
+                    "Video",
+                    "Audio"
+                ]
+            }
+        ]
+    },
+    {
+        "section": "MPEG-5 Part 2 - LCEVC",
+        "samples": [
+            {
+                "title": "SEI Implementation",
+                "description": "A sample showing how to use the MPEG-5 Part 2 LCEVC in an SEI Based enhancement delivery.",
+                "href": "lcevc-sei/lcevc-sei.html",
                 "image": "lib/img/bbb-1.jpg",
                 "labels": [
                     "Module",

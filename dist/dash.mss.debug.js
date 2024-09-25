@@ -9,27 +9,31 @@
 		root["dashjs"] = factory();
 })(self, () => {
 return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./externals/BigInteger.js":
 /*!*********************************!*\
   !*** ./externals/BigInteger.js ***!
   \*********************************/
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-/* module decorator */ module = __webpack_require__.nmd(module);
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = function (undefined) {
-  "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var bigInt = function (undefined) {
+  'use strict';
 
   var BASE = 1e7,
     LOG_BASE = 7,
     MAX_INT = 9007199254740992,
     MAX_INT_ARR = smallToArray(MAX_INT),
-    DEFAULT_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
-  var supportsNativeBigInt = typeof BigInt === "function";
+    DEFAULT_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
+  var supportsNativeBigInt = typeof BigInt === 'function';
   function Integer(v, radix, alphabet, caseSensitive) {
-    if (typeof v === "undefined") return Integer[0];
-    if (typeof radix !== "undefined") return +radix === 10 && !alphabet ? parseValue(v) : parseBase(v, radix, alphabet, caseSensitive);
+    if (typeof v === 'undefined') return Integer[0];
+    if (typeof radix !== 'undefined') return +radix === 10 && !alphabet ? parseValue(v) : parseBase(v, radix, alphabet, caseSensitive);
     return parseValue(v);
   }
   function BigInteger(value, sign) {
@@ -203,7 +207,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
       sign = !sign;
     }
     value = arrayToSmall(value);
-    if (typeof value === "number") {
+    if (typeof value === 'number') {
       if (sign) value = -value;
       return new SmallInteger(value);
     }
@@ -223,7 +227,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
       r[i] = difference < 0 ? difference + base : difference;
     }
     r = arrayToSmall(r);
-    if (typeof r === "number") {
+    if (typeof r === 'number') {
       if (sign) r = -r;
       return new SmallInteger(r);
     }
@@ -545,7 +549,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     var a = self.value,
       b = n.value;
     var quotient;
-    if (b === 0) throw new Error("Cannot divide by zero");
+    if (b === 0) throw new Error('Cannot divide by zero');
     if (self.isSmall) {
       if (n.isSmall) {
         return [new SmallInteger(truncate(a / b)), new SmallInteger(a % b)];
@@ -561,7 +565,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
         quotient = arrayToSmall(value[0]);
         var remainder = value[1];
         if (self.sign) remainder = -remainder;
-        if (typeof quotient === "number") {
+        if (typeof quotient === 'number') {
           if (self.sign !== n.sign) quotient = -quotient;
           return [new SmallInteger(quotient), new SmallInteger(remainder)];
         }
@@ -577,11 +581,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     var qSign = self.sign !== n.sign,
       mod = value[1],
       mSign = self.sign;
-    if (typeof quotient === "number") {
+    if (typeof quotient === 'number') {
       if (qSign) quotient = -quotient;
       quotient = new SmallInteger(quotient);
     } else quotient = new BigInteger(quotient, qSign);
-    if (typeof mod === "number") {
+    if (typeof mod === 'number') {
       if (mSign) mod = -mod;
       mod = new SmallInteger(mod);
     } else mod = new BigInteger(mod, mSign);
@@ -623,7 +627,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     if (n.sign) {
       return Integer[0];
     }
-    if (!n.isSmall) throw new Error("The exponent " + n.toString() + " is too large.");
+    if (!n.isSmall) throw new Error('The exponent ' + n.toString() + ' is too large.');
     if (this.isSmall) {
       if (isPrecise(value = Math.pow(a, b))) return new SmallInteger(truncate(value));
     }
@@ -669,7 +673,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
   BigInteger.prototype.modPow = function (exp, mod) {
     exp = parseValue(exp);
     mod = parseValue(mod);
-    if (mod.isZero()) throw new Error("Cannot take modPow with modulus 0");
+    if (mod.isZero()) throw new Error('Cannot take modPow with modulus 0');
     var r = Integer[1],
       base = this.mod(mod);
     while (exp.isPositive()) {
@@ -917,7 +921,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
       newT = lastT.subtract(q.multiply(newT));
       newR = lastR.subtract(q.multiply(newR));
     }
-    if (!r.isUnit()) throw new Error(this.toString() + " and " + n.toString() + " are not co-prime");
+    if (!r.isUnit()) throw new Error(this.toString() + ' and ' + n.toString() + ' are not co-prime');
     if (t.compare(0) === -1) {
       t = t.add(n);
     }
@@ -967,7 +971,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
   BigInteger.prototype.shiftLeft = function (v) {
     var n = parseValue(v).toJSNumber();
     if (!shift_isSmall(n)) {
-      throw new Error(String(n) + " is too large for shifting.");
+      throw new Error(String(n) + ' is too large for shifting.');
     }
     if (n < 0) return this.shiftRight(-n);
     var result = this;
@@ -983,7 +987,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     var remQuo;
     var n = parseValue(v).toJSNumber();
     if (!shift_isSmall(n)) {
-      throw new Error(String(n) + " is too large for shifting.");
+      throw new Error(String(n) + ' is too large for shifting.');
     }
     if (n < 0) return this.shiftLeft(-n);
     var result = this;
@@ -1055,7 +1059,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     LOBMASK_BI = (BASE & -BASE) * (BASE & -BASE) | LOBMASK_I;
   function roughLOB(n) {
     var v = n.value,
-      x = typeof v === "number" ? v | LOBMASK_I : typeof v === "bigint" ? v | BigInt(LOBMASK_I) : v[0] + v[1] * BASE | LOBMASK_BI;
+      x = typeof v === 'number' ? v | LOBMASK_I : typeof v === 'bigint' ? v | BigInt(LOBMASK_I) : v[0] + v[1] * BASE | LOBMASK_BI;
     return x & -x;
   }
   function integerLogarithm(value, base) {
@@ -1168,26 +1172,26 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     }
     for (i = 0; i < length; i++) {
       var c = text[i];
-      if (c === "-") continue;
+      if (c === '-') continue;
       if (c in alphabetValues) {
         if (alphabetValues[c] >= absBase) {
-          if (c === "1" && absBase === 1) continue;
-          throw new Error(c + " is not a valid digit in base " + base + ".");
+          if (c === '1' && absBase === 1) continue;
+          throw new Error(c + ' is not a valid digit in base ' + base + '.');
         }
       }
     }
     base = parseValue(base);
     var digits = [];
-    var isNegative = text[0] === "-";
+    var isNegative = text[0] === '-';
     for (i = isNegative ? 1 : 0; i < text.length; i++) {
       var c = text[i];
-      if (c in alphabetValues) digits.push(parseValue(alphabetValues[c]));else if (c === "<") {
+      if (c in alphabetValues) digits.push(parseValue(alphabetValues[c]));else if (c === '<') {
         var start = i;
         do {
           i++;
-        } while (text[i] !== ">" && i < text.length);
+        } while (text[i] !== '>' && i < text.length);
         digits.push(parseValue(text.slice(start + 1, i)));
-      } else throw new Error(c + " is not a valid character");
+      } else throw new Error(c + ' is not a valid character');
     }
     return parseBaseFromArray(digits, base, isNegative);
   };
@@ -1206,7 +1210,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     if (digit < alphabet.length) {
       return alphabet[digit];
     }
-    return "<" + digit + ">";
+    return '<' + digit + '>';
   }
   function toBase(n, base) {
     base = bigInt(base);
@@ -1215,7 +1219,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
         value: [0],
         isNegative: false
       };
-      throw new Error("Cannot convert nonzero numbers to base 0.");
+      throw new Error('Cannot convert nonzero numbers to base 0.');
     }
     if (base.equals(-1)) {
       if (n.isZero()) return {
@@ -1269,9 +1273,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
   }
   function toBaseString(n, base, alphabet) {
     var arr = toBase(n, base);
-    return (arr.isNegative ? "-" : "") + arr.value.map(function (x) {
+    return (arr.isNegative ? '-' : '') + arr.value.map(function (x) {
       return stringify(x, alphabet);
-    }).join("");
+    }).join('');
   }
   BigInteger.prototype.toArray = function (radix) {
     return toBase(this, radix);
@@ -1288,13 +1292,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     var v = this.value,
       l = v.length,
       str = String(v[--l]),
-      zeros = "0000000",
+      zeros = '0000000',
       digit;
     while (--l >= 0) {
       digit = String(v[l]);
       str += zeros.slice(digit.length) + digit;
     }
-    var sign = this.sign ? "-" : "";
+    var sign = this.sign ? '-' : '';
     return sign + str;
   };
   SmallInteger.prototype.toString = function (radix, alphabet) {
@@ -1321,31 +1325,31 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
     if (isPrecise(+v)) {
       var x = +v;
       if (x === truncate(x)) return supportsNativeBigInt ? new NativeBigInt(BigInt(x)) : new SmallInteger(x);
-      throw new Error("Invalid integer: " + v);
+      throw new Error('Invalid integer: ' + v);
     }
-    var sign = v[0] === "-";
+    var sign = v[0] === '-';
     if (sign) v = v.slice(1);
     var split = v.split(/e/i);
-    if (split.length > 2) throw new Error("Invalid integer: " + split.join("e"));
+    if (split.length > 2) throw new Error('Invalid integer: ' + split.join('e'));
     if (split.length === 2) {
       var exp = split[1];
-      if (exp[0] === "+") exp = exp.slice(1);
+      if (exp[0] === '+') exp = exp.slice(1);
       exp = +exp;
-      if (exp !== truncate(exp) || !isPrecise(exp)) throw new Error("Invalid integer: " + exp + " is not a valid exponent.");
+      if (exp !== truncate(exp) || !isPrecise(exp)) throw new Error('Invalid integer: ' + exp + ' is not a valid exponent.');
       var text = split[0];
-      var decimalPlace = text.indexOf(".");
+      var decimalPlace = text.indexOf('.');
       if (decimalPlace >= 0) {
         exp -= text.length - decimalPlace - 1;
         text = text.slice(0, decimalPlace) + text.slice(decimalPlace + 1);
       }
-      if (exp < 0) throw new Error("Cannot include negative exponent part for integers");
-      text += new Array(exp + 1).join("0");
+      if (exp < 0) throw new Error('Cannot include negative exponent part for integers');
+      text += new Array(exp + 1).join('0');
       v = text;
     }
     var isValid = /^([0-9][0-9]*)$/.test(v);
-    if (!isValid) throw new Error("Invalid integer: " + v);
+    if (!isValid) throw new Error('Invalid integer: ' + v);
     if (supportsNativeBigInt) {
-      return new NativeBigInt(BigInt(sign ? "-" + v : v));
+      return new NativeBigInt(BigInt(sign ? '-' + v : v));
     }
     var r = [],
       max = v.length,
@@ -1365,19 +1369,19 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
       return new NativeBigInt(BigInt(v));
     }
     if (isPrecise(v)) {
-      if (v !== truncate(v)) throw new Error(v + " is not an integer.");
+      if (v !== truncate(v)) throw new Error(v + ' is not an integer.');
       return new SmallInteger(v);
     }
     return parseStringValue(v.toString());
   }
   function parseValue(v) {
-    if (typeof v === "number") {
+    if (typeof v === 'number') {
       return parseNumberValue(v);
     }
-    if (typeof v === "string") {
+    if (typeof v === 'string') {
       return parseStringValue(v);
     }
-    if (typeof v === "bigint") {
+    if (typeof v === 'bigint') {
       return new NativeBigInt(v);
     }
     return v;
@@ -1402,15 +1406,281 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var bigInt = fun
   };
   return Integer;
 }();
-if ( true && module.hasOwnProperty("exports")) {
+if (typeof module !== 'undefined' && module.hasOwnProperty('exports')) {
   module.exports = bigInt;
 }
-if (true) {
-  !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+if (typeof define === 'function' && define.amd) {
+  define('big-integer', [], function () {
     return bigInt;
-  }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  });
 }
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (bigInt);
+
+/***/ }),
+
+/***/ "./src/core/FactoryMaker.js":
+/*!**********************************!*\
+  !*** ./src/core/FactoryMaker.js ***!
+  \**********************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/**
+ * The copyright in this software is being made available under the BSD License,
+ * included below. This software may be subject to other third party and contributor
+ * rights, including patent rights, and no such rights are granted under this license.
+ *
+ * Copyright (c) 2013, Dash Industry Forum.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *  * Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation and/or
+ *  other materials provided with the distribution.
+ *  * Neither the name of Dash Industry Forum nor the names of its
+ *  contributors may be used to endorse or promote products derived from this software
+ *  without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY
+ *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ *  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ *  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ *  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ */
+/**
+ * @module FactoryMaker
+ * @ignore
+ */
+var FactoryMaker = function () {
+  var instance;
+  var singletonContexts = [];
+  var singletonFactories = {};
+  var classFactories = {};
+  function extend(name, childInstance, override, context) {
+    if (!context[name] && childInstance) {
+      context[name] = {
+        instance: childInstance,
+        override: override
+      };
+    }
+  }
+
+  /**
+   * Use this method from your extended object.  this.factory is injected into your object.
+   * this.factory.getSingletonInstance(this.context, 'VideoModel')
+   * will return the video model for use in the extended object.
+   *
+   * @param {Object} context - injected into extended object as this.context
+   * @param {string} className - string name found in all dash.js objects
+   * with name __dashjs_factory_name Will be at the bottom. Will be the same as the object's name.
+   * @returns {*} Context aware instance of specified singleton name.
+   * @memberof module:FactoryMaker
+   * @instance
+   */
+  function getSingletonInstance(context, className) {
+    for (var i in singletonContexts) {
+      var obj = singletonContexts[i];
+      if (obj.context === context && obj.name === className) {
+        return obj.instance;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Use this method to add an singleton instance to the system.  Useful for unit testing to mock objects etc.
+   *
+   * @param {Object} context
+   * @param {string} className
+   * @param {Object} instance
+   * @memberof module:FactoryMaker
+   * @instance
+   */
+  function setSingletonInstance(context, className, instance) {
+    for (var i in singletonContexts) {
+      var obj = singletonContexts[i];
+      if (obj.context === context && obj.name === className) {
+        singletonContexts[i].instance = instance;
+        return;
+      }
+    }
+    singletonContexts.push({
+      name: className,
+      context: context,
+      instance: instance
+    });
+  }
+
+  /**
+   * Use this method to remove all singleton instances associated with a particular context.
+   *
+   * @param {Object} context
+   * @memberof module:FactoryMaker
+   * @instance
+   */
+  function deleteSingletonInstances(context) {
+    singletonContexts = singletonContexts.filter(function (x) {
+      return x.context !== context;
+    });
+  }
+
+  /*------------------------------------------------------------------------------------------*/
+
+  // Factories storage Management
+
+  /*------------------------------------------------------------------------------------------*/
+
+  function getFactoryByName(name, factoriesArray) {
+    return factoriesArray[name];
+  }
+  function updateFactory(name, factory, factoriesArray) {
+    if (name in factoriesArray) {
+      factoriesArray[name] = factory;
+    }
+  }
+
+  /*------------------------------------------------------------------------------------------*/
+
+  // Class Factories Management
+
+  /*------------------------------------------------------------------------------------------*/
+
+  function updateClassFactory(name, factory) {
+    updateFactory(name, factory, classFactories);
+  }
+  function getClassFactoryByName(name) {
+    return getFactoryByName(name, classFactories);
+  }
+  function getClassFactory(classConstructor) {
+    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
+    if (!factory) {
+      factory = function factory(context) {
+        if (context === undefined) {
+          context = {};
+        }
+        return {
+          create: function create() {
+            return merge(classConstructor, context, arguments);
+          }
+        };
+      };
+      classFactories[classConstructor.__dashjs_factory_name] = factory; // store factory
+    }
+    return factory;
+  }
+
+  /*------------------------------------------------------------------------------------------*/
+
+  // Singleton Factory MAangement
+
+  /*------------------------------------------------------------------------------------------*/
+
+  function updateSingletonFactory(name, factory) {
+    updateFactory(name, factory, singletonFactories);
+  }
+  function getSingletonFactoryByName(name) {
+    return getFactoryByName(name, singletonFactories);
+  }
+  function getSingletonFactory(classConstructor) {
+    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
+    if (!factory) {
+      factory = function factory(context) {
+        var instance;
+        if (context === undefined) {
+          context = {};
+        }
+        return {
+          getInstance: function getInstance() {
+            // If we don't have an instance yet check for one on the context
+            if (!instance) {
+              instance = getSingletonInstance(context, classConstructor.__dashjs_factory_name);
+            }
+            // If there's no instance on the context then create one
+            if (!instance) {
+              instance = merge(classConstructor, context, arguments);
+              singletonContexts.push({
+                name: classConstructor.__dashjs_factory_name,
+                context: context,
+                instance: instance
+              });
+            }
+            return instance;
+          }
+        };
+      };
+      singletonFactories[classConstructor.__dashjs_factory_name] = factory; // store factory
+    }
+    return factory;
+  }
+  function merge(classConstructor, context, args) {
+    var classInstance;
+    var className = classConstructor.__dashjs_factory_name;
+    var extensionObject = context[className];
+    if (extensionObject) {
+      var extension = extensionObject.instance;
+      if (extensionObject.override) {
+        //Override public methods in parent but keep parent.
+
+        classInstance = classConstructor.apply({
+          context: context
+        }, args);
+        extension = extension.apply({
+          context: context,
+          factory: instance,
+          parent: classInstance
+        }, args);
+        for (var prop in extension) {
+          if (classInstance.hasOwnProperty(prop)) {
+            classInstance[prop] = extension[prop];
+          }
+        }
+      } else {
+        //replace parent object completely with new object. Same as dijon.
+
+        return extension.apply({
+          context: context,
+          factory: instance
+        }, args);
+      }
+    } else {
+      // Create new instance of the class
+      classInstance = classConstructor.apply({
+        context: context
+      }, args);
+    }
+
+    // Add getClassName function to class instance prototype (used by Debug)
+    classInstance.getClassName = function () {
+      return className;
+    };
+    return classInstance;
+  }
+  instance = {
+    extend: extend,
+    getSingletonInstance: getSingletonInstance,
+    setSingletonInstance: setSingletonInstance,
+    deleteSingletonInstances: deleteSingletonInstances,
+    getSingletonFactory: getSingletonFactory,
+    getSingletonFactoryByName: getSingletonFactoryByName,
+    updateSingletonFactory: updateSingletonFactory,
+    getClassFactory: getClassFactory,
+    getClassFactoryByName: getClassFactoryByName,
+    updateClassFactory: updateClassFactory
+  };
+  return instance;
+}();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FactoryMaker);
 
 /***/ }),
 
@@ -1418,9 +1688,8 @@ if (true) {
 /*!***************************************!*\
   !*** ./src/core/errors/ErrorsBase.js ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -1472,12 +1741,18 @@ var ErrorsBase = /*#__PURE__*/function () {
   return _createClass(ErrorsBase, [{
     key: "extend",
     value: function extend(errors, config) {
-      if (!errors) return;
+      if (!errors) {
+        return;
+      }
       var override = config ? config.override : false;
       var publicOnly = config ? config.publicOnly : false;
       for (var err in errors) {
-        if (!errors.hasOwnProperty(err) || this[err] && !override) continue;
-        if (publicOnly && errors[err].indexOf('public_') === -1) continue;
+        if (!errors.hasOwnProperty(err) || this[err] && !override) {
+          continue;
+        }
+        if (publicOnly && errors[err].indexOf('public_') === -1) {
+          continue;
+        }
         this[err] = errors[err];
       }
     }
@@ -1491,9 +1766,8 @@ var ErrorsBase = /*#__PURE__*/function () {
 /*!***************************************!*\
   !*** ./src/core/events/EventsBase.js ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -1545,12 +1819,18 @@ var EventsBase = /*#__PURE__*/function () {
   return _createClass(EventsBase, [{
     key: "extend",
     value: function extend(events, config) {
-      if (!events) return;
+      if (!events) {
+        return;
+      }
       var override = config ? config.override : false;
       var publicOnly = config ? config.publicOnly : false;
       for (var evt in events) {
-        if (!events.hasOwnProperty(evt) || this[evt] && !override) continue;
-        if (publicOnly && events[evt].indexOf('public_') === -1) continue;
+        if (!events.hasOwnProperty(evt) || this[evt] && !override) {
+          continue;
+        }
+        if (publicOnly && events[evt].indexOf('public_') === -1) {
+          continue;
+        }
         this[evt] = events[evt];
       }
     }
@@ -1564,15 +1844,15 @@ var EventsBase = /*#__PURE__*/function () {
 /*!**********************************************!*\
   !*** ./src/mss/MssFragmentInfoController.js ***!
   \**********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _streaming_vo_FragmentRequest__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../streaming/vo/FragmentRequest */ "./src/streaming/vo/FragmentRequest.js");
-/* harmony import */ var _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest */ "./src/streaming/vo/metrics/HTTPRequest.js");
+/* harmony import */ var _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../streaming/vo/FragmentRequest.js */ "./src/streaming/vo/FragmentRequest.js");
+/* harmony import */ var _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest.js */ "./src/streaming/vo/metrics/HTTPRequest.js");
+/* harmony import */ var _core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/FactoryMaker.js */ "./src/core/FactoryMaker.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -1606,6 +1886,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 function MssFragmentInfoController(config) {
   config = config || {};
   var instance, logger, fragmentModel, started, type, loadFragmentTimeout, startTime, startFragmentTime, index;
@@ -1624,14 +1905,18 @@ function MssFragmentInfoController(config) {
     startFragmentTime = null;
   }
   function start() {
-    if (started) return;
+    if (started) {
+      return;
+    }
     logger.debug('Start');
     started = true;
     index = 0;
     loadNextFragmentInfo();
   }
   function stop() {
-    if (!started) return;
+    if (!started) {
+      return;
+    }
     logger.debug('Stop');
     clearTimeout(loadFragmentTimeout);
     started = false;
@@ -1642,13 +1927,15 @@ function MssFragmentInfoController(config) {
     stop();
   }
   function loadNextFragmentInfo() {
-    if (!started) return;
+    if (!started) {
+      return;
+    }
 
     // Get last segment from SegmentTimeline
     var representation = getCurrentRepresentation();
     var manifest = representation.adaptation.period.mpd.manifest;
-    var adaptation = manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index];
-    var segments = adaptation.SegmentTemplate.SegmentTimeline.S_asArray;
+    var adaptation = manifest.Period[representation.adaptation.period.index].AdaptationSet[representation.adaptation.index];
+    var segments = adaptation.SegmentTemplate.SegmentTimeline.S;
     var segment = segments[segments.length - 1];
 
     // logger.debug('Last fragment time: ' + (segment.t / adaptation.SegmentTemplate.timescale));
@@ -1661,9 +1948,9 @@ function MssFragmentInfoController(config) {
   }
   function getRequestForSegment(adaptation, representation, segment) {
     var timescale = adaptation.SegmentTemplate.timescale;
-    var request = new _streaming_vo_FragmentRequest__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    var request = new _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
     request.mediaType = type;
-    request.type = _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_1__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE;
+    request.type = _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_1__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE;
     // request.range = segment.mediaRange;
     request.startTime = segment.t / timescale;
     request.duration = segment.d / timescale;
@@ -1671,11 +1958,10 @@ function MssFragmentInfoController(config) {
     // request.availabilityStartTime = segment.availabilityStartTime;
     // request.availabilityEndTime = segment.availabilityEndTime;
     // request.wallStartTime = segment.wallStartTime;
-    request.quality = representation.index;
+    request.bandwidth = representation.bandwidth;
     request.index = index++;
-    request.mediaInfo = streamProcessor.getMediaInfo();
     request.adaptationIndex = representation.adaptation.index;
-    request.representationId = representation.id;
+    request.representation = representation;
     request.url = baseURLController.resolve(representation.path).url + adaptation.SegmentTemplate.media;
     request.url = request.url.replace('$Bandwidth$', representation.bandwidth);
     request.url = request.url.replace('$Time$', segment.tManifest ? segment.tManifest : segment.t);
@@ -1698,7 +1984,9 @@ function MssFragmentInfoController(config) {
     fragmentModel.executeRequest(request);
   }
   function fragmentInfoLoaded(e) {
-    if (!started) return;
+    if (!started) {
+      return;
+    }
     var request = e.request;
     if (!e.response) {
       logger.error('Load error', request.url);
@@ -1742,7 +2030,7 @@ function MssFragmentInfoController(config) {
   return instance;
 }
 MssFragmentInfoController.__dashjs_factory_name = 'MssFragmentInfoController';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dashjs.FactoryMaker.getClassFactory(MssFragmentInfoController)); /* jshint ignore:line */
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_2__["default"].getClassFactory(MssFragmentInfoController));
 
 /***/ }),
 
@@ -1750,16 +2038,16 @@ MssFragmentInfoController.__dashjs_factory_name = 'MssFragmentInfoController';
 /*!*********************************************!*\
   !*** ./src/mss/MssFragmentMoofProcessor.js ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _streaming_vo_DashJSError__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../streaming/vo/DashJSError */ "./src/streaming/vo/DashJSError.js");
-/* harmony import */ var _errors_MssErrors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors/MssErrors */ "./src/mss/errors/MssErrors.js");
-/* harmony import */ var _streaming_MediaPlayerEvents__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../streaming/MediaPlayerEvents */ "./src/streaming/MediaPlayerEvents.js");
+/* harmony import */ var _streaming_vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../streaming/vo/DashJSError.js */ "./src/streaming/vo/DashJSError.js");
+/* harmony import */ var _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./errors/MssErrors.js */ "./src/mss/errors/MssErrors.js");
+/* harmony import */ var _streaming_MediaPlayerEvents_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../streaming/MediaPlayerEvents.js */ "./src/streaming/MediaPlayerEvents.js");
+/* harmony import */ var _core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/FactoryMaker.js */ "./src/core/FactoryMaker.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -1794,6 +2082,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /**
  * @module MssFragmentMoofProcessor
  * @ignore
@@ -1816,7 +2105,7 @@ function MssFragmentMoofProcessor(config) {
     var representationController = streamProcessor.getRepresentationController();
     var representation = representationController.getCurrentRepresentation();
     var manifest = representation.adaptation.period.mpd.manifest;
-    var adaptation = manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index];
+    var adaptation = manifest.Period[representation.adaptation.period.index].AdaptationSet[representation.adaptation.index];
     var timescale = adaptation.SegmentTemplate.timescale;
     type = streamProcessor.getType();
 
@@ -1825,7 +2114,7 @@ function MssFragmentMoofProcessor(config) {
       return;
     }
     if (!tfrf) {
-      errorHandler.error(new _streaming_vo_DashJSError__WEBPACK_IMPORTED_MODULE_0__["default"](_errors_MssErrors__WEBPACK_IMPORTED_MODULE_1__["default"].MSS_NO_TFRF_CODE, _errors_MssErrors__WEBPACK_IMPORTED_MODULE_1__["default"].MSS_NO_TFRF_MESSAGE));
+      errorHandler.error(new _streaming_vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_0__["default"](_errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_1__["default"].MSS_NO_TFRF_CODE, _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_1__["default"].MSS_NO_TFRF_MESSAGE));
       return;
     }
 
@@ -1895,7 +2184,7 @@ function MssFragmentMoofProcessor(config) {
         segment = segments[segments.length - 1];
         endTime = (segment.t + segment.d) / timescale;
         if (endTime > representation.adaptation.period.duration) {
-          eventBus.trigger(_streaming_MediaPlayerEvents__WEBPACK_IMPORTED_MODULE_2__["default"].MANIFEST_VALIDITY_CHANGED, {
+          eventBus.trigger(_streaming_MediaPlayerEvents_js__WEBPACK_IMPORTED_MODULE_2__["default"].MANIFEST_VALIDITY_CHANGED, {
             sender: this,
             newDuration: endTime
           });
@@ -1936,7 +2225,9 @@ function MssFragmentMoofProcessor(config) {
     }
   }
   function updateDVR(type, range, manifestInfo) {
-    if (type !== 'video' && type !== 'audio') return;
+    if (type !== 'video' && type !== 'audio') {
+      return;
+    }
     var dvrInfos = dashMetrics.getCurrentDVRInfo(type);
     if (!dvrInfos || range.end > dvrInfos.range.end) {
       logger.debug('Update DVR range: [' + range.start + ' - ' + range.end + ']');
@@ -1965,7 +2256,7 @@ function MssFragmentMoofProcessor(config) {
     var isoFile = ISOBoxer.parseBuffer(e.response);
     // Update track_Id in tfhd box
     var tfhd = isoFile.fetch('tfhd');
-    tfhd.track_ID = e.request.mediaInfo.index + 1;
+    tfhd.track_ID = e.request.representation.mediaInfo.index + 1;
 
     // Add tfdt box
     var tfdt = isoFile.fetch('tfdt');
@@ -2056,7 +2347,7 @@ function MssFragmentMoofProcessor(config) {
     var isoFile = ISOBoxer.parseBuffer(e.response);
     // Update track_Id in tfhd box
     var tfhd = isoFile.fetch('tfhd');
-    tfhd.track_ID = e.request.mediaInfo.index + 1;
+    tfhd.track_ID = e.request.representation.mediaInfo.index + 1;
 
     // Add tfdt box
     var tfdt = isoFile.fetch('tfdt');
@@ -2086,7 +2377,7 @@ function MssFragmentMoofProcessor(config) {
   return instance;
 }
 MssFragmentMoofProcessor.__dashjs_factory_name = 'MssFragmentMoofProcessor';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dashjs.FactoryMaker.getClassFactory(MssFragmentMoofProcessor)); /* jshint ignore:line */
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_3__["default"].getClassFactory(MssFragmentMoofProcessor));
 
 /***/ }),
 
@@ -2094,14 +2385,14 @@ MssFragmentMoofProcessor.__dashjs_factory_name = 'MssFragmentMoofProcessor';
 /*!*********************************************!*\
   !*** ./src/mss/MssFragmentMoovProcessor.js ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _errors_MssErrors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors/MssErrors */ "./src/mss/errors/MssErrors.js");
+/* harmony import */ var _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errors/MssErrors.js */ "./src/mss/errors/MssErrors.js");
+/* harmony import */ var _core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/FactoryMaker.js */ "./src/core/FactoryMaker.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2132,6 +2423,7 @@ __webpack_require__.r(__webpack_exports__);
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 
 /**
@@ -2232,7 +2524,7 @@ function MssFragmentMoovProcessor(config) {
     // moov/mvex/trex
     createTrexBox(mvex);
     if (contentProtection && protectionController) {
-      var supportedKS = protectionController.getSupportedKeySystemsFromContentProtection(contentProtection);
+      var supportedKS = protectionController.getSupportedKeySystemMetadataFromContentProtection(contentProtection);
       createProtectionSystemSpecificHeaderBox(moov, supportedKS);
     }
   }
@@ -2365,8 +2657,8 @@ function MssFragmentMoovProcessor(config) {
         return createMP4AudioSampleEntry(stsd, codec);
       default:
         throw {
-          code: _errors_MssErrors__WEBPACK_IMPORTED_MODULE_0__["default"].MSS_UNSUPPORTED_CODEC_CODE,
-          message: _errors_MssErrors__WEBPACK_IMPORTED_MODULE_0__["default"].MSS_UNSUPPORTED_CODEC_MESSAGE,
+          code: _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_0__["default"].MSS_UNSUPPORTED_CODEC_CODE,
+          message: _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_0__["default"].MSS_UNSUPPORTED_CODEC_MESSAGE,
           data: {
             codec: codec
           }
@@ -2644,8 +2936,8 @@ function MssFragmentMoovProcessor(config) {
     adaptationSet = representation.adaptation;
     period = adaptationSet.period;
     trackId = adaptationSet.index + 1;
-    contentProtection = period.mpd.manifest.Period_asArray[period.index].AdaptationSet_asArray[adaptationSet.index].ContentProtection;
-    timescale = period.mpd.manifest.Period_asArray[period.index].AdaptationSet_asArray[adaptationSet.index].SegmentTemplate.timescale;
+    contentProtection = period.mpd.manifest.Period[period.index].AdaptationSet[adaptationSet.index].ContentProtection;
+    timescale = period.mpd.manifest.Period[period.index].AdaptationSet[adaptationSet.index].SegmentTemplate.timescale;
     isoFile = ISOBoxer.createFile();
     createFtypBox(isoFile);
     createMoovBox(isoFile);
@@ -2658,7 +2950,7 @@ function MssFragmentMoovProcessor(config) {
   return instance;
 }
 MssFragmentMoovProcessor.__dashjs_factory_name = 'MssFragmentMoovProcessor';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dashjs.FactoryMaker.getClassFactory(MssFragmentMoovProcessor)); /* jshint ignore:line */
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_1__["default"].getClassFactory(MssFragmentMoovProcessor));
 
 /***/ }),
 
@@ -2666,16 +2958,16 @@ MssFragmentMoovProcessor.__dashjs_factory_name = 'MssFragmentMoovProcessor';
 /*!*****************************************!*\
   !*** ./src/mss/MssFragmentProcessor.js ***!
   \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _MssFragmentMoofProcessor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MssFragmentMoofProcessor */ "./src/mss/MssFragmentMoofProcessor.js");
-/* harmony import */ var _MssFragmentMoovProcessor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MssFragmentMoovProcessor */ "./src/mss/MssFragmentMoovProcessor.js");
-/* harmony import */ var _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest */ "./src/streaming/vo/metrics/HTTPRequest.js");
+/* harmony import */ var _MssFragmentMoofProcessor_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MssFragmentMoofProcessor.js */ "./src/mss/MssFragmentMoofProcessor.js");
+/* harmony import */ var _MssFragmentMoovProcessor_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MssFragmentMoovProcessor.js */ "./src/mss/MssFragmentMoovProcessor.js");
+/* harmony import */ var _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest.js */ "./src/streaming/vo/metrics/HTTPRequest.js");
+/* harmony import */ var _core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/FactoryMaker.js */ "./src/core/FactoryMaker.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2706,6 +2998,7 @@ __webpack_require__.r(__webpack_exports__);
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
+
 
 
 
@@ -2801,12 +3094,12 @@ function MssFragmentProcessor(config) {
     ISOBoxer.addBoxProcessor('saio', saioProcessor);
     ISOBoxer.addBoxProcessor('saiz', saizProcessor);
     ISOBoxer.addBoxProcessor('senc', sencProcessor);
-    mssFragmentMoovProcessor = (0,_MssFragmentMoovProcessor__WEBPACK_IMPORTED_MODULE_1__["default"])(context).create({
+    mssFragmentMoovProcessor = (0,_MssFragmentMoovProcessor_js__WEBPACK_IMPORTED_MODULE_1__["default"])(context).create({
       protectionController: protectionController,
       constants: config.constants,
       ISOBoxer: ISOBoxer
     });
-    mssFragmentMoofProcessor = (0,_MssFragmentMoofProcessor__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create({
+    mssFragmentMoofProcessor = (0,_MssFragmentMoofProcessor_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create({
       dashMetrics: dashMetrics,
       playbackController: playbackController,
       ISOBoxer: ISOBoxer,
@@ -2825,7 +3118,7 @@ function MssFragmentProcessor(config) {
     if (e.request.type === 'MediaSegment') {
       // MediaSegment => convert to Smooth Streaming moof format
       mssFragmentMoofProcessor.convertFragment(e, streamProcessor);
-    } else if (e.request.type === _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_2__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
+    } else if (e.request.type === _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_2__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
       // FragmentInfo (live) => update segments list
       mssFragmentMoofProcessor.updateSegmentList(e, streamProcessor);
 
@@ -2841,7 +3134,7 @@ function MssFragmentProcessor(config) {
   return instance;
 }
 MssFragmentProcessor.__dashjs_factory_name = 'MssFragmentProcessor';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dashjs.FactoryMaker.getClassFactory(MssFragmentProcessor)); /* jshint ignore:line */
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_3__["default"].getClassFactory(MssFragmentProcessor));
 
 /***/ }),
 
@@ -2849,21 +3142,20 @@ MssFragmentProcessor.__dashjs_factory_name = 'MssFragmentProcessor';
 /*!*******************************!*\
   !*** ./src/mss/MssHandler.js ***!
   \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _streaming_vo_DataChunk__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../streaming/vo/DataChunk */ "./src/streaming/vo/DataChunk.js");
-/* harmony import */ var _streaming_vo_FragmentRequest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../streaming/vo/FragmentRequest */ "./src/streaming/vo/FragmentRequest.js");
-/* harmony import */ var _MssFragmentInfoController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MssFragmentInfoController */ "./src/mss/MssFragmentInfoController.js");
-/* harmony import */ var _MssFragmentProcessor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MssFragmentProcessor */ "./src/mss/MssFragmentProcessor.js");
-/* harmony import */ var _parser_MssParser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./parser/MssParser */ "./src/mss/parser/MssParser.js");
-/* harmony import */ var _errors_MssErrors__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./errors/MssErrors */ "./src/mss/errors/MssErrors.js");
-/* harmony import */ var _streaming_vo_DashJSError__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../streaming/vo/DashJSError */ "./src/streaming/vo/DashJSError.js");
-/* harmony import */ var _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest */ "./src/streaming/vo/metrics/HTTPRequest.js");
+/* harmony import */ var _streaming_vo_DataChunk_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../streaming/vo/DataChunk.js */ "./src/streaming/vo/DataChunk.js");
+/* harmony import */ var _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../streaming/vo/FragmentRequest.js */ "./src/streaming/vo/FragmentRequest.js");
+/* harmony import */ var _MssFragmentInfoController_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MssFragmentInfoController.js */ "./src/mss/MssFragmentInfoController.js");
+/* harmony import */ var _MssFragmentProcessor_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MssFragmentProcessor.js */ "./src/mss/MssFragmentProcessor.js");
+/* harmony import */ var _parser_MssParser_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./parser/MssParser.js */ "./src/mss/parser/MssParser.js");
+/* harmony import */ var _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./errors/MssErrors.js */ "./src/mss/errors/MssErrors.js");
+/* harmony import */ var _streaming_vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../streaming/vo/DashJSError.js */ "./src/streaming/vo/DashJSError.js");
+/* harmony import */ var _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest.js */ "./src/streaming/vo/metrics/HTTPRequest.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2917,7 +3209,7 @@ function MssHandler(config) {
     fragmentInfoControllers = [];
   }
   function createMssFragmentProcessor() {
-    mssFragmentProcessor = (0,_MssFragmentProcessor__WEBPACK_IMPORTED_MODULE_3__["default"])(context).create(config);
+    mssFragmentProcessor = (0,_MssFragmentProcessor_js__WEBPACK_IMPORTED_MODULE_3__["default"])(context).create(config);
   }
   function getStreamProcessor(type) {
     return streamController.getActiveStreamProcessors().filter(function (processor) {
@@ -2930,16 +3222,15 @@ function MssHandler(config) {
     })[0];
   }
   function createDataChunk(request, streamId, endFragment) {
-    var chunk = new _streaming_vo_DataChunk__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    var chunk = new _streaming_vo_DataChunk_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
     chunk.streamId = streamId;
-    chunk.mediaInfo = request.mediaInfo;
     chunk.segmentType = request.type;
     chunk.start = request.startTime;
     chunk.duration = request.duration;
     chunk.end = chunk.start + chunk.duration;
     chunk.index = request.index;
-    chunk.quality = request.quality;
-    chunk.representationId = request.representationId;
+    chunk.bandwidth = request.bandwidth;
+    chunk.representation = request.representation;
     chunk.endFragment = endFragment;
     return chunk;
   }
@@ -2950,7 +3241,7 @@ function MssHandler(config) {
       if (processor.getType() === constants.VIDEO || processor.getType() === constants.AUDIO || processor.getType() === constants.TEXT) {
         var fragmentInfoController = getFragmentInfoController(processor.getType());
         if (!fragmentInfoController) {
-          fragmentInfoController = (0,_MssFragmentInfoController__WEBPACK_IMPORTED_MODULE_2__["default"])(context).create({
+          fragmentInfoController = (0,_MssFragmentInfoController_js__WEBPACK_IMPORTED_MODULE_2__["default"])(context).create({
             streamProcessor: processor,
             baseURLController: config.baseURLController,
             debug: config.debug
@@ -2970,19 +3261,20 @@ function MssHandler(config) {
   }
   function onInitFragmentNeeded(e) {
     var streamProcessor = getStreamProcessor(e.mediaType);
-    if (!streamProcessor) return;
+    if (!streamProcessor) {
+      return;
+    }
 
     // Create init segment request
     var representationController = streamProcessor.getRepresentationController();
     var representation = representationController.getCurrentRepresentation();
     var mediaInfo = streamProcessor.getMediaInfo();
-    var request = new _streaming_vo_FragmentRequest__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    var request = new _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
     request.mediaType = representation.adaptation.type;
     request.type = initSegmentType;
     request.range = representation.range;
-    request.quality = representation.index;
-    request.mediaInfo = mediaInfo;
-    request.representationId = representation.id;
+    request.bandwidth = representation.bandwidth;
+    request.representation = representation;
     var chunk = createDataChunk(request, mediaInfo.streamInfo.id, e.type !== events.FRAGMENT_LOADING_PROGRESS);
     try {
       // Generate init segment (moov)
@@ -2996,20 +3288,24 @@ function MssHandler(config) {
         mediaType: representation.adaptation.type
       });
     } catch (e) {
-      config.errHandler.error(new _streaming_vo_DashJSError__WEBPACK_IMPORTED_MODULE_6__["default"](e.code, e.message, e.data));
+      config.errHandler.error(new _streaming_vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_6__["default"](e.code, e.message, e.data));
     }
 
     // Change the sender value to stop event to be propagated
     e.sender = null;
   }
   function onSegmentMediaLoaded(e) {
-    if (e.error) return;
+    if (e.error) {
+      return;
+    }
     var streamProcessor = getStreamProcessor(e.request.mediaType);
-    if (!streamProcessor) return;
+    if (!streamProcessor) {
+      return;
+    }
 
     // Process moof to transcode it from MSS to DASH (or to update segment timeline for SegmentInfo fragments)
     mssFragmentProcessor.processFragment(e, streamProcessor);
-    if (e.request.type === _streaming_vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
+    if (e.request.type === _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
       // If FragmentInfo loaded, then notify corresponding MssFragmentInfoController
       var fragmentInfoController = getFragmentInfoController(e.request.mediaType);
       if (fragmentInfoController) {
@@ -3018,7 +3314,7 @@ function MssHandler(config) {
     }
 
     // Start MssFragmentInfoControllers in case of start-over streams
-    var manifestInfo = e.request.mediaInfo.streamInfo.manifestInfo;
+    var manifestInfo = e.request.representation.mediaInfo.streamInfo.manifestInfo;
     if (!manifestInfo.isDynamic && manifestInfo.dvrWindowSize !== Infinity) {
       startFragmentInfoControllers();
     }
@@ -3042,16 +3338,16 @@ function MssHandler(config) {
   function registerEvents() {
     eventBus.on(events.INIT_FRAGMENT_NEEDED, onInitFragmentNeeded, instance, {
       priority: dashjs.FactoryMaker.getSingletonFactoryByName(eventBus.getClassName()).EVENT_PRIORITY_HIGH
-    }); /* jshint ignore:line */
+    });
     eventBus.on(events.PLAYBACK_PAUSED, onPlaybackPaused, instance, {
       priority: dashjs.FactoryMaker.getSingletonFactoryByName(eventBus.getClassName()).EVENT_PRIORITY_HIGH
-    }); /* jshint ignore:line */
+    });
     eventBus.on(events.PLAYBACK_SEEKING, onPlaybackSeeking, instance, {
       priority: dashjs.FactoryMaker.getSingletonFactoryByName(eventBus.getClassName()).EVENT_PRIORITY_HIGH
-    }); /* jshint ignore:line */
+    });
     eventBus.on(events.FRAGMENT_LOADING_COMPLETED, onSegmentMediaLoaded, instance, {
       priority: dashjs.FactoryMaker.getSingletonFactoryByName(eventBus.getClassName()).EVENT_PRIORITY_HIGH
-    }); /* jshint ignore:line */
+    });
     eventBus.on(events.TTML_TO_PARSE, onTTMLPreProcess, instance);
   }
   function reset() {
@@ -3069,7 +3365,7 @@ function MssHandler(config) {
     stopFragmentInfoControllers();
   }
   function createMssParser() {
-    mssParser = (0,_parser_MssParser__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create(config);
+    mssParser = (0,_parser_MssParser_js__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create(config);
     return mssParser;
   }
   instance = {
@@ -3082,10 +3378,10 @@ function MssHandler(config) {
   return instance;
 }
 MssHandler.__dashjs_factory_name = 'MssHandler';
-var factory = dashjs.FactoryMaker.getClassFactory(MssHandler); /* jshint ignore:line */
-factory.errors = _errors_MssErrors__WEBPACK_IMPORTED_MODULE_5__["default"];
-dashjs.FactoryMaker.updateClassFactory(MssHandler.__dashjs_factory_name, factory); /* jshint ignore:line */
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (factory); /* jshint ignore:line */
+var factory = dashjs.FactoryMaker.getClassFactory(MssHandler);
+factory.errors = _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_5__["default"];
+dashjs.FactoryMaker.updateClassFactory(MssHandler.__dashjs_factory_name, factory);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (factory);
 
 /***/ }),
 
@@ -3093,14 +3389,13 @@ dashjs.FactoryMaker.updateClassFactory(MssHandler.__dashjs_factory_name, factory
 /*!*************************************!*\
   !*** ./src/mss/errors/MssErrors.js ***!
   \*************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _core_errors_ErrorsBase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/errors/ErrorsBase */ "./src/core/errors/ErrorsBase.js");
+/* harmony import */ var _core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/errors/ErrorsBase.js */ "./src/core/errors/ErrorsBase.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
@@ -3170,7 +3465,7 @@ var MssErrors = /*#__PURE__*/function (_ErrorsBase) {
   }
   _inherits(MssErrors, _ErrorsBase);
   return _createClass(MssErrors);
-}(_core_errors_ErrorsBase__WEBPACK_IMPORTED_MODULE_0__["default"]);
+}(_core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
 var mssErrors = new MssErrors();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (mssErrors);
 
@@ -3180,15 +3475,15 @@ var mssErrors = new MssErrors();
 /*!*************************************!*\
   !*** ./src/mss/parser/MssParser.js ***!
   \*************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _externals_BigInteger__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../externals/BigInteger */ "./externals/BigInteger.js");
-/* harmony import */ var _externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_externals_BigInteger__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../externals/BigInteger.js */ "./externals/BigInteger.js");
+/* harmony import */ var _core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/FactoryMaker.js */ "./src/core/FactoryMaker.js");
+/* harmony import */ var _streaming_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../streaming/constants/ProtectionConstants.js */ "./src/streaming/constants/ProtectionConstants.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3225,6 +3520,8 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore
  * @param {Object} config object
  */
+
+
 
 
 function MssParser(config) {
@@ -3271,7 +3568,9 @@ function MssParser(config) {
   }
   function getAttributeAsBoolean(node, attrName) {
     var value = node.getAttribute(attrName);
-    if (!value) return false;
+    if (!value) {
+      return false;
+    }
     return value.toLowerCase() === 'true';
   }
   function mapPeriod(smoothStreamingMedia, timescale) {
@@ -3279,16 +3578,13 @@ function MssParser(config) {
     var streams, adaptation;
 
     // For each StreamIndex node, create an AdaptationSet element
-    period.AdaptationSet_asArray = [];
+    period.AdaptationSet = [];
     streams = smoothStreamingMedia.getElementsByTagName('StreamIndex');
     for (var i = 0; i < streams.length; i++) {
       adaptation = mapAdaptationSet(streams[i], timescale);
       if (adaptation !== null) {
-        period.AdaptationSet_asArray.push(adaptation);
+        period.AdaptationSet.push(adaptation);
       }
-    }
-    if (period.AdaptationSet_asArray.length > 0) {
-      period.AdaptationSet = period.AdaptationSet_asArray.length > 1 ? period.AdaptationSet_asArray : period.AdaptationSet_asArray[0];
     }
     return period;
   }
@@ -3312,20 +3608,16 @@ function MssParser(config) {
     // Map text tracks subTypes to MPEG-DASH AdaptationSet role and accessibility (see ETSI TS 103 285 v1.1.1, section 7.1.2)
     if (adaptationSet.subType) {
       if (ROLE[adaptationSet.subType]) {
-        var role = {
+        adaptationSet.Role = [{
           schemeIdUri: 'urn:mpeg:dash:role:2011',
           value: ROLE[adaptationSet.subType]
-        };
-        adaptationSet.Role = role;
-        adaptationSet.Role_asArray = [role];
+        }];
       }
       if (ACCESSIBILITY[adaptationSet.subType]) {
-        var accessibility = {
+        adaptationSet.Accessibility = [{
           schemeIdUri: 'urn:tva:metadata:cs:AudioPurposeCS:2007',
           value: ACCESSIBILITY[adaptationSet.subType]
-        };
-        adaptationSet.Accessibility = accessibility;
-        adaptationSet.Accessibility_asArray = [accessibility];
+        }];
       }
     }
 
@@ -3353,8 +3645,7 @@ function MssParser(config) {
     if (representations.length === 0) {
       return null;
     }
-    adaptationSet.Representation = representations.length > 1 ? representations : representations[0];
-    adaptationSet.Representation_asArray = representations;
+    adaptationSet.Representation = representations;
 
     // Set SegmentTemplate
     adaptationSet.SegmentTemplate = segmentTemplate;
@@ -3371,8 +3662,12 @@ function MssParser(config) {
     representation.mimeType = qualityLevel.mimeType;
     width = parseInt(qualityLevel.getAttribute('MaxWidth'), 10);
     height = parseInt(qualityLevel.getAttribute('MaxHeight'), 10);
-    if (!isNaN(width)) representation.width = width;
-    if (!isNaN(height)) representation.height = height;
+    if (!isNaN(width)) {
+      representation.width = width;
+    }
+    if (!isNaN(height)) {
+      representation.height = height;
+    }
     fourCCValue = qualityLevel.getAttribute('FourCC');
 
     // If FourCC not defined at QualityLevel level, then get it from StreamIndex level
@@ -3509,7 +3804,7 @@ function MssParser(config) {
 
       // => segment.tManifest = original timestamp value as a string (for constructing the fragment request url, see DashHandler)
       // => segment.t = number value of timestamp (maybe rounded value, but only for 0.1 microsecond)
-      if (tManifest && _externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(tManifest).greater(_externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(Number.MAX_SAFE_INTEGER))) {
+      if (tManifest && (0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(tManifest).greater((0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(Number.MAX_SAFE_INTEGER))) {
         segment.tManifest = tManifest;
       }
       segment.t = parseFloat(tManifest);
@@ -3526,7 +3821,7 @@ function MssParser(config) {
         // Update previous segment duration if not defined
         if (!prevSegment.d) {
           if (prevSegment.tManifest) {
-            prevSegment.d = _externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(tManifest).subtract(_externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(prevSegment.tManifest)).toJSNumber();
+            prevSegment.d = (0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(tManifest).subtract((0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(prevSegment.tManifest)).toJSNumber();
           } else {
             prevSegment.d = segment.t - prevSegment.t;
           }
@@ -3535,7 +3830,7 @@ function MssParser(config) {
         // Set segment absolute timestamp if not set in manifest
         if (!segment.t) {
           if (prevSegment.tManifest) {
-            segment.tManifest = _externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(prevSegment.tManifest).add(_externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(prevSegment.d)).toString();
+            segment.tManifest = (0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(prevSegment.tManifest).add((0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(prevSegment.d)).toString();
             segment.t = parseFloat(segment.tManifest);
           } else {
             segment.t = prevSegment.t + prevSegment.d;
@@ -3558,7 +3853,7 @@ function MssParser(config) {
           segment.t = prevSegment.t + prevSegment.d;
           segment.d = prevSegment.d;
           if (prevSegment.tManifest) {
-            segment.tManifest = _externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(prevSegment.tManifest).add(_externals_BigInteger__WEBPACK_IMPORTED_MODULE_0___default()(prevSegment.d)).toString();
+            segment.tManifest = (0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(prevSegment.tManifest).add((0,_externals_BigInteger_js__WEBPACK_IMPORTED_MODULE_0__["default"])(prevSegment.d)).toString();
           }
           duration += segment.d;
           segments.push(segment);
@@ -3566,7 +3861,6 @@ function MssParser(config) {
       }
     }
     segmentTimeline.S = segments;
-    segmentTimeline.S_asArray = segments;
     segmentTimeline.duration = duration / timescale;
     return segmentTimeline;
   }
@@ -3648,18 +3942,19 @@ function MssParser(config) {
       __prefix: 'mspr'
     };
     return {
-      schemeIdUri: 'urn:uuid:9a04f079-9840-4286-ab92-e65be0885f95',
-      value: 'com.microsoft.playready',
-      pro: pro,
-      pro_asArray: pro
+      schemeIdUri: 'urn:uuid:' + _streaming_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].PLAYREADY_UUID,
+      value: _streaming_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].PLAYREADY_KEYSTEM_STRING,
+      pro: pro
     };
   }
   function createWidevineContentProtection(KID) {
     var widevineCP = {
-      schemeIdUri: 'urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed',
-      value: 'com.widevine.alpha'
+      schemeIdUri: 'urn:uuid:' + _streaming_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].WIDEVINE_UUID,
+      value: _streaming_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].WIDEVINE_KEYSTEM_STRING
     };
-    if (!KID) return widevineCP;
+    if (!KID) {
+      return widevineCP;
+    }
     // Create Widevine CENC header (Protocol Buffer) with KID value
     var wvCencHeader = new Uint8Array(2 + KID.length);
     wvCencHeader[0] = 0x12;
@@ -3749,11 +4044,10 @@ function MssParser(config) {
     }
 
     // Map period node to manifest root node
-    manifest.Period = mapPeriod(smoothStreamingMedia, manifest.timescale);
-    manifest.Period_asArray = [manifest.Period];
+    period = mapPeriod(smoothStreamingMedia, manifest.timescale);
+    manifest.Period = [period];
 
     // Initialize period start time
-    period = manifest.Period;
     period.start = 0;
 
     // Uncomment to test live to static manifests
@@ -3784,19 +4078,18 @@ function MssParser(config) {
       contentProtection['cenc:default_KID'] = KID;
       contentProtections.push(contentProtection);
       manifest.ContentProtection = contentProtections;
-      manifest.ContentProtection_asArray = contentProtections;
     }
-    adaptations = period.AdaptationSet_asArray;
+    adaptations = period.AdaptationSet;
     for (i = 0; i < adaptations.length; i += 1) {
       adaptations[i].SegmentTemplate.initialization = '$Bandwidth$';
       // Propagate content protection information into each adaptation
       if (manifest.ContentProtection !== undefined) {
         adaptations[i].ContentProtection = manifest.ContentProtection;
-        adaptations[i].ContentProtection_asArray = manifest.ContentProtection_asArray;
+        adaptations[i].ContentProtection = manifest.ContentProtection;
       }
       if (adaptations[i].contentType === 'video') {
         // Get video segment duration
-        segmentDuration = adaptations[i].SegmentTemplate.SegmentTimeline.S_asArray[0].d / adaptations[i].SegmentTemplate.timescale;
+        segmentDuration = adaptations[i].SegmentTemplate.SegmentTimeline.S[0].d / adaptations[i].SegmentTemplate.timescale;
         // Set minBufferTime to one segment duration
         manifest.minBufferTime = segmentDuration;
         if (manifest.type === 'dynamic') {
@@ -3830,7 +4123,7 @@ function MssParser(config) {
       initialBufferSettings = {
         'streaming': {
           'buffer': {
-            'stableBufferTime': settings.get().streaming.buffer.stableBufferTime,
+            'bufferTimeDefault': settings.get().streaming.buffer.bufferTimeDefault,
             'bufferTimeAtTopQuality': settings.get().streaming.buffer.bufferTimeAtTopQuality,
             'bufferTimeAtTopQualityLongForm': settings.get().streaming.buffer.bufferTimeAtTopQualityLongForm
           },
@@ -3845,7 +4138,7 @@ function MssParser(config) {
       settings.update({
         'streaming': {
           'buffer': {
-            'stableBufferTime': bufferTime,
+            'bufferTimeDefault': bufferTime,
             'bufferTimeAtTopQuality': bufferTime,
             'bufferTimeAtTopQualityLongForm': bufferTime
           },
@@ -3861,7 +4154,6 @@ function MssParser(config) {
 
     // Delete Content Protection under root manifest node
     delete manifest.ContentProtection;
-    delete manifest.ContentProtection_asArray;
 
     // In case of VOD streams, check if start time is greater than 0
     // Then determine timestamp offset according to higher audio/video start time
@@ -3875,7 +4167,7 @@ function MssParser(config) {
       } else {
         for (i = 0; i < adaptations.length; i++) {
           if (adaptations[i].contentType === constants.AUDIO || adaptations[i].contentType === constants.VIDEO) {
-            segments = adaptations[i].SegmentTemplate.SegmentTimeline.S_asArray;
+            segments = adaptations[i].SegmentTemplate.SegmentTimeline.S;
             startTime = segments[0].t;
             if (timestampOffset === undefined) {
               timestampOffset = startTime;
@@ -3891,7 +4183,7 @@ function MssParser(config) {
         // Patch segment templates timestamps and determine period start time (since audio/video should not be aligned to 0)
         manifest.timestampOffset = timestampOffset;
         for (i = 0; i < adaptations.length; i++) {
-          segments = adaptations[i].SegmentTemplate.SegmentTimeline.S_asArray;
+          segments = adaptations[i].SegmentTemplate.SegmentTimeline.S;
           for (j = 0; j < segments.length; j++) {
             if (!segments[j].tManifest) {
               segments[j].tManifest = segments[j].t.toString();
@@ -3924,9 +4216,6 @@ function MssParser(config) {
     }
     return xmlDoc;
   }
-  function getMatchers() {
-    return null;
-  }
   function getIron() {
     return null;
   }
@@ -3956,7 +4245,6 @@ function MssParser(config) {
   }
   instance = {
     parse: internalParse,
-    getMatchers: getMatchers,
     getIron: getIron,
     reset: reset
   };
@@ -3964,7 +4252,7 @@ function MssParser(config) {
   return instance;
 }
 MssParser.__dashjs_factory_name = 'MssParser';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (dashjs.FactoryMaker.getClassFactory(MssParser)); /* jshint ignore:line */
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_1__["default"].getClassFactory(MssParser));
 
 /***/ }),
 
@@ -3972,14 +4260,13 @@ MssParser.__dashjs_factory_name = 'MssParser';
 /*!********************************************!*\
   !*** ./src/streaming/MediaPlayerEvents.js ***!
   \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _core_events_EventsBase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/events/EventsBase */ "./src/core/events/EventsBase.js");
+/* harmony import */ var _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/events/EventsBase.js */ "./src/core/events/EventsBase.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
@@ -4325,6 +4612,13 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
     _this.PLAYBACK_ERROR = 'playbackError';
 
     /**
+     * This event is fired once the playback has been initialized by MediaPlayer.js.
+     * After that event methods such as setTextTrack() can be used.
+     * @event MediaPlayerEvents#PLAYBACK_INITIALIZED
+     */
+    _this.PLAYBACK_INITIALIZED = 'playbackInitialized';
+
+    /**
      * Sent when playback is not allowed (for example if user gesture is needed).
      * @event MediaPlayerEvents#PLAYBACK_NOT_ALLOWED
      */
@@ -4480,9 +4774,87 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
   }
   _inherits(MediaPlayerEvents, _EventsBase);
   return _createClass(MediaPlayerEvents);
-}(_core_events_EventsBase__WEBPACK_IMPORTED_MODULE_0__["default"]);
+}(_core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
 var mediaPlayerEvents = new MediaPlayerEvents();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (mediaPlayerEvents);
+
+/***/ }),
+
+/***/ "./src/streaming/constants/ProtectionConstants.js":
+/*!********************************************************!*\
+  !*** ./src/streaming/constants/ProtectionConstants.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/**
+ * The copyright in this software is being made available under the BSD License,
+ * included below. This software may be subject to other third party and contributor
+ * rights, including patent rights, and no such rights are granted under this license.
+ *
+ * Copyright (c) 2013, Dash Industry Forum.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *  * Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation and/or
+ *  other materials provided with the distribution.
+ *  * Neither the name of Dash Industry Forum nor the names of its
+ *  contributors may be used to endorse or promote products derived from this software
+ *  without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY
+ *  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ *  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ *  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ *  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, OR
+ *  PROFITS, OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * Protection Constants declaration
+ * @ignore
+ */
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  CLEARKEY_KEYSTEM_STRING: 'org.w3.clearkey',
+  WIDEVINE_KEYSTEM_STRING: 'com.widevine.alpha',
+  PLAYREADY_KEYSTEM_STRING: 'com.microsoft.playready',
+  PLAYREADY_RECOMMENDATION_KEYSTEM_STRING: 'com.microsoft.playready.recommendation',
+  WIDEVINE_UUID: 'edef8ba9-79d6-4ace-a3c8-27dcd51d21ed',
+  PLAYREADY_UUID: '9a04f079-9840-4286-ab92-e65be0885f95',
+  CLEARKEY_UUID: 'e2719d58-a985-b3c9-781a-b030af78d30e',
+  W3C_CLEARKEY_UUID: '1077efec-c0b2-4d02-ace3-3c1e52e2fb4b',
+  INITIALIZATION_DATA_TYPE_CENC: 'cenc',
+  INITIALIZATION_DATA_TYPE_KEYIDS: 'keyids',
+  INITIALIZATION_DATA_TYPE_WEBM: 'webm',
+  ENCRYPTION_SCHEME_CENC: 'cenc',
+  ENCRYPTION_SCHEME_CBCS: 'cbcs',
+  MEDIA_KEY_MESSAGE_TYPES: {
+    LICENSE_REQUEST: 'license-request',
+    LICENSE_RENEWAL: 'license-renewal',
+    LICENSE_RELEASE: 'license-release',
+    INDIVIDUALIZATION_REQUEST: 'individualization-request'
+  },
+  ROBUSTNESS_STRINGS: {
+    WIDEVINE: {
+      SW_SECURE_CRYPTO: 'SW_SECURE_CRYPTO',
+      SW_SECURE_DECODE: 'SW_SECURE_DECODE',
+      HW_SECURE_CRYPTO: 'HW_SECURE_CRYPTO',
+      HW_SECURE_DECODE: 'HW_SECURE_DECODE',
+      HW_SECURE_ALL: 'HW_SECURE_ALL'
+    }
+  }
+});
 
 /***/ }),
 
@@ -4490,9 +4862,8 @@ var mediaPlayerEvents = new MediaPlayerEvents();
 /*!*****************************************!*\
   !*** ./src/streaming/vo/DashJSError.js ***!
   \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -4551,9 +4922,8 @@ var DashJSError = /*#__PURE__*/_createClass(function DashJSError(code, message, 
 /*!***************************************!*\
   !*** ./src/streaming/vo/DataChunk.js ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -4603,7 +4973,6 @@ var DataChunk = /*#__PURE__*/_createClass(
 function DataChunk() {
   _classCallCheck(this, DataChunk);
   this.streamId = null;
-  this.mediaInfo = null;
   this.segmentType = null;
   this.quality = NaN;
   this.index = NaN;
@@ -4611,7 +4980,7 @@ function DataChunk() {
   this.start = NaN;
   this.end = NaN;
   this.duration = NaN;
-  this.representationId = null;
+  this.representation = null;
   this.endFragment = null;
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DataChunk);
@@ -4622,14 +4991,13 @@ function DataChunk() {
 /*!*********************************************!*\
   !*** ./src/streaming/vo/FragmentRequest.js ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../vo/metrics/HTTPRequest */ "./src/streaming/vo/metrics/HTTPRequest.js");
+/* harmony import */ var _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./metrics/HTTPRequest.js */ "./src/streaming/vo/metrics/HTTPRequest.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
@@ -4677,39 +5045,39 @@ var FragmentRequest = /*#__PURE__*/function () {
   function FragmentRequest(url) {
     _classCallCheck(this, FragmentRequest);
     this.action = FragmentRequest.ACTION_DOWNLOAD;
-    this.startTime = NaN;
-    this.mediaStartTime = NaN;
-    this.mediaType = null;
-    this.mediaInfo = null;
-    this.type = null;
-    this.duration = NaN;
-    this.timescale = NaN;
-    this.range = null;
-    this.url = url || null;
-    this.serviceLocation = null;
-    this.requestStartDate = null;
-    this.firstByteDate = null;
-    this.requestEndDate = null;
-    this.quality = NaN;
-    this.index = NaN;
-    this.availabilityStartTime = null;
     this.availabilityEndTime = null;
-    this.wallStartTime = null;
+    this.availabilityStartTime = null;
+    this.bandwidth = NaN;
     this.bytesLoaded = NaN;
     this.bytesTotal = NaN;
     this.delayLoadingTime = NaN;
+    this.duration = NaN;
+    this.endDate = null;
+    this.firstByteDate = null;
+    this.index = NaN;
+    this.mediaStartTime = NaN;
+    this.mediaType = null;
+    this.quality = NaN;
+    this.range = null;
+    this.representation = null;
     this.responseType = 'arraybuffer';
-    this.representationId = null;
+    this.serviceLocation = null;
+    this.startDate = null;
+    this.startTime = NaN;
+    this.timescale = NaN;
+    this.type = null;
+    this.url = url || null;
+    this.wallStartTime = null;
   }
   return _createClass(FragmentRequest, [{
     key: "isInitializationRequest",
     value: function isInitializationRequest() {
-      return this.type && this.type === _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE;
+      return this.type && this.type === _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE;
     }
   }, {
     key: "setInfo",
     value: function setInfo(info) {
-      this.type = info && info.init ? _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE : _vo_metrics_HTTPRequest__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.MEDIA_SEGMENT_TYPE;
+      this.type = info && info.init ? _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE : _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.MEDIA_SEGMENT_TYPE;
       this.url = info && info.url ? info.url : null;
       this.range = info && info.range ? info.range.start + '-' + info.range.end : null;
       this.mediaType = info && info.mediaType ? info.mediaType : null;
@@ -4726,9 +5094,8 @@ FragmentRequest.ACTION_COMPLETE = 'complete';
 /*!*************************************************!*\
   !*** ./src/streaming/vo/metrics/HTTPRequest.js ***!
   \*************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   HTTPRequest: () => (/* binding */ HTTPRequest),
@@ -4880,6 +5247,10 @@ function HTTPRequest() {
    * The type of the loader that was used. Distinguish between fetch loader and xhr loader
    */
   this._fileLoaderType = null;
+  /**
+   * The values derived from the ResourceTimingAPI.
+   */
+  this._resourceTimingValues = null;
 });
 /**
  * @classdesc This Object holds reference to the progress of the HTTPRequest.
@@ -4938,34 +5309,19 @@ HTTPRequest.OTHER_TYPE = 'other';
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -4976,18 +5332,6 @@ HTTPRequest.OTHER_TYPE = 'other';
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
@@ -5006,29 +5350,17 @@ HTTPRequest.OTHER_TYPE = 'other';
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/node module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.nmd = (module) => {
-/******/ 			module.paths = [];
-/******/ 			if (!module.children) module.children = [];
-/******/ 			return module;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
 /*!**************************!*\
   !*** ./src/mss/index.js ***!
   \**************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   MssHandler: () => (/* reexport safe */ _MssHandler__WEBPACK_IMPORTED_MODULE_0__["default"]),
+/* harmony export */   MssHandler: () => (/* reexport safe */ _MssHandler_js__WEBPACK_IMPORTED_MODULE_0__["default"]),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _MssHandler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MssHandler */ "./src/mss/MssHandler.js");
+/* harmony import */ var _MssHandler_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MssHandler.js */ "./src/mss/MssHandler.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -5063,15 +5395,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // Shove both of these into the global scope
-var context = typeof window !== 'undefined' && window || __webpack_require__.g;
+var context = typeof window !== 'undefined' && window || global;
 var mss_dashjs = context.dashjs;
 if (!mss_dashjs) {
   mss_dashjs = context.dashjs = {};
 }
-mss_dashjs.MssHandler = _MssHandler__WEBPACK_IMPORTED_MODULE_0__["default"];
+mss_dashjs.MssHandler = _MssHandler_js__WEBPACK_IMPORTED_MODULE_0__["default"];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (mss_dashjs);
-
-})();
 
 __webpack_exports__ = __webpack_exports__["default"];
 /******/ 	return __webpack_exports__;

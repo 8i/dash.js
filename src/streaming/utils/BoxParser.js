@@ -29,12 +29,12 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Debug from '../../core/Debug';
-import IsoFile from './IsoFile';
-import FactoryMaker from '../../core/FactoryMaker';
+import Debug from '../../core/Debug.js';
+import IsoFile from './IsoFile.js';
+import FactoryMaker from '../../core/FactoryMaker.js';
 import ISOBoxer from 'codem-isoboxer';
 
-import IsoBoxSearchInfo from '../vo/IsoBoxSearchInfo';
+import IsoBoxSearchInfo from '../vo/IsoBoxSearchInfo.js';
 
 function BoxParser(/*config*/) {
 
@@ -52,7 +52,9 @@ function BoxParser(/*config*/) {
      * @memberof BoxParser#
      */
     function parse(data) {
-        if (!data) return null;
+        if (!data) {
+            return null;
+        }
 
         if (data.fileStart === undefined) {
             data.fileStart = 0;
@@ -116,7 +118,7 @@ function BoxParser(/*config*/) {
 
     function getSamplesInfo(ab) {
         if (!ab || ab.byteLength === 0) {
-            return {sampleList: [], lastSequenceNumber: NaN, totalDuration: NaN, numSequences: NaN};
+            return { sampleList: [], lastSequenceNumber: NaN, totalDuration: NaN, numSequences: NaN };
         }
         let isoFile = parse(ab);
         // zero or more moofs
@@ -201,7 +203,12 @@ function BoxParser(/*config*/) {
                 totalDuration = sampleDts - tfdtBox.baseMediaDecodeTime;
             }
         }
-        return {sampleList: sampleList, lastSequenceNumber: lastSequenceNumber, totalDuration: totalDuration, numSequences: numSequences};
+        return {
+            sampleList: sampleList,
+            lastSequenceNumber: lastSequenceNumber,
+            totalDuration: totalDuration,
+            numSequences: numSequences
+        };
     }
 
     function getMediaTimescaleFromMoov(ab) {
@@ -310,5 +317,6 @@ function BoxParser(/*config*/) {
 
     return instance;
 }
+
 BoxParser.__dashjs_factory_name = 'BoxParser';
 export default FactoryMaker.getSingletonFactory(BoxParser);

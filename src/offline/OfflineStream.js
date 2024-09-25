@@ -28,7 +28,8 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import OfflineStreamProcessor from './OfflineStreamProcessor';
+import OfflineStreamProcessor from './OfflineStreamProcessor.js';
+import FactoryMaker from '../core/FactoryMaker.js';
 
 /**
  * Initialize and Manage Offline Stream for each type
@@ -112,6 +113,7 @@ function OfflineStream(config) {
         let mediaInfos = adapter.getAllMediaInfoForType(streamInfo, constants.VIDEO);
         mediaInfos = mediaInfos.concat(adapter.getAllMediaInfoForType(streamInfo, constants.AUDIO));
         mediaInfos = mediaInfos.concat(adapter.getAllMediaInfoForType(streamInfo, constants.TEXT));
+        mediaInfos = mediaInfos.concat(adapter.getAllMediaInfoForType(streamInfo, constants.MESH));
 
         // mediaInfos = mediaInfos.concat(adapter.getAllMediaInfoForType(streamInfo, constants.MUXED));
         // mediaInfos = mediaInfos.concat(adapter.getAllMediaInfoForType(streamInfo, constants.IMAGE));
@@ -339,4 +341,4 @@ function OfflineStream(config) {
 }
 
 OfflineStream.__dashjs_factory_name = 'OfflineStream';
-export default dashjs.FactoryMaker.getClassFactory(OfflineStream); /* jshint ignore:line */
+export default FactoryMaker.getClassFactory(OfflineStream); 

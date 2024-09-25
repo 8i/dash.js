@@ -32,7 +32,8 @@
 /**
  * @ignore
  */
-const Entities = require('html-entities').XmlEntities;
+import {XmlEntities as Entities} from 'html-entities';
+import FactoryMaker from '../../core/FactoryMaker.js';
 const OFFLINE_BASE_URL = 'offline_indexeddb://';
 
 function OfflineIndexDBManifestParser(config) {
@@ -234,6 +235,8 @@ function OfflineIndexDBManifestParser(config) {
             return constants.TEXT;
         } else if (getIsImage(currentAdaptationSet)) {
             return constants.IMAGE;
+        } else if (getIsMesh(currentAdaptationSet)) {
+            return constants.MESH;
         }
 
         return null;
@@ -241,6 +244,10 @@ function OfflineIndexDBManifestParser(config) {
 
     function getIsAudio(adaptation) {
         return getIsTypeOf(adaptation, constants.AUDIO);
+    }
+
+    function getIsMesh(adaptation) {
+        return getIsTypeOf(adaptation, constants.MESH)
     }
 
     function getIsVideo(adaptation) {
@@ -488,4 +495,4 @@ function OfflineIndexDBManifestParser(config) {
     return instance;
 }
 OfflineIndexDBManifestParser.__dashjs_factory_name = 'OfflineIndexDBManifestParser';
-export default dashjs.FactoryMaker.getClassFactory(OfflineIndexDBManifestParser); /* jshint ignore:line */
+export default FactoryMaker.getClassFactory(OfflineIndexDBManifestParser); 

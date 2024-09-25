@@ -29,8 +29,8 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-import FactoryMaker from '../../core/FactoryMaker';
-import EventBus from '../../core/EventBus';
+import FactoryMaker from '../../core/FactoryMaker.js';
+import EventBus from '../../core/EventBus.js';
 
 function BlackListController(config) {
 
@@ -60,6 +60,13 @@ function BlackListController(config) {
         eventBus.trigger(updateEventName, { entry: entry });
     }
 
+    function remove(entry) {
+        const index = blacklist.indexOf(entry);
+        if (index !== -1) {
+            blacklist.splice(index, 1)
+        }
+    }
+
     function onAddBlackList(e) {
         add(e.entry);
     }
@@ -76,6 +83,7 @@ function BlackListController(config) {
 
     instance = {
         add: add,
+        remove: remove,
         contains: contains,
         reset: reset
     };

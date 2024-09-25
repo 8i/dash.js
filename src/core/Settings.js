@@ -1,7 +1,3 @@
-import Constants from '../streaming/constants/Constants';
-import Debug from '../core/Debug';
-import EventBus from './EventBus';
-import Events from './events/Events';
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -32,9 +28,13 @@ import Events from './events/Events';
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import FactoryMaker from './FactoryMaker';
-import {HTTPRequest} from '../streaming/vo/metrics/HTTPRequest';
+import FactoryMaker from './FactoryMaker.js';
 import Utils from './Utils.js';
+import Debug from '../core/Debug.js';
+import Constants from '../streaming/constants/Constants.js';
+import {HTTPRequest} from '../streaming/vo/metrics/HTTPRequest.js';
+import EventBus from './EventBus.js';
+import Events from './events/Events.js';
 
 /** @module Settings
  * @description Define the configuration parameters of Dash.js MediaPlayer.
@@ -69,11 +69,20 @@ import Utils from './Utils.js';
  *            applyContentSteering: true,
  *            eventControllerRefreshDelay: 100,
  *            enableManifestDurationMismatchFix: true,
- *            enableManifestTimescaleMismatchFix: false,
  *            parseInbandPrft: false,
+ *            enableManifestTimescaleMismatchFix: false,
  *            capabilities: {
  *               filterUnsupportedEssentialProperties: true,
- *               useMediaCapabilitiesApi: false
+ *               supportedEssentialProperties: [
+ *                   { schemeIdUri: Constants.FONT_DOWNLOAD_DVB_SCHEME },
+ *                   { schemeIdUri: Constants.COLOUR_PRIMARIES_SCHEME_ID_URI, value: /1|5|6|7/ },
+ *                   { schemeIdUri: Constants.MATRIX_COEFFICIENTS_SCHEME_ID_URI, value: /0|1|5|6/ },
+ *                   { schemeIdUri: Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI, value: /1|6|13|14|15/ },
+ *                   ...Constants.THUMBNAILS_SCHEME_ID_URIS.map(ep => { return { 'schemeIdUri': ep }; })
+ *               ],
+ *               useMediaCapabilitiesApi: true,
+ *               filterVideoColorimetryEssentialProperties: false,
+ *               filterHDRMetadataFormatEssentialProperties: false
  *            },
  *            timeShiftBuffer: {
  *                calcFromSegmentTimeline: false,
@@ -102,7 +111,7 @@ import Utils from './Utils.js';
  *                bufferTimeAtTopQuality: 30,
  *                bufferTimeAtTopQualityLongForm: 60,
  *                initialBufferLevel: NaN,
- *                stableBufferTime: 12,
+ *                bufferTimeDefault: 18,
  *                longFormContentDurationThreshold: 600,
  *                stallThreshold: 0.3,
  *                useAppendWindow: true,
@@ -196,35 +205,95 @@ import Utils from './Utils.js';
  *                [HTTPRequest.OTHER_TYPE]: 3,
  *                lowLatencyMultiplyFactor: 5
  *            },
- *            abr: {
- *                movingAverageMethod: Constants.MOVING_AVERAGE_SLIDING_WINDOW,
- *                ABRStrategy: Constants.ABR_STRATEGY_DYNAMIC,
- *                additionalAbrRules: {
- *                   insufficientBufferRule: true,
- *                   switchHistoryRule: true,
- *                   droppedFramesRule: true,
- *                   abandonRequestsRule: true
- *                },
- *                abrRulesParameters: {
+ *             abr: {
+ *                 limitBitrateByPortal: false,
+ *                 usePixelRatioInLimitBitrateByPortal: false,
+ *                rules: {
+ *                     throughputRule: {
+ *                         active: true
+ *                     },
+ *                     bolaRule: {
+ *                         active: true
+ *                     },
+ *                     insufficientBufferRule: {
+ *                         active: true,
+ *                         parameters: {
+ *                             throughputSafetyFactor: 0.7,
+ *                             segmentIgnoreCount: 2
+ *                         }
+ *                     },
+ *                     switchHistoryRule: {
+ *                         active: true,
+ *                         parameters: {
+ *                             sampleSize: 8,
+ *                             switchPercentageThreshold: 0.075
+ *                         }
+ *                     },
+ *                     droppedFramesRule: {
+ *                         active: true,
+ *                         parameters: {
+ *                             minimumSampleSize: 375,
+ *                             droppedFramesPercentageThreshold: 0.15
+ *                         }
+ *                     },
  *                     abandonRequestsRule: {
- *                         graceTimeThreshold: 500,
- *                         abandonMultiplier: 1.8,
- *                         minLengthToAverage: 5
+ *                         active: true,
+ *                         parameters: {
+ *                             abandonDurationMultiplier: 1.8,
+ *                             minSegmentDownloadTimeThresholdInMs: 500,
+ *                             minThroughputSamplesThreshold: 6
+ *                         }
+ *                     },
+ *                     l2ARule: {
+ *                         active: false
+ *                     },
+ *                     loLPRule: {
+ *                         active: false
  *                     }
  *                 },
- *                bandwidthSafetyFactor: 0.9,
- *                useDefaultABRRules: true,
- *                useDeadTimeLatency: true,
- *                limitBitrateByPortal: false,
- *                usePixelRatioInLimitBitrateByPortal: false,
- *                maxBitrate: { audio: -1, video: -1 },
- *                minBitrate: { audio: -1, video: -1 },
- *                maxRepresentationRatio: { audio: 1, video: 1 },
- *                initialBitrate: { audio: -1, video: -1 },
- *                initialRepresentationRatio: { audio: -1, video: -1 },
- *                autoSwitchBitrate: { audio: true, video: true },
- *                fetchThroughputCalculationMode: Constants.ABR_FETCH_THROUGHPUT_CALCULATION_DOWNLOADED_DATA
- *            },
+ *                 throughput: {
+ *                     averageCalculationMode: Constants.THROUGHPUT_CALCULATION_MODES.EWMA,
+ *                     lowLatencyDownloadTimeCalculationMode: Constants.LOW_LATENCY_DOWNLOAD_TIME_CALCULATION_MODE.MOOF_PARSING,
+ *                     useResourceTimingApi: true,
+ *                     useNetworkInformationApi: {
+ *                         xhr: false,
+ *                         fetch: true
+ *                     },
+ *                     useDeadTimeLatency: true,
+ *                     bandwidthSafetyFactor: 0.9,
+ *                     sampleSettings: {
+ *                         live: 3,
+ *                         vod: 4,
+ *                         enableSampleSizeAdjustment: true,
+ *                         decreaseScale: 0.7,
+ *                         increaseScale: 1.3,
+ *                         maxMeasurementsToKeep: 20,
+ *                         averageLatencySampleAmount: 4,
+ *                     },
+ *                     ewma: {
+ *                         throughputSlowHalfLifeSeconds: 8,
+ *                         throughputFastHalfLifeSeconds: 3,
+ *                         latencySlowHalfLifeCount: 2,
+ *                         latencyFastHalfLifeCount: 1
+ *                     }
+ *                 },
+ *                 maxBitrate: {
+ *                     audio: -1,
+ *                     video: -1
+ *                 },
+ *                 minBitrate: {
+ *                     audio: -1,
+ *                     video: -1
+ *                 },
+ *                 initialBitrate: {
+ *                     audio: -1,
+ *                     video: -1
+ *                 },
+ *                 autoSwitchBitrate: {
+ *                     audio: true,
+ *                     video: true
+ *                 }
+ *             },
  *            cmcd: {
  *                enabled: false,
  *                sid: null,
@@ -240,7 +309,13 @@ import Utils from './Utils.js';
  *                    applyMb: false,
  *                    etpWeightRatio: 0
  *                }
- *           }
+ *            },
+ *            defaultSchemeIdUri: {
+ *                viewpoint: '',
+ *                audioChannelConfiguration: 'urn:mpeg:mpegB:cicp:ChannelConfiguration',
+ *                role: 'urn:mpeg:dash:role:2011',
+ *                accessibility: 'urn:mpeg:dash:role:2011'
+ *            }
  *          },
  *          errors: {
  *            recoverAttempts: {
@@ -305,7 +380,7 @@ import Utils from './Utils.js';
  *
  * This can be required on some devices like GoogleCast devices to make track switching functional.
  *
- * Otherwise track switching will be effective only once after previous buffered track is fully consumed.
+ * Otherwise, track switching will be effective only once after previous buffered track is fully consumed.
  * @property {boolean} [reuseExistingSourceBuffers=true]
  * Enable reuse of existing MediaSource Sourcebuffers during period transition.
  * @property {number} [bufferPruningInterval=10]
@@ -315,6 +390,8 @@ import Utils from './Utils.js';
  *
  * Allows you to modify the buffer that is kept in source buffer in seconds.
  * 0|-----------bufferToPrune-----------|-----bufferToKeep-----|currentTime|
+ * @property {number} [bufferTimeDefault=18]
+ * The time that the internal buffer target will be set to when not playing at the top quality.
  * @property {number} [bufferTimeAtTopQuality=30]
  * The time that the internal buffer target will be set to once playing the top quality.
  *
@@ -327,10 +404,6 @@ import Utils from './Utils.js';
  * This will directly affect the buffer targets when playing back at the top quality.
  * @property {number} [initialBufferLevel=NaN]
  * Initial buffer level before playback starts
- * @property {number} [stableBufferTime=12]
- * The time that the internal buffer target will be set to post startup/seeks (NOT top quality).
- *
- * When the time is set higher than the default you will have to wait longer to see automatic bitrate switches but will have a larger buffer which will increase stability.
  * @property {number} [stallThreshold=0.3]
  * Stall threshold used in BufferController.js to determine whether a track should still be changed and which buffer range to prune.
  * @property {boolean} [useAppendWindow=true]
@@ -343,7 +416,7 @@ import Utils from './Utils.js';
  * That buffered range is likely to have been enqueued for playback. Pruning it causes a flush and reenqueue in WPE and WebKitGTK based browsers. This stresses the video decoder and can cause stuttering on embedded platforms.
  * @property {boolean} [useChangeTypeForTrackSwitch=true]
  * If this flag is set to true then dash.js will use the MSE v.2 API call "changeType()" before switching to a different track.
- * Note that some platforms might not implement the changeType functio. dash.js is checking for the availability before trying to call it.
+ * Note that some platforms might not implement the changeType function. dash.js is checking for the availability before trying to call it.
  * @property {boolean} [mediaSourceDurationInfinity=true]
  * If this flag is set to true then dash.js will allow `Infinity` to be set as the MediaSource duration otherwise the duration will be set to `Math.pow(2,32)` instead of `Infinity` to allow appending segments indefinitely.
  * Some platforms such as WebOS 4.x have issues with seeking when duration is set to `Infinity`, setting this flag to false resolve this.
@@ -567,6 +640,7 @@ import Utils from './Utils.js';
  * Note: It's not type of request.
  */
 
+
 /**
  * @typedef {Object} Protection
  * @property {boolean} [keepProtectionMediaKeys=false]
@@ -584,70 +658,32 @@ import Utils from './Utils.js';
  * @typedef {Object} Capabilities
  * @property {boolean} [filterUnsupportedEssentialProperties=true]
  * Enable to filter all the AdaptationSets and Representations which contain an unsupported \<EssentialProperty\> element.
- * @property {boolean} [useMediaCapabilitiesApi=false]
+ * @property {Array.<string>} [supportedEssentialProperties]
+ * List of supported \<EssentialProperty\> elements
+ * @property {boolean} [useMediaCapabilitiesApi=true]
  * Enable to use the MediaCapabilities API to check whether codecs are supported. If disabled MSE.isTypeSupported will be used instead.
- */
-
-/**
- * @typedef {Object} AbrRulesParameters
- * @property {module:Settings~AbandonRequestRuleParameters} abandonRequestRule
- * Configuration parameters for the AbandonRequestRule
- */
-
-/**
- * @typedef {Object} AbandonRequestRuleParameters
- * @property {number} [graceTimeThreshold=500]
- * Minimum elapsed time in milliseconds that the segment download has to run before the rule considers abandoning the download.
- * @property {number} [abandonMultiplier]
- * This value is multiplied with the segment duration and compared to the estimated time of the download to decide the request should be abandoned.
- * @property {number} [minLengthToAverage]
- * Minimum number of throughput samples required to consider abandoning the download of the segment.
+ * @property {boolean} [filterVideoColorimetryEssentialProperties=false]
+ * Enable dash.js to query MediaCapabilities API for signalled Colorimetry EssentialProperties (per schemeIdUris: 'urn:mpeg:mpegB:cicp:ColourPrimaries', 'urn:mpeg:mpegB:cicp:TransferCharacteristics').
+ * If disabled, registered properties per supportedEssentialProperties will be allowed without any further checking (including 'urn:mpeg:mpegB:cicp:MatrixCoefficients').
+ * @property {boolean} [filterHDRMetadataFormatEssentialProperties=false]
+ * Enable dash.js to query MediaCapabilities API for signalled HDR-MetadataFormat EssentialProperty (per schemeIdUri:'urn:dvb:dash:hdr-dmi').
  */
 
 /**
  * @typedef {Object} AbrSettings
- * @property {string} [movingAverageMethod="slidingWindow"]
- * Sets the moving average method used for smoothing throughput estimates.
- *
- * Valid methods are "slidingWindow" and "ewma".
- *
- * The call has no effect if an invalid method is passed.
- *
- * The sliding window moving average method computes the average throughput using the last four segments downloaded.
- *
- * If the stream is live (as opposed to VOD), then only the last three segments are used.
- *
- * If wide variations in throughput are detected, the number of segments can be dynamically increased to avoid oscillations.
- *
- * The exponentially weighted moving average (EWMA) method computes the average using exponential smoothing.
- *
- * Two separate estimates are maintained, a fast one with a three-second half life and a slow one with an eight-second half life.
- *
- * The throughput estimate at any time is the minimum of the fast and slow estimates.
- *
- * This allows a fast reaction to a bandwidth drop and prevents oscillations on bandwidth spikes.
- * @property {string} [ABRStrategy="abrDynamic"]
- * Returns the current ABR strategy being used: "abrDynamic", "abrBola" or "abrThroughput".
- * @property {object} [trackSwitchMode={video: "neverReplace", audio: "alwaysReplace"}]
- * @property {object} [additionalAbrRules={insufficientBufferRule: true,switchHistoryRule: true,droppedFramesRule: true,abandonRequestsRule: true}]
- * Enable/Disable additional ABR rules in case ABRStrategy is set to "abrDynamic", "abrBola" or "abrThroughput".
- * @property {module:Settings~AbrRulesParameters} abrRulesParameters Configuration options for the different ABR rules
- * @property {number} [bandwidthSafetyFactor=0.9]
- * Standard ABR throughput rules multiply the throughput by this value.
- *
- * It should be between 0 and 1, with lower values giving less rebuffering (but also lower quality).
- * @property {boolean} [useDefaultABRRules=true]
- * Should the default ABR rules be used, or the custom ones added.
- * @property {boolean} [useDeadTimeLatency=true]
- * If true, only the download portion will be considered part of the download bitrate and latency will be regarded as static.
- *
- * If false, the reciprocal of the whole transfer time will be used.
  * @property {boolean} [limitBitrateByPortal=false]
  * If true, the size of the video portal will limit the max chosen video resolution.
  * @property {boolean} [usePixelRatioInLimitBitrateByPortal=false]
  * Sets whether to take into account the device's pixel ratio when defining the portal dimensions.
  *
  * Useful on, for example, retina displays.
+ * @property {module:Settings~AbrRules} [rules]
+ * Enable/Disable individual ABR rules. Note that if the throughputRule and the bolaRule are activated at the same time we switch to a dynamic mode.
+ * In the dynamic mode either ThroughputRule or BolaRule are active but not both at the same time.
+ *
+ * l2ARule and loLPRule are ABR rules that are designed for low latency streams. They are tested as standalone rules meaning the other rules should be deactivated when choosing these rules.
+ * @property {module:Settings~ThroughputSettings} [throughput]
+ * Settings related to throughput calculation
  * @property {module:Settings~AudioVideoSettings} [maxBitrate={audio: -1, video: -1}]
  * The maximum bitrate that the ABR algorithms will choose. This value is specified in kbps.
  *
@@ -656,35 +692,146 @@ import Utils from './Utils.js';
  * The minimum bitrate that the ABR algorithms will choose. This value is specified in kbps.
  *
  * Use -1 for no limit.
- * @property {module:Settings~AudioVideoSettings} [maxRepresentationRatio={audio: 1, video: 1}]
- * When switching multi-bitrate content (auto or manual mode) this property specifies the maximum representation allowed, as a proportion of the size of the representation set.
- *
- * You can set or remove this cap at anytime before or during playback.
- *
- * To clear this setting you set the value to 1.
- *
- * If both this and maxAllowedBitrate are defined, maxAllowedBitrate is evaluated first, then maxAllowedRepresentation, i.e. the lowest value from executing these rules is used.
- *
- * This feature is typically used to reserve higher representations for playback only when connected over a fast connection.
  * @property {module:Settings~AudioVideoSettings} [initialBitrate={audio: -1, video: -1}]
  * Explicitly set the starting bitrate for audio or video. This value is specified in kbps.
  *
  * Use -1 to let the player decide.
- * @property {module:Settings~AudioVideoSettings} [initialRepresentationRatio={audio: -1, video: -1}]
- * Explicitly set the initial representation ratio.
- *
- * If initalBitrate is specified, this is ignored.
  * @property {module:Settings~AudioVideoSettings} [autoSwitchBitrate={audio: true, video: true}]
  * Indicates whether the player should enable ABR algorithms to switch the bitrate.
- *
- * @property {string} [fetchThroughputCalculationMode="abrFetchThroughputCalculationDownloadedData"]
- * Algorithm to determine the throughput in case the Fetch API is used for low latency streaming.
- *
- * For details please check the samples section and FetchLoader.js.
  */
 
 /**
- * @typedef {Object} module:Settings~CmcdSettings
+ * @typedef {Object} AbrRules
+ * @property {module:Settings~ThroughputRule} [throughputRule]
+ * Configuration of the Throughput rule
+ * @property {module:Settings~BolaRule} [bolaRule]
+ * Configuration of the BOLA rule
+ * @property {module:Settings~InsufficientBufferRule} [insufficientBufferRule]
+ * Configuration of the Insufficient Buffer rule
+ * @property {module:Settings~SwitchHistoryRule} [switchHistoryRule]
+ * Configuration of the Switch History rule
+ * @property {module:Settings~DroppedFramesRule} [droppedFramesRule]
+ * Configuration of the Dropped Frames rule
+ * @property {module:Settings~AbandonRequestsRule} [abandonRequestsRule]
+ * Configuration of the Abandon Requests rule
+ * @property {module:Settings~L2ARule} [l2ARule]
+ * Configuration of the L2A rule
+ * @property {module:Settings~LoLPRule} [loLPRule]
+ * Configuration of the LoLP rule
+ */
+
+/**
+ * @typedef {Object} ThroughputRule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ */
+
+/**
+ * @typedef {Object} BolaRule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ */
+
+/**
+ * @typedef {Object} InsufficientBufferRule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ * @property {object} [parameters={throughputSafetyFactor=0.7, segmentIgnoreCount=2}]
+ * Configures the rule specific parameters.
+ *
+ * - `throughputSafetyFactor`: The safety factor that is applied to the derived throughput, see example in the Description.
+ * - `segmentIgnoreCount`: This rule is not taken into account until the first segmentIgnoreCount media segments have been appended to the buffer.
+ */
+
+/**
+ * @typedef {Object} SwitchHistoryRule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ * @property {object} [parameters={sampleSize=8, switchPercentageThreshold=0.075}]
+ * Configures the rule specific parameters.
+ *
+ * - `sampleSize`: Number of switch requests ("no switch", because of the selected Representation is already playing or "actual switches") required before the rule is applied
+ * - `switchPercentageThreshold`: Ratio of actual quality drops compared to no drops before a quality down-switch is triggered
+ */
+
+/**
+ * @typedef {Object} DroppedFramesRule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ * @property {object} [parameters={minimumSampleSize=375, droppedFramesPercentageThreshold=0.15}]
+ * Configures the rule specific parameters.
+ *
+ * - `minimumSampleSize`: Sum of rendered and dropped frames required for each Representation before the rule kicks in.
+ * - `droppedFramesPercentageThreshold`: Minimum percentage of dropped frames to trigger a quality down switch. Values are defined in the range of 0 - 1.
+ */
+
+/**
+ * @typedef {Object} AbandonRequestsRule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ * @property {object} [parameters={abandonDurationMultiplier=1.8, minSegmentDownloadTimeThresholdInMs=500, minThroughputSamplesThreshold=6}]
+ * Configures the rule specific parameters.
+ *
+ * - `abandonDurationMultiplier`: Factor to multiply with the segment duration to compare against the estimated remaining download time of the current segment. See code example above.
+ * - `minSegmentDownloadTimeThresholdInMs`: The AbandonRequestRule only kicks if the download time of the current segment exceeds this value.
+ * - `minThroughputSamplesThreshold`: Minimum throughput samples (equivalent to number of progress events) required before the AbandonRequestRule kicks in.
+ */
+
+/**
+ * @typedef {Object} L2ARule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ */
+
+/**
+ * @typedef {Object} LoLPRule
+ * @property {boolean} [active=true]
+ * Enable or disable the rule
+ */
+
+/**
+ * @typedef {Object} ThroughputSettings
+ * @property {string} [averageCalculationMode=Constants.THROUGHPUT_CALCULATION_MODES.EWMA]
+ * Defines the default mode for calculating the throughput based on the samples collected during playback.
+ *
+ * For arithmetic and harmonic mean calculations we use a sliding window with the values defined in "sampleSettings"
+ *
+ * For exponential weighted moving average calculation the default values can be changed in "ewma"
+ * @property {string} [lowLatencyDownloadTimeCalculationMode=Constants.LOW_LATENCY_DOWNLOAD_TIME_CALCULATION_MODE.MOOF_PARSING]
+ * Defines the effective download time estimation method we use for low latency streams that utilize the Fetch API and chunked transfer coding
+ * @property {boolean} [useResourceTimingApi=true]
+ * If set to true the ResourceTimingApi is used to derive the download time and the number of downloaded bytes.
+ * This option has no effect for low latency streaming as the download time equals the segment duration in most of the cases and therefor does not provide reliable values
+ * @property {object} [useNetworkInformationApi = { xhr=false, fetch=true}]
+ * If set to true the NetworkInformationApi is used to derive the current throughput. Browser support is limited, only available in Chrome and Edge.
+ * Applies to standard (XHR requests) and/or low latency streaming (Fetch API requests).
+ * @property {boolean} [useDeadTimeLatency=true]
+ * If true, only the download portion will be considered part of the download bitrate and latency will be regarded as static.
+ *
+ * If false, the reciprocal of the whole transfer time will be used.
+ * @property {number} [bandwidthSafetyFactor=0.9]
+ * Standard ABR throughput rules multiply the throughput by this value.
+ *
+ * It should be between 0 and 1, with lower values giving less rebuffering (but also lower quality)
+ * @property {object} [sampleSettings = {live=3,vod=4,enableSampleSizeAdjustment=true,decreaseScale=0.7,increaseScale=1.3,maxMeasurementsToKeep=20,averageLatencySampleAmount=4}]
+ * When deriving the throughput based on the arithmetic or harmonic mean these settings define:
+ * - `live`: Number of throughput samples to use (sample size) for live streams
+ * - `vod`: Number of throughput samples to use (sample size) for VoD streams
+ * - `enableSampleSizeAdjustment`: Adjust the sample sizes if throughput samples vary a lot
+ * - `decreaseScale`: Increase sample size by one if the ratio of current and previous sample is below or equal this value
+ * - `increaseScale`: Increase sample size by one if the ratio of current and previous sample is higher or equal this value
+ * - `maxMeasurementsToKeep`: Number of samples to keep before sliding samples out of the window
+ * - `averageLatencySampleAmount`: Number of latency samples to use (sample size)
+ * @property {object} [ewma={throughputSlowHalfLifeSeconds=8,throughputFastHalfLifeSeconds=3,latencySlowHalfLifeCount=2,latencyFastHalfLifeCount=1}]
+ * When deriving the throughput based on the exponential weighted moving average these settings define:
+ * - `throughputSlowHalfLifeSeconds`: Number by which the weight of the current throughput measurement is divided, see ThroughputModel._updateEwmaValues
+ * - `throughputFastHalfLifeSeconds`: Number by which the weight of the current throughput measurement is divided, see ThroughputModel._updateEwmaValues
+ * - `latencySlowHalfLifeCount`: Number by which the weight of the current latency is divided, see ThroughputModel._updateEwmaValues
+ * - `latencyFastHalfLifeCount`: Number by which the weight of the current latency is divided, see ThroughputModel._updateEwmaValues
+ */
+
+/**
+ * @typedef {Object} CmcdSettings
  * @property {boolean} [enable=false]
  * Enable or disable the CMCD reporting.
  * @property {string} [sid]
@@ -711,6 +858,10 @@ import Utils from './Utils.js';
  * If not specified this value defaults to 'query'.
  * @property {Array.<string>} [enabledKeys]
  * This value is used to specify the desired CMCD parameters. Parameters not included in this list are not reported.
+ * @property {Array.<string>} [includeInRequests]
+ * Specifies which HTTP GET requests shall carry parameters.
+ *
+ * If not specified this value defaults to ['segment'].
  */
 
 /**
@@ -755,6 +906,8 @@ import Utils from './Utils.js';
  * Set to true if dash.js should use the parameters defined in ProducerReferenceTime elements in combination with ServiceDescription elements.
  * @property {boolean} [applyContentSteering=true]
  * Set to true if dash.js should apply content steering during playback.
+ * @property {boolean} [applyParametersFromMpd=true]
+ * Set to true if dash.js should use the cmcd parameters defined in MDP or js elements.
  * @property {number} [eventControllerRefreshDelay=100]
  * For multi-period streams, overwrite the manifest mediaPresentationDuration attribute with the sum of period durations if the manifest mediaPresentationDuration is greater than the sum of period durations
  * @property {boolean} [enableManifestDurationMismatchFix=true]
@@ -844,6 +997,9 @@ import Utils from './Utils.js';
  * Settings related to Common Media Client Data reporting.
  * @property {module:Settings~CmsdSettings} cmsd
  * Settings related to Common Media Server Data parsing.
+ * @property {module:Settings~defaultSchemeIdUri} defaultSchemeIdUri
+ * Default schemeIdUri for descriptor type elements
+ * These strings are used when not provided with setInitialMediaSettingsFor()
  */
 
 
@@ -860,9 +1016,20 @@ function Settings() {
         'streaming.delay.liveDelayFragmentCount': Events.SETTING_UPDATED_LIVE_DELAY_FRAGMENT_COUNT,
         'streaming.liveCatchup.enabled': Events.SETTING_UPDATED_CATCHUP_ENABLED,
         'streaming.liveCatchup.playbackRate.min': Events.SETTING_UPDATED_PLAYBACK_RATE_MIN,
-        'streaming.liveCatchup.playbackRate.max': Events.SETTING_UPDATED_PLAYBACK_RATE_MAX
+        'streaming.liveCatchup.playbackRate.max': Events.SETTING_UPDATED_PLAYBACK_RATE_MAX,
+        'streaming.abr.rules.throughputRule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.rules.bolaRule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.rules.insufficientBufferRule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.rules.switchHistoryRule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.rules.droppedFramesRule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.rules.abandonRequestsRule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.rules.l2ARule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.rules.loLPRule.active': Events.SETTING_UPDATED_ABR_ACTIVE_RULES,
+        'streaming.abr.maxBitrate.video': Events.SETTING_UPDATED_MAX_BITRATE,
+        'streaming.abr.maxBitrate.audio': Events.SETTING_UPDATED_MAX_BITRATE,
+        'streaming.abr.minBitrate.video': Events.SETTING_UPDATED_MIN_BITRATE,
+        'streaming.abr.minBitrate.audio': Events.SETTING_UPDATED_MIN_BITRATE,
     };
-
 
     /**
      * @const {PlayerSettings} defaultSettings
@@ -888,7 +1055,16 @@ function Settings() {
             enableManifestTimescaleMismatchFix: false,
             capabilities: {
                 filterUnsupportedEssentialProperties: true,
-                useMediaCapabilitiesApi: false
+                supportedEssentialProperties: [
+                    { schemeIdUri: Constants.FONT_DOWNLOAD_DVB_SCHEME },
+                    { schemeIdUri: Constants.COLOUR_PRIMARIES_SCHEME_ID_URI, value: /1|5|6|7/ },
+                    { schemeIdUri: Constants.MATRIX_COEFFICIENTS_SCHEME_ID_URI, value: /0|1|5|6/ },
+                    { schemeIdUri: Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI, value: /1|6|13|14|15/ },
+                    ...Constants.THUMBNAILS_SCHEME_ID_URIS.map(ep => { return { 'schemeIdUri': ep }; })
+                ],
+                useMediaCapabilitiesApi: true,
+                filterVideoColorimetryEssentialProperties: false,
+                filterHDRMetadataFormatEssentialProperties: false
             },
             timeShiftBuffer: {
                 calcFromSegmentTimeline: false,
@@ -917,7 +1093,7 @@ function Settings() {
                 bufferTimeAtTopQuality: 30,
                 bufferTimeAtTopQualityLongForm: 60,
                 initialBufferLevel: NaN,
-                stableBufferTime: 12,
+                bufferTimeDefault: 18,
                 longFormContentDurationThreshold: 600,
                 stallThreshold: 0.3,
                 useAppendWindow: true,
@@ -1025,26 +1201,79 @@ function Settings() {
                 lowLatencyMultiplyFactor: 5
             },
             abr: {
-                movingAverageMethod: Constants.MOVING_AVERAGE_SLIDING_WINDOW,
-                ABRStrategy: Constants.ABR_STRATEGY_DYNAMIC,
-                additionalAbrRules: {
-                    insufficientBufferRule: true,
-                    switchHistoryRule: true,
-                    droppedFramesRule: true,
-                    abandonRequestsRule: true
-                },
-                abrRulesParameters: {
-                    abandonRequestsRule: {
-                        graceTimeThreshold: 500,
-                        abandonMultiplier: 1.8,
-                        minLengthToAverage: 5
-                    }
-                },
-                bandwidthSafetyFactor: 0.9,
-                useDefaultABRRules: true,
-                useDeadTimeLatency: true,
                 limitBitrateByPortal: false,
                 usePixelRatioInLimitBitrateByPortal: false,
+                enableSupplementalPropertyAdaptationSetSwitching: true,
+                rules: {
+                    throughputRule: {
+                        active: true
+                    },
+                    bolaRule: {
+                        active: true
+                    },
+                    insufficientBufferRule: {
+                        active: true,
+                        parameters: {
+                            throughputSafetyFactor: 0.7,
+                            segmentIgnoreCount: 2
+                        }
+                    },
+                    switchHistoryRule: {
+                        active: true,
+                        parameters: {
+                            sampleSize: 8,
+                            switchPercentageThreshold: 0.075
+                        }
+                    },
+                    droppedFramesRule: {
+                        active: false,
+                        parameters: {
+                            minimumSampleSize: 375,
+                            droppedFramesPercentageThreshold: 0.15
+                        }
+                    },
+                    abandonRequestsRule: {
+                        active: true,
+                        parameters: {
+                            abandonDurationMultiplier: 1.8,
+                            minSegmentDownloadTimeThresholdInMs: 500,
+                            minThroughputSamplesThreshold: 6
+                        }
+                    },
+                    l2ARule: {
+                        active: false
+                    },
+                    loLPRule: {
+                        active: false
+                    }
+                },
+                throughput: {
+                    averageCalculationMode: Constants.THROUGHPUT_CALCULATION_MODES.EWMA,
+                    lowLatencyDownloadTimeCalculationMode: Constants.LOW_LATENCY_DOWNLOAD_TIME_CALCULATION_MODE.MOOF_PARSING,
+                    useResourceTimingApi: true,
+                    useNetworkInformationApi: {
+                        xhr: false,
+                        fetch: true
+                    },
+                    useDeadTimeLatency: true,
+                    bandwidthSafetyFactor: 0.9,
+                    sampleSettings: {
+                        live: 3,
+                        vod: 4,
+                        enableSampleSizeAdjustment: true,
+                        decreaseScale: 0.7,
+                        increaseScale: 1.3,
+                        maxMeasurementsToKeep: 20,
+                        averageLatencySampleAmount: 4,
+                    },
+                    ewma: {
+                        throughputSlowHalfLifeSeconds: 8,
+                        throughputFastHalfLifeSeconds: 3,
+                        latencySlowHalfLifeCount: 2,
+                        latencyFastHalfLifeCount: 1,
+                        weightDownloadTimeMultiplicationFactor: 0.0015
+                    }
+                },
                 maxBitrate: {
                     audio: -1,
                     video: -1,
@@ -1055,36 +1284,27 @@ function Settings() {
                     video: -1,
                     mesh:  -1
                 },
-                maxRepresentationRatio: {
-                    audio: 1,
-                    video: 1,
-                    mesh:  1,
-                },
                 initialBitrate: {
                     audio: -1,
                     video: -1,
-                    mesh:  -1
-                },
-                initialRepresentationRatio: {
-                    audio: -1,
-                    video: -1,
-                    mesh:  0,
+                    mesh:  0
                 },
                 autoSwitchBitrate: {
                     audio: true,
                     video: true,
                     mesh: false
-                },
-                fetchThroughputCalculationMode: Constants.ABR_FETCH_THROUGHPUT_CALCULATION_MOOF_PARSING
+                }
             },
             cmcd: {
+                applyParametersFromMpd: true,
                 enabled: false,
                 sid: null,
                 cid: null,
                 rtp: null,
                 rtpSafetyFactor: 5,
                 mode: Constants.CMCD_MODE_QUERY,
-                enabledKeys: ['br', 'd', 'ot', 'tb', 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su', 'bs', 'rtp', 'cid', 'pr', 'sf', 'sid', 'st', 'v']
+                enabledKeys: Constants.CMCD_AVAILABLE_KEYS,
+                includeInRequests: ['segment']
             },
             cmsd: {
                 enabled: false,
@@ -1092,6 +1312,12 @@ function Settings() {
                     applyMb: false,
                     etpWeightRatio: 0
                 }
+            },
+            defaultSchemeIdUri: {
+                viewpoint: '',
+                audioChannelConfiguration: 'urn:mpeg:mpegB:cicp:ChannelConfiguration',
+                role: 'urn:mpeg:dash:role:2011',
+                accessibility: 'urn:mpeg:dash:role:2011'
             }
         },
         errors: {
@@ -1109,7 +1335,7 @@ function Settings() {
         for (let n in source) {
             if (source.hasOwnProperty(n)) {
                 if (dest.hasOwnProperty(n)) {
-                    if (typeof source[n] === 'object' && !(source[n] instanceof Array) && source[n] !== null) {
+                    if (typeof source[n] === 'object' && !(source[n] instanceof RegExp) && !(source[n] instanceof Array) && source[n] !== null) {
                         mixinSettings(source[n], dest[n], path.slice() + n + '.');
                     } else {
                         dest[n] = Utils.clone(source[n]);

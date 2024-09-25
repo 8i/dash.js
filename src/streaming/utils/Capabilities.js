@@ -28,20 +28,10 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import FactoryMaker from '../../core/FactoryMaker';
-import {THUMBNAILS_SCHEME_ID_URIS} from '../thumbnail/ThumbnailTracks';
-import Constants from '../constants/Constants';
-
-const codecCompatibilityTable = [
-    {
-        'codec': 'avc1',
-        'compatibleCodecs': ['avc3']
-    },
-    {
-        'codec': 'avc3',
-        'compatibleCodecs': ['avc1']
-    }
-];
+import FactoryMaker from '../../core/FactoryMaker.js';
+import Constants from '../constants/Constants.js';
+import ProtectionConstants from '../constants/ProtectionConstants.js';
+import ObjectUtils from './ObjectUtils.js';
 
 export function supportsMediaSource() {
     let hasManagedMediaSource = ('ManagedMediaSource' in window)
@@ -55,10 +45,15 @@ function Capabilities() {
 
     let instance,
         settings,
+        testedCodecConfigurations,
         encryptedMediaSupported;
+
+    const context = this.context;
+    const objectUtils = ObjectUtils(context).getInstance();
 
     function setup() {
         encryptedMediaSupported = false;
+        testedCodecConfigurations = [];
     }
 
     function setConfig(config) {
@@ -69,6 +64,13 @@ function Capabilities() {
         if (config.settings) {
             settings = config.settings;
         }
+    }
+
+    function isProtectionCompatible(previousStreamInfo, newStreamInfo) {
+        if (!newStreamInfo) {
+            return true;
+        }
+        return !(!previousStreamInfo.isEncrypted && newStreamInfo.isEncrypted);
     }
 
     /**
@@ -116,7 +118,6 @@ function Capabilities() {
      * @private
      */
     function _canUseMediaCapabilitiesApi(config, type) {
-
         return settings.get().streaming.capabilities.useMediaCapabilitiesApi && navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo && ((config.codec && type === Constants.AUDIO) || (type === Constants.VIDEO && config.codec && config.width && config.height && config.bitrate && config.framerate));
     }
 
@@ -157,83 +158,200 @@ function Capabilities() {
 
     /**
      * Check codec support using the MediaCapabilities API
-     * @param {object} config
+     * @param {object} inputConfig
      * @param {string} type
      * @return {Promise<boolean>}
      * @private
      */
-    function _checkCodecWithMediaCapabilities(config, type) {
+    function _checkCodecWithMediaCapabilities(inputConfig, type) {
         return new Promise((resolve) => {
 
-            if (!config || !config.codec) {
+            if (!inputConfig || !inputConfig.codec || (inputConfig.isSupported === false)) {
                 resolve(false);
                 return;
             }
 
-            const configuration = {
-                type: 'media-source'
-            };
+            const genericMediaCapabilitiesConfiguration = _getGenericMediaCapabilitiesConfig(inputConfig, type);
+            const configurationsToTest = _enhanceGenericConfigurationWithKeySystemConfiguration(genericMediaCapabilitiesConfiguration, inputConfig, type)
 
-            configuration[type] = {};
-            configuration[type].contentType = config.codec;
-            configuration[type].width = config.width;
-            configuration[type].height = config.height;
-            configuration[type].bitrate = parseInt(config.bitrate);
-            configuration[type].framerate = parseFloat(config.framerate);
+            const promises = configurationsToTest.map((configuration) => {
+                return _checkSingleConfigurationWithMediaCapabilities(configuration);
+            })
+
+            Promise.allSettled(promises)
+                .then((results) => {
+                    const isSupported = results.some((result) => {
+                        return !!result.value
+                    })
+                    resolve(isSupported);
+                })
+        });
+    }
+
+    function _checkSingleConfigurationWithMediaCapabilities(configuration) {
+        return new Promise((resolve) => {
+            const alreadyTestedConfiguration = _getTestedCodecConfiguration(configuration);
+
+            if (alreadyTestedConfiguration) {
+                const isSupported = _isConfigSupported(alreadyTestedConfiguration.decodingInfo);
+                resolve(isSupported);
+                return
+            }
 
             navigator.mediaCapabilities.decodingInfo(configuration)
-                .then((result) => {
-                    resolve(result.supported);
+                .then((decodingInfo) => {
+                    configuration.decodingInfo = decodingInfo;
+                    testedCodecConfigurations.push(configuration);
+                    const isSupported = _isConfigSupported(decodingInfo);
+                    resolve(isSupported);
                 })
-                .catch(() => {
-                    resolve(false);
-                });
+        })
+    }
+
+    function _isConfigSupported(decodingInfo) {
+        return decodingInfo.supported
+    }
+
+    function _getTestedCodecConfiguration(configuration) {
+        if (!testedCodecConfigurations || testedCodecConfigurations.length === 0 || !configuration) {
+            return null
+        }
+
+        return testedCodecConfigurations.find((current) => {
+            const audioEqual = configuration && configuration.audio ? objectUtils.areEqual(configuration.audio, current.audio) : true;
+            const videoEqual = configuration && configuration.video ? objectUtils.areEqual(configuration.video, current.video) : true;
+            const keySystemEqual = configuration && configuration.keySystemConfiguration ? objectUtils.areEqual(configuration.keySystemConfiguration, current.keySystemConfiguration) : true;
+
+            return audioEqual && videoEqual && keySystemEqual
+        })
+
+    }
+
+    function _getGenericMediaCapabilitiesConfig(inputConfig, type) {
+        let configuration
+
+        if (type === Constants.VIDEO) {
+            configuration = _getGenericMediaCapabilitiesVideoConfig(inputConfig)
+        } else if (type === Constants.AUDIO) {
+            configuration = _getGenericMediaCapabilitiesAudioConfig(inputConfig)
+        }
+
+        configuration[type].contentType = inputConfig.codec;
+        configuration[type].bitrate = parseInt(inputConfig.bitrate);
+        configuration.type = 'media-source';
+
+        return configuration
+    }
+
+    function _getGenericMediaCapabilitiesVideoConfig(inputConfig) {
+        const configuration = {
+            video: {}
+        };
+
+        configuration.video.width = inputConfig.width;
+        configuration.video.height = inputConfig.height;
+        configuration.video.framerate = parseFloat(inputConfig.framerate);
+        if (inputConfig.hdrMetadataType) {
+            configuration.video.hdrMetadataType = inputConfig.hdrMetadataType;
+        }
+        if (inputConfig.colorGamut) {
+            configuration.video.colorGamut = inputConfig.colorGamut;
+        }
+        if (inputConfig.transferFunction) {
+            configuration.video.transferFunction = inputConfig.transferFunction;
+        }
+
+        return configuration
+    }
+
+    function _getGenericMediaCapabilitiesAudioConfig(inputConfig) {
+        const configuration = {
+            audio: {}
+        };
+
+        if (inputConfig.samplerate) {
+            configuration.audio.samplerate = inputConfig.samplerate;
+        }
+
+        return configuration
+    }
+
+    function _enhanceGenericConfigurationWithKeySystemConfiguration(genericMediaCapabilitiesConfiguration, inputConfig, type) {
+        if (!inputConfig || !inputConfig.keySystemsMetadata || inputConfig.keySystemsMetadata.length === 0) {
+            return [genericMediaCapabilitiesConfiguration];
+        }
+
+        return inputConfig.keySystemsMetadata.map((keySystemMetadata) => {
+            const curr = { ...genericMediaCapabilitiesConfiguration };
+            if (keySystemMetadata.ks) {
+                curr.keySystemConfiguration = {};
+                if (keySystemMetadata.ks.systemString) {
+                    curr.keySystemConfiguration.keySystem = keySystemMetadata.ks.systemString;
+                }
+                if (keySystemMetadata.ks.systemString === ProtectionConstants.WIDEVINE_KEYSTEM_STRING) {
+                    curr.keySystemConfiguration[type] = { robustness: ProtectionConstants.ROBUSTNESS_STRINGS.WIDEVINE.SW_SECURE_CRYPTO };
+
+                }
+            }
+            return curr
+        })
+    }
+
+    /**
+     * Add additional descriptors to list of descriptors,
+     * avoid duplicated entries
+     * @param {array} props
+     * @param {array} newProps
+     * @return {array}
+     * @private
+     */
+    function _addProperties(props, newProps) {
+        props = props.filter(p => {
+            return !(p.schemeIdUri && (newProps.some(np => np.schemeIdUri === p.schemeIdUri)));
         });
+        props.push(...newProps);
+
+        return props;
     }
 
     /**
      * Check if a specific EssentialProperty is supported
-     * @param {object} ep
+     * @param {DescriptorType} ep
      * @return {boolean}
      */
     function supportsEssentialProperty(ep) {
+        let supportedEssentialProps = settings.get().streaming.capabilities.supportedEssentialProperties;
+
+        // we already took care of these descriptors with the codecs check
+        // let's bypass them here
+        if (settings.get().streaming.capabilities.useMediaCapabilitiesApi && settings.get().streaming.capabilities.filterVideoColorimetryEssentialProperties) {
+            supportedEssentialProps = _addProperties(supportedEssentialProps,
+                [
+                    { schemeIdUri: Constants.COLOUR_PRIMARIES_SCHEME_ID_URI },
+                    { schemeIdUri: Constants.MATRIX_COEFFICIENTS_SCHEME_ID_URI },
+                    { schemeIdUri: Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI }
+                ]
+            );
+        }
+        if (settings.get().streaming.capabilities.useMediaCapabilitiesApi && settings.get().streaming.capabilities.filterHDRMetadataFormatEssentialProperties) {
+            supportedEssentialProps = _addProperties(supportedEssentialProps, [{ schemeIdUri: Constants.HDR_METADATA_FORMAT_SCHEME_ID_URI }]);
+        }
+
         try {
-            return (THUMBNAILS_SCHEME_ID_URIS.indexOf(ep.schemeIdUri) !== -1) || (Constants.FONT_DOWNLOAD_DVB_SCHEME === ep.schemeIdUri);
+            return ep.inArray(supportedEssentialProps);
         } catch (e) {
             return true;
         }
     }
 
-    /**
-     * Check if the root of the old codec is the same as the new one, or if it's declared as compatible in the compat table
-     * @param {string} codec1
-     * @param {string} codec2
-     * @return {boolean}
-     */
-    function codecRootCompatibleWithCodec(codec1, codec2) {
-        const codecRoot = codec1.split('.')[0];
-        const rootCompatible = codec2.indexOf(codecRoot) === 0;
-        let compatTableCodec;
-        for (let i = 0; i < codecCompatibilityTable.length; i++) {
-            if (codecCompatibilityTable[i].codec === codecRoot) {
-                compatTableCodec = codecCompatibilityTable[i];
-                break;
-            }
-        }
-        if (compatTableCodec) {
-            return rootCompatible || compatTableCodec.compatibleCodecs.some((compatibleCodec) => codec2.indexOf(compatibleCodec) === 0);
-        }
-        return rootCompatible;
-    }
-
     instance = {
+        isProtectionCompatible,
         setConfig,
-        supportsMediaSource,
-        supportsEncryptedMedia,
-        supportsCodec,
         setEncryptedMediaSupported,
+        supportsCodec,
+        supportsEncryptedMedia,
         supportsEssentialProperty,
-        codecRootCompatibleWithCodec
+        supportsMediaSource,
     };
 
     setup();

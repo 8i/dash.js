@@ -28,15 +28,16 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import FactoryMaker from '../../core/FactoryMaker';
-import Debug from '../../core/Debug';
-import Constants from '../../streaming/constants/Constants';
-import DashConstants from '../constants/DashConstants';
+import FactoryMaker from '../../core/FactoryMaker.js';
+import Debug from '../../core/Debug.js';
+import Constants from '../../streaming/constants/Constants.js';
+import DashConstants from '../constants/DashConstants.js';
 
 const SUPPORTED_SCHEMES = [Constants.SERVICE_DESCRIPTION_DVB_LL_SCHEME];
 const MEDIA_TYPES = {
     VIDEO: 'video',
     AUDIO: 'audio',
+    MESH: 'mesh',
     ANY: 'any',
     ALL: 'all'
 }
@@ -56,7 +57,9 @@ function ServiceDescriptionController() {
     }
 
     function setConfig(config) {
-        if (!config) return;
+        if (!config) {
+            return;
+        }
 
         if (config.adapter) {
             adapter = config.adapter;
@@ -80,7 +83,8 @@ function ServiceDescriptionController() {
             minBitrate: {},
             maxBitrate: {},
             initialBitrate: {},
-            contentSteering: null
+            contentSteering: null,
+            clientDataReporting: null,
         };
         prftOffsets = [];
     }
@@ -107,7 +111,9 @@ function ServiceDescriptionController() {
         let sd = (supportedServiceDescriptions.length > 0)
             ? supportedServiceDescriptions[supportedServiceDescriptions.length - 1]
             : allClientsServiceDescriptions[allClientsServiceDescriptions.length - 1];
-        if (!sd) return;
+        if (!sd) {
+            return;
+        }
 
         if (sd.latency && sd.latency.target > 0) {
             _applyServiceDescriptionLatency(sd);
@@ -127,6 +133,10 @@ function ServiceDescriptionController() {
 
         if (sd.contentSteering) {
             _applyServiceDescriptionContentSteering(sd);
+        }
+
+        if (sd.clientDataReporting) {
+            _applyServiceDescriptionClientDataReporting(sd);
         }
     }
 
@@ -250,6 +260,7 @@ function ServiceDescriptionController() {
         } else if (sd.operatingBandwidth.mediaType === MEDIA_TYPES.ANY) {
             mediaTypesToApply.push(MEDIA_TYPES.AUDIO);
             mediaTypesToApply.push(MEDIA_TYPES.VIDEO);
+            mediaTypesToApply.push(MEDIA_TYPES.MESH);
         }
 
         mediaTypesToApply.forEach((mediaType) => {
@@ -294,6 +305,15 @@ function ServiceDescriptionController() {
     }
 
     /**
+     * Add information about client data reporting element. Handling is up to the CMCDModel
+     *  @param {object} sd
+     *  @private
+     */
+    function _applyServiceDescriptionClientDataReporting(sd) {
+        serviceDescriptionSettings.clientDataReporting = sd.clientDataReporting;
+    }
+
+    /**
      * Returns the current calculated time offsets based on ProducerReferenceTime elements
      * @returns {array}
      */
@@ -312,7 +332,7 @@ function ServiceDescriptionController() {
         try {
             let timeOffsets = [];
             if (streamInfos && streamInfos.length > 0) {
-                const mediaTypes = [Constants.VIDEO, Constants.AUDIO, Constants.TEXT];
+                const mediaTypes = [Constants.VIDEO, Constants.AUDIO, Constants.MESH, Constants.TEXT];
                 const astInSeconds = adapter.getAvailabilityStartTime() / 1000;
 
                 streamInfos.forEach((streamInfo) => {

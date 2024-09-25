@@ -35,7 +35,7 @@
  */
 
 import path from 'path-browserify'
-import { UAParser } from 'ua-parser-js'
+import {UAParser} from 'ua-parser-js'
 
 class Utils {
     static mixin(dest, source, copy) {
@@ -61,6 +61,9 @@ class Utils {
     static clone(src) {
         if (!src || typeof src !== 'object') {
             return src; // anything
+        }
+        if (src instanceof RegExp) {
+            return new RegExp(src);
         }
         let r;
         if (src instanceof Array) {
@@ -177,13 +180,22 @@ class Utils {
         }
     }
 
+    static getHostFromUrl(urlString) {
+        try {
+            const url = new URL(urlString);
+
+            return url.host
+        } catch (e) {
+            return null
+        }
+    }
+
     static parseUserAgent(ua = null) {
         try {
             const uaString = ua === null ? typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '' : '';
 
             return UAParser(uaString);
-        }
-        catch(e) {
+        } catch (e) {
             return {};
         }
     }

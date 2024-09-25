@@ -1,8 +1,9 @@
-import FactoryMaker from '../../core/FactoryMaker';
-import Debug from '../../core/Debug';
-import Constants from '../constants/Constants';
-import EventBus from '../../core/EventBus';
-import Events from '../../core/events/Events';
+import FactoryMaker from '../../core/FactoryMaker.js';
+import Debug from '../../core/Debug.js';
+import Constants from '../constants/Constants.js';
+import EventBus from '../../core/EventBus.js';
+import Events from '../../core/events/Events.js';
+import DashConstants from '../../dash/constants/DashConstants.js';
 
 function CapabilitiesFilter() {
 
@@ -14,6 +15,7 @@ function CapabilitiesFilter() {
         capabilities,
         settings,
         customParametersModel,
+        protectionController,
         logger;
 
 
@@ -38,6 +40,10 @@ function CapabilitiesFilter() {
             settings = config.settings;
         }
 
+        if (config.protectionController) {
+            protectionController = config.protectionController;
+        }
+
         if (config.customParametersModel) {
             customParametersModel = config.customParametersModel;
         }
@@ -56,23 +62,22 @@ function CapabilitiesFilter() {
                     if (settings.get().streaming.capabilities.filterUnsupportedEssentialProperties) {
                         _filterUnsupportedEssentialProperties(manifest);
                     }
-                    _applyCustomFilters(manifest);
-                    resolve();
                 })
+                .then(() => _applyCustomFilters(manifest))
+                .then(() => resolve())
                 .catch(() => {
                     resolve();
                 });
         });
     }
 
-
     function _filterUnsupportedCodecs(type, manifest) {
-        if (!manifest || !manifest.Period_asArray || manifest.Period_asArray.length === 0) {
+        if (!manifest || !manifest.Period || manifest.Period.length === 0) {
             return Promise.resolve();
         }
 
         const promises = [];
-        manifest.Period_asArray.forEach((period) => {
+        manifest.Period.forEach((period) => {
             promises.push(_filterUnsupportedAdaptationSetsOfPeriod(period, type));
         });
 
@@ -82,13 +87,13 @@ function CapabilitiesFilter() {
     function _filterUnsupportedAdaptationSetsOfPeriod(period, type) {
         return new Promise((resolve) => {
 
-            if (!period || !period.AdaptationSet_asArray || period.AdaptationSet_asArray.length === 0) {
+            if (!period || !period.AdaptationSet || period.AdaptationSet.length === 0) {
                 resolve();
                 return;
             }
 
             const promises = [];
-            period.AdaptationSet_asArray.forEach((as) => {
+            period.AdaptationSet.forEach((as) => {
                 if (adapter.getIsTypeOf(as, type)) {
                     promises.push(_filterUnsupportedRepresentationsOfAdaptation(as, type));
                 }
@@ -96,19 +101,17 @@ function CapabilitiesFilter() {
 
             Promise.all(promises)
                 .then(() => {
-                    period.AdaptationSet_asArray = period.AdaptationSet_asArray.filter((as) => {
-                        const supported = as.Representation_asArray && as.Representation_asArray.length > 0;
-
+                    period.AdaptationSet = period.AdaptationSet.filter((as) => {
+                        const supported = as.Representation && as.Representation.length > 0;
                         if (!supported) {
                             eventBus.trigger(Events.ADAPTATION_SET_REMOVED_NO_CAPABILITIES, {
                                 adaptationSet: as
                             });
-                            logger.warn(`AdaptationSet has been removed because of no supported Representation`);
+                            logger.warn(`AdaptationSet with ID ${as.id ? as.id : 'unknown'} and codec ${as.codecs ? as.codecs : 'unknown'} has been removed because of no supported Representation`);
                         }
 
                         return supported;
                     });
-
                     resolve();
                 })
                 .catch(() => {
@@ -121,7 +124,7 @@ function CapabilitiesFilter() {
     function _filterUnsupportedRepresentationsOfAdaptation(as, type) {
         return new Promise((resolve) => {
 
-            if (!as.Representation_asArray || as.Representation_asArray.length === 0) {
+            if (!as.Representation || as.Representation.length === 0) {
                 resolve();
                 return;
             }
@@ -129,7 +132,7 @@ function CapabilitiesFilter() {
             const promises = [];
             const configurations = [];
 
-            as.Representation_asArray.forEach((rep, i) => {
+            as.Representation.forEach((rep, i) => {
                 const codec = adapter.getCodec(as, i, false);
                 const config = _createConfiguration(type, rep, codec);
 
@@ -139,7 +142,7 @@ function CapabilitiesFilter() {
 
             Promise.all(promises)
                 .then((supported) => {
-                    as.Representation_asArray = as.Representation_asArray.filter((_, i) => {
+                    as.Representation = as.Representation.filter((_, i) => {
                         if (!supported[i]) {
                             logger.debug(`[Stream] Codec ${configurations[i].codec} not supported `);
                         }
@@ -154,30 +157,108 @@ function CapabilitiesFilter() {
     }
 
     function _createConfiguration(type, rep, codec) {
+        let config = null;
         switch (type) {
             case Constants.VIDEO:
-                return _createVideoConfiguration(rep, codec);
+                config = _createVideoConfiguration(rep, codec);
+                break;
             case Constants.AUDIO:
-                return _createAudioConfiguration(rep, codec);
+                config = _createAudioConfiguration(rep, codec);
+                break;
             default:
-                return null;
-
+                return config;
         }
+
+        return _addGenericAttributesToConfig(rep, config);
+    }
+
+    function _convertHDRColorimetryToConfig(representation) {
+        let cfg = {
+            colorGamut: null,
+            transferFunction: null,
+            isSupported: true
+        };
+
+        for (const prop of representation.EssentialProperty || []) {
+
+            // note: MCA does not reflect a parameter related to 'urn:mpeg:mpegB:cicp:VideoFullRangeFlag'
+
+            // translate ColourPrimaries signaling into capability queries
+            if (prop.schemeIdUri === Constants.COLOUR_PRIMARIES_SCHEME_ID_URI && ['1', '5', '6', '7'].includes(prop.value.toString())) {
+                cfg.colorGamut = Constants.MEDIA_CAPABILITIES_API.COLORGAMUT.SRGB;
+            } else if (prop.schemeIdUri === Constants.COLOUR_PRIMARIES_SCHEME_ID_URI && ['11', '12'].includes(prop.value.toString())) {
+                cfg.colorGamut = Constants.MEDIA_CAPABILITIES_API.COLORGAMUT.P3;
+            } else if (prop.schemeIdUri === Constants.COLOUR_PRIMARIES_SCHEME_ID_URI && ['9'].includes(prop.value.toString())) {
+                cfg.colorGamut = Constants.MEDIA_CAPABILITIES_API.COLORGAMUT.REC2020;
+            } else if (prop.schemeIdUri === Constants.COLOUR_PRIMARIES_SCHEME_ID_URI && ['2'].includes(prop.value.toString())) {
+                cfg.colorGamut = null;
+            } else if (prop.schemeIdUri === Constants.COLOUR_PRIMARIES_SCHEME_ID_URI) {
+                cfg.isSupported = false;
+            }
+
+            // translate TransferCharacteristics signaling into capability queries
+            if (prop.schemeIdUri === Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI && ['1', '6', '13', '14', '15'].includes(prop.value.toString())) {
+                cfg.transferFunction = Constants.MEDIA_CAPABILITIES_API.TRANSFERFUNCTION.SRGB;
+            } else if (prop.schemeIdUri === Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI && ['16'].includes(prop.value.toString())) {
+                cfg.transferFunction = Constants.MEDIA_CAPABILITIES_API.TRANSFERFUNCTION.PQ;
+            } else if (prop.schemeIdUri === Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI && ['18'].includes(prop.value.toString())) {
+                cfg.transferFunction = Constants.MEDIA_CAPABILITIES_API.TRANSFERFUNCTION.HLG;
+            } else if (prop.schemeIdUri === Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI && ['2'].includes(prop.value.toString())) {
+                cfg.transferFunction = null;
+            } else if (prop.schemeIdUri === Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI) {
+                cfg.isSupported = false;
+            }
+        }
+
+        return cfg;
+    }
+
+    function _convertHDRMetadataFormatToConfig(representation) {
+        let cfg = {
+            isSupported: true,
+            hdrMetadataType: null
+        };
+
+        for (const prop of representation.EssentialProperty || []) {
+            // translate hdrMetadataType signaling into capability queries
+            if (prop.schemeIdUri === Constants.HDR_METADATA_FORMAT_SCHEME_ID_URI && prop.value === Constants.HDR_METADATA_FORMAT_VALUES.ST2094_10) {
+                cfg.hdrMetadataType = Constants.MEDIA_CAPABILITIES_API.HDR_METADATATYPE.SMPTE_ST_2094_10;
+            } else if (prop.schemeIdUri === Constants.HDR_METADATA_FORMAT_SCHEME_ID_URI && prop.value === Constants.HDR_METADATA_FORMAT_VALUES.SL_HDR2) {
+                cfg.hdrMetadataType = Constants.MEDIA_CAPABILITIES_API.HDR_METADATATYPE.SLHDR2; // Note: This is not specified by W3C
+            } else if (prop.schemeIdUri === Constants.HDR_METADATA_FORMAT_SCHEME_ID_URI && prop.value === Constants.HDR_METADATA_FORMAT_VALUES.ST2094_40) {
+                cfg.hdrMetadataType = Constants.MEDIA_CAPABILITIES_API.HDR_METADATATYPE.SMPTE_ST_2094_40;
+            } else if (prop.schemeIdUri === Constants.HDR_METADATA_FORMAT_SCHEME_ID_URI) {
+                cfg.isSupported = false;
+            }
+        }
+
+        return cfg;
     }
 
     function _createVideoConfiguration(rep, codec) {
-        const width = rep.width || null;
-        const height = rep.height || null;
-        const framerate = rep.frameRate || null;
-        const bitrate = rep.bandwidth || null;
+        let config = {
+            codec: codec,
+            width: rep.width || null,
+            height: rep.height || null,
+            framerate: rep.frameRate || null,
+            bitrate: rep.bandwidth || null,
+            isSupported: true
+        }
+        if (settings.get().streaming.capabilities.filterVideoColorimetryEssentialProperties) {
+            Object.assign(config, _convertHDRColorimetryToConfig(rep));
+        }
+        let colorimetrySupported = config.isSupported;
 
-        return {
-            codec,
-            width,
-            height,
-            framerate,
-            bitrate
-        };
+        if (settings.get().streaming.capabilities.filterHDRMetadataFormatEssentialProperties) {
+            Object.assign(config, _convertHDRMetadataFormatToConfig(rep));
+        }
+        let metadataFormatSupported = config.isSupported;
+
+        if (!colorimetrySupported || !metadataFormatSupported) {
+            config.isSupported = false; // restore this flag as it may got overridden by 2nd Object.assign
+        }
+
+        return config;
     }
 
     function _createAudioConfiguration(rep, codec) {
@@ -187,24 +268,32 @@ function CapabilitiesFilter() {
         return {
             codec,
             bitrate,
-            samplerate
+            samplerate,
+            isSupported: true
         };
+    }
+
+    function _addGenericAttributesToConfig(rep, config) {
+        if (rep && rep[DashConstants.CONTENT_PROTECTION] && rep[DashConstants.CONTENT_PROTECTION].length > 0) {
+            config.keySystemsMetadata = protectionController.getSupportedKeySystemMetadataFromContentProtection(rep[DashConstants.CONTENT_PROTECTION])
+        }
+        return config
     }
 
     function _filterUnsupportedEssentialProperties(manifest) {
 
-        if (!manifest || !manifest.Period_asArray || manifest.Period_asArray.length === 0) {
+        if (!manifest || !manifest.Period || manifest.Period.length === 0) {
             return;
         }
 
-        manifest.Period_asArray.forEach((period) => {
-            period.AdaptationSet_asArray = period.AdaptationSet_asArray.filter((as) => {
+        manifest.Period.forEach((period) => {
+            period.AdaptationSet = period.AdaptationSet.filter((as) => {
 
-                if (!as.Representation_asArray || as.Representation_asArray.length === 0) {
+                if (!as.Representation || as.Representation.length === 0) {
                     return true;
                 }
 
-                as.Representation_asArray = as.Representation_asArray.filter((rep) => {
+                as.Representation = as.Representation.filter((rep) => {
                     const essentialProperties = adapter.getEssentialPropertiesForRepresentation(rep);
 
                     if (essentialProperties && essentialProperties.length > 0) {
@@ -221,32 +310,99 @@ function CapabilitiesFilter() {
                     return true;
                 });
 
-                return as.Representation_asArray && as.Representation_asArray.length > 0;
+                return as.Representation && as.Representation.length > 0;
             });
         });
 
     }
 
     function _applyCustomFilters(manifest) {
-        const customCapabilitiesFilters = customParametersModel.getCustomCapabilitiesFilters();
-        if (!customCapabilitiesFilters || customCapabilitiesFilters.length === 0 || !manifest || !manifest.Period_asArray || manifest.Period_asArray.length === 0) {
-            return;
+        if (!manifest || !manifest.Period || manifest.Period.length === 0) {
+            return Promise.resolve();
         }
 
-        manifest.Period_asArray.forEach((period) => {
-            period.AdaptationSet_asArray = period.AdaptationSet_asArray.filter((as) => {
-
-                if (!as.Representation_asArray || as.Representation_asArray.length === 0) {
-                    return true;
-                }
-
-                as.Representation_asArray = as.Representation_asArray.filter((representation) => {
-                    return !customCapabilitiesFilters.some(customFilter => !customFilter(representation));
-                });
-
-                return as.Representation_asArray && as.Representation_asArray.length > 0;
-            });
+        const promises = [];
+        manifest.Period.forEach((period) => {
+            promises.push(_applyCustomFiltersAdaptationSetsOfPeriod(period));
         });
+
+        return Promise.all(promises);
+    }
+
+    function _applyCustomFiltersAdaptationSetsOfPeriod(period) {
+        return new Promise((resolve) => {
+
+            if (!period || !period.AdaptationSet || period.AdaptationSet.length === 0) {
+                resolve();
+                return;
+            }
+
+            const promises = [];
+            period.AdaptationSet.forEach((as) => {
+                promises.push(_applyCustomFiltersRepresentationsOfAdaptation(as));
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    period.AdaptationSet = period.AdaptationSet.filter((as) => {
+                        return as.Representation && as.Representation.length > 0;
+                    });
+                    resolve();
+                })
+                .catch(() => {
+                    resolve();
+                });
+        });
+
+    }
+
+    function _applyCustomFiltersRepresentationsOfAdaptation(as) {
+        return new Promise((resolve) => {
+
+            if (!as.Representation || as.Representation.length === 0) {
+                resolve();
+                return;
+            }
+
+            const promises = [];
+            as.Representation.forEach((rep) => {
+                promises.push(_applyCustomFiltersRepresentation(rep));
+            });
+
+            Promise.all(promises)
+                .then((supported) => {
+                    as.Representation = as.Representation.filter((rep, i) => {
+                        let isReprSupported = supported[i].every((s) => {
+                            return s
+                        });
+                        if (!isReprSupported) {
+                            logger.debug('[Stream] Representation ' + rep.id + ' has been removed because of unsupported CustomFilter');
+                        }
+                        return isReprSupported;
+                    });
+                    resolve();
+                })
+                .catch((err) => {
+                    logger.warn('[Stream] at least one promise rejected in CustomFilter with error: ', err);
+                    resolve();
+                });
+        });
+
+    }
+
+    function _applyCustomFiltersRepresentation(rep) {
+        const promises = [];
+        const customCapabilitiesFilters = customParametersModel.getCustomCapabilitiesFilters();
+
+        if (!customCapabilitiesFilters || customCapabilitiesFilters.length === 0) {
+            promises.push(Promise.resolve(true));
+        } else {
+            customCapabilitiesFilters.forEach(customFilter => {
+                promises.push(new Promise(resolve => resolve(customFilter(rep))));
+            });
+        }
+
+        return Promise.all(promises)
     }
 
     instance = {

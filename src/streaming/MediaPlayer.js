@@ -1514,7 +1514,7 @@ function MediaPlayer() {
             throw STREAMING_NOT_INITIALIZED_ERROR;
         }
 
-        if (type !== Constants.IMAGE && type !== Constants.VIDEO && type !== Constants.AUDIO) {
+        if (type !== Constants.IMAGE && type !== Constants.VIDEO && type !== Constants.AUDIO && type !== Constants.MESH) {
             return null;
         }
 

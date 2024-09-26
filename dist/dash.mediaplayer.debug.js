@@ -54023,7 +54023,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  *            cacheLoadThresholds: { video: 50, audio: 5 },
  *            trackSwitchMode: {
  *                audio: Constants.TRACK_SWITCH_MODE_ALWAYS_REPLACE,
- *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
+ *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
+ *                mesh: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
  *            },
  *            selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
  *            fragmentRequestTimeout: 20000,
@@ -57981,7 +57982,7 @@ function DashMetrics(config) {
    * @instance
    */
   function getCurrentDVRInfo(mediaType) {
-    var metrics = mediaType ? metricsModel.getMetricsFor(mediaType, true) : metricsModel.getMetricsFor(_streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO, true) || metricsModel.getMetricsFor(_streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO, true);
+    var metrics = mediaType ? metricsModel.getMetricsFor(mediaType, true) : metricsModel.getMetricsFor(_streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO, true) || metricsModel.getMetricsFor(_streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO, true) || metricsModel.getMetricsFor(_streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MESH, true);
     return getCurrent(metrics, _streaming_constants_MetricsConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].DVR_INFO);
   }
 
@@ -68414,7 +68415,7 @@ function MediaPlayer() {
     if (!streamingInitialized) {
       throw STREAMING_NOT_INITIALIZED_ERROR;
     }
-    if (type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].IMAGE && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO) {
+    if (type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].IMAGE && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].MESH) {
       return null;
     }
     var activeStream = getActiveStream();
@@ -74289,7 +74290,7 @@ function AbrController() {
    * @private
    */
   function _onMetricAdded(e) {
-    if (_shouldApplyDynamicAbrStrategy() && e.metric === _constants_MetricsConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].BUFFER_LEVEL && (e.mediaType === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO || e.mediaType === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO)) {
+    if (_shouldApplyDynamicAbrStrategy() && e.metric === _constants_MetricsConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].BUFFER_LEVEL && (e.mediaType === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO || e.mediaType === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO || e.mediaType === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].MESH)) {
       _updateDynamicAbrStrategy(e.mediaType, 0.001 * e.value.level);
     }
   }
@@ -75005,7 +75006,7 @@ function BufferController(config) {
   }
   function _initializeSink(mediaInfo, oldBufferSinks) {
     var selectedVoRepresentation = representationController.getCurrentRepresentation();
-    if (oldBufferSinks && oldBufferSinks[type] && (type === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO)) {
+    if (oldBufferSinks && oldBufferSinks[type] && (type === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO || type === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO || type === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MESH)) {
       return sourceBufferSink.initializeForStreamSwitch(mediaInfo, selectedVoRepresentation, oldBufferSinks[type]);
     } else {
       return sourceBufferSink.initializeForFirstUse(streamInfo, mediaInfo, selectedVoRepresentation);
@@ -79441,7 +79442,7 @@ function PlaybackController() {
    */
   function _onRepresentationSwitch(e) {
     var activeStreamInfo = streamController.getActiveStreamInfo();
-    if (!e || !activeStreamInfo || !e.currentRepresentation || !e.streamId || e.streamId !== activeStreamInfo.id || !e.mediaType || e.mediaType !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO && e.mediaType !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO) {
+    if (!e || !activeStreamInfo || !e.currentRepresentation || !e.streamId || e.streamId !== activeStreamInfo.id || !e.mediaType || e.mediaType !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO && e.mediaType !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO && e.mediaType !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MESH) {
       return;
     }
     availabilityTimeComplete = e.currentRepresentation.availabilityTimeComplete;
@@ -83716,8 +83717,8 @@ function CmcdModel() {
     }
   }
   function _updateLastMediaTypeRequest(type, mediatype) {
-    // Video > Audio > None
-    if (mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].VIDEO || mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO) {
+    // Video > Audio > Mesh > None
+    if (mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].VIDEO || mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO || mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].MESH) {
       if (!_lastMediaTypeRequest || _lastMediaTypeRequest == _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO) {
         _lastMediaTypeRequest = mediatype;
       }
@@ -83756,6 +83757,9 @@ function CmcdModel() {
     }
     if (mediaType === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO) {
       ot = _svta_common_media_library_cmcd_CmcdObjectType__WEBPACK_IMPORTED_MODULE_11__.CmcdObjectType.AUDIO;
+    }
+    if (mediaType === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].MESH) {
+      ot = _svta_common_media_library_cmcd_CmcdObjectType__WEBPACK_IMPORTED_MODULE_11__.CmcdObjectType.OTHER;
     }
     if (mediaType === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].TEXT) {
       if (request.representation.mediaInfo.mimeType === 'application/mp4') {
@@ -85997,6 +86001,8 @@ function ThroughputModel(config) {
       return cacheReferenceTime < settings.get().streaming.cacheLoadThresholds[_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].VIDEO];
     } else if (mediaType === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO) {
       return cacheReferenceTime < settings.get().streaming.cacheLoadThresholds[_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].AUDIO];
+    } else if (mediaType === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MESH) {
+      return cacheReferenceTime < settings.get().streaming.cacheLoadThresholds[_constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MESH];
     }
   }
 
@@ -95630,7 +95636,7 @@ function Capabilities() {
    * @return {Promise<boolean>}
    */
   function supportsCodec(config, type) {
-    if (type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO) {
+    if (type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].AUDIO && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].VIDEO && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_1__["default"].MESH) {
       return Promise.resolve(true);
     }
     if (_canUseMediaCapabilitiesApi(config, type)) {

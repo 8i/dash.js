@@ -583,7 +583,7 @@ function AbrController() {
     function _onMetricAdded(e) {
         if (_shouldApplyDynamicAbrStrategy()
             && e.metric === MetricsConstants.BUFFER_LEVEL
-            && (e.mediaType === Constants.AUDIO || e.mediaType === Constants.VIDEO)) {
+            && (e.mediaType === Constants.AUDIO || e.mediaType === Constants.VIDEO || e.mediaType === Constants.MESH)) {
             _updateDynamicAbrStrategy(e.mediaType, 0.001 * e.value.level);
         }
     }

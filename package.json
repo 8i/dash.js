@@ -14,8 +14,8 @@
     }
   },
   "type": "module",
-"main": "dist/dash.all.min.js",
-"types": "index.d.ts",  
+  "main": "dist/dash.all.min.js",
+  "types": "index.d.ts",
   "scripts": {
     "dev": "webpack --config build/webpack.dev.cjs --mode development --watch --progress",
     "start": "webpack serve --config build/webpack.dev.cjs",

@@ -806,7 +806,7 @@ function PlaybackController() {
      */
     function _onRepresentationSwitch(e) {
         const activeStreamInfo = streamController.getActiveStreamInfo();
-        if (!e || !activeStreamInfo || !e.currentRepresentation || !e.streamId || e.streamId !== activeStreamInfo.id || !e.mediaType || (e.mediaType !== Constants.VIDEO && e.mediaType !== Constants.AUDIO)) {
+        if (!e || !activeStreamInfo || !e.currentRepresentation || !e.streamId || e.streamId !== activeStreamInfo.id || !e.mediaType || (e.mediaType !== Constants.VIDEO && e.mediaType !== Constants.AUDIO && e.mediaType !== Constants.MESH)) {
             return;
         }
 

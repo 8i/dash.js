@@ -2284,7 +2284,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  *            cacheLoadThresholds: { video: 50, audio: 5 },
  *            trackSwitchMode: {
  *                audio: Constants.TRACK_SWITCH_MODE_ALWAYS_REPLACE,
- *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
+ *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
+ *                mesh: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
  *            },
  *            selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
  *            fragmentRequestTimeout: 20000,

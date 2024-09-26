@@ -99,7 +99,7 @@ function Capabilities() {
      */
     function supportsCodec(config, type) {
 
-        if (type !== Constants.AUDIO && type !== Constants.VIDEO) {
+        if (type !== Constants.AUDIO && type !== Constants.VIDEO && type !== Constants.MESH) {
             return Promise.resolve(true);
         }
 

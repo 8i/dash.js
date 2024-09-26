@@ -372,7 +372,7 @@ function DashMetrics(config) {
      */
     function getCurrentDVRInfo(mediaType) {
         const metrics = mediaType ? metricsModel.getMetricsFor(mediaType, true) :
-            metricsModel.getMetricsFor(Constants.VIDEO, true) || metricsModel.getMetricsFor(Constants.AUDIO, true);
+            metricsModel.getMetricsFor(Constants.VIDEO, true) || metricsModel.getMetricsFor(Constants.AUDIO, true) || metricsModel.getMetricsFor(Constants.MESH, true);
         return getCurrent(metrics, MetricsConstants.DVR_INFO);
     }
 

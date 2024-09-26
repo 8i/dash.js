@@ -45879,7 +45879,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  *            cacheLoadThresholds: { video: 50, audio: 5 },
  *            trackSwitchMode: {
  *                audio: Constants.TRACK_SWITCH_MODE_ALWAYS_REPLACE,
- *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
+ *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
+ *                mesh: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
  *            },
  *            selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
  *            fragmentRequestTimeout: 20000,
@@ -58483,8 +58484,8 @@ function CmcdModel() {
     }
   }
   function _updateLastMediaTypeRequest(type, mediatype) {
-    // Video > Audio > None
-    if (mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].VIDEO || mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO) {
+    // Video > Audio > Mesh > None
+    if (mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].VIDEO || mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO || mediatype === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].MESH) {
       if (!_lastMediaTypeRequest || _lastMediaTypeRequest == _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO) {
         _lastMediaTypeRequest = mediatype;
       }
@@ -58523,6 +58524,9 @@ function CmcdModel() {
     }
     if (mediaType === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].AUDIO) {
       ot = _svta_common_media_library_cmcd_CmcdObjectType__WEBPACK_IMPORTED_MODULE_11__.CmcdObjectType.AUDIO;
+    }
+    if (mediaType === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].MESH) {
+      ot = _svta_common_media_library_cmcd_CmcdObjectType__WEBPACK_IMPORTED_MODULE_11__.CmcdObjectType.OTHER;
     }
     if (mediaType === _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_5__["default"].TEXT) {
       if (request.representation.mediaInfo.mimeType === 'application/mp4') {

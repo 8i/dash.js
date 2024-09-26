@@ -260,6 +260,8 @@ function ThroughputModel(config) {
             return cacheReferenceTime < settings.get().streaming.cacheLoadThresholds[Constants.VIDEO];
         } else if (mediaType === Constants.AUDIO) {
             return cacheReferenceTime < settings.get().streaming.cacheLoadThresholds[Constants.AUDIO];
+        } else if (mediaType === Constants.MESH) {
+            return cacheReferenceTime < settings.get().streaming.cacheLoadThresholds[Constants.MESH];
         }
     }
 

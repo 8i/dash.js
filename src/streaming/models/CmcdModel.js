@@ -335,8 +335,8 @@ function CmcdModel() {
     }
 
     function _updateLastMediaTypeRequest(type, mediatype) {
-        // Video > Audio > None
-        if (mediatype === Constants.VIDEO || mediatype === Constants.AUDIO) {
+        // Video > Audio > Mesh > None
+        if (mediatype === Constants.VIDEO || mediatype === Constants.AUDIO || mediatype === Constants.MESH) {
             if (!_lastMediaTypeRequest || _lastMediaTypeRequest == Constants.AUDIO) {
                 _lastMediaTypeRequest = mediatype;
             }
@@ -386,6 +386,9 @@ function CmcdModel() {
         }
         if (mediaType === Constants.AUDIO) {
             ot = CmcdObjectType.AUDIO;
+        }
+        if (mediaType === Constants.MESH) {
+            ot = CmcdObjectType.OTHER;
         }
         if (mediaType === Constants.TEXT) {
             if (request.representation.mediaInfo.mimeType === 'application/mp4') {

@@ -232,7 +232,7 @@ function BufferController(config) {
     function _initializeSink(mediaInfo, oldBufferSinks) {
         const selectedVoRepresentation = representationController.getCurrentRepresentation();
 
-        if (oldBufferSinks && oldBufferSinks[type] && (type === Constants.VIDEO || type === Constants.AUDIO)) {
+        if (oldBufferSinks && oldBufferSinks[type] && (type === Constants.VIDEO || type === Constants.AUDIO || type === Constants.MESH)) {
             return sourceBufferSink.initializeForStreamSwitch(mediaInfo, selectedVoRepresentation, oldBufferSinks[type]);
         } else {
             return sourceBufferSink.initializeForFirstUse(streamInfo, mediaInfo, selectedVoRepresentation);

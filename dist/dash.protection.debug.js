@@ -45,7 +45,6 @@ return /******/ (() => { // webpackBootstrap
 
 
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function assertPath(path) {
   if (typeof path !== 'string') {
     throw new TypeError('Path must be a string. Received ' + JSON.stringify(path));
@@ -393,8 +392,8 @@ var posix = {
     return path.slice(startDot, end);
   },
   format: function format(pathObject) {
-    if (pathObject === null || _typeof(pathObject) !== 'object') {
-      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + _typeof(pathObject));
+    if (pathObject === null || typeof pathObject !== 'object') {
+      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof pathObject);
     }
     return _format('/', pathObject);
   },
@@ -675,9 +674,7 @@ process.umask = function () {
   \*******************************************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-/* module decorator */ module = __webpack_require__.nmd(module);
-var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-/////////////////////////////////////////////////////////////////////////////////
+var __WEBPACK_AMD_DEFINE_RESULT__;/////////////////////////////////////////////////////////////////////////////////
 /* UAParser.js v1.0.38
    Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
    MIT License */ /*
@@ -741,7 +738,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   // Helper
   //////////
 
-  var extend = function extend(regexes, extensions) {
+  var extend = function (regexes, extensions) {
       var mergedRegexes = {};
       for (var i in regexes) {
         if (extensions[i] && extensions[i].length % 2 === 0) {
@@ -752,26 +749,26 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       }
       return mergedRegexes;
     },
-    enumerize = function enumerize(arr) {
+    enumerize = function (arr) {
       var enums = {};
       for (var i = 0; i < arr.length; i++) {
         enums[arr[i].toUpperCase()] = arr[i];
       }
       return enums;
     },
-    has = function has(str1, str2) {
-      return _typeof(str1) === STR_TYPE ? lowerize(str2).indexOf(lowerize(str1)) !== -1 : false;
+    has = function (str1, str2) {
+      return typeof str1 === STR_TYPE ? lowerize(str2).indexOf(lowerize(str1)) !== -1 : false;
     },
-    lowerize = function lowerize(str) {
+    lowerize = function (str) {
       return str.toLowerCase();
     },
-    majorize = function majorize(version) {
-      return _typeof(version) === STR_TYPE ? version.replace(/[^\d\.]/g, EMPTY).split('.')[0] : undefined;
+    majorize = function (version) {
+      return typeof version === STR_TYPE ? version.replace(/[^\d\.]/g, EMPTY).split('.')[0] : undefined;
     },
-    trim = function trim(str, len) {
-      if (_typeof(str) === STR_TYPE) {
+    trim = function (str, len) {
+      if (typeof str === STR_TYPE) {
         str = str.replace(/^\s\s*/, EMPTY);
-        return _typeof(len) === UNDEF_TYPE ? str : str.substring(0, UA_MAX_LENGTH);
+        return typeof len === UNDEF_TYPE ? str : str.substring(0, UA_MAX_LENGTH);
       }
     };
 
@@ -779,7 +776,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   // Map helper
   //////////////
 
-  var rgxMapper = function rgxMapper(ua, arrays) {
+  var rgxMapper = function (ua, arrays) {
       var i = 0,
         j,
         k,
@@ -806,9 +803,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
               match = matches[++k];
               q = props[p];
               // check if given property is actually array
-              if (_typeof(q) === OBJ_TYPE && q.length > 0) {
+              if (typeof q === OBJ_TYPE && q.length > 0) {
                 if (q.length === 2) {
-                  if (_typeof(q[1]) == FUNC_TYPE) {
+                  if (typeof q[1] == FUNC_TYPE) {
                     // assign modified match
                     this[q[0]] = q[1].call(this, match);
                   } else {
@@ -817,7 +814,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
                   }
                 } else if (q.length === 3) {
                   // check whether function or regex
-                  if (_typeof(q[1]) === FUNC_TYPE && !(q[1].exec && q[1].test)) {
+                  if (typeof q[1] === FUNC_TYPE && !(q[1].exec && q[1].test)) {
                     // call function (usually string mapper)
                     this[q[0]] = match ? q[1].call(this, match, q[2]) : undefined;
                   } else {
@@ -836,10 +833,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
         i += 2;
       }
     },
-    strMapper = function strMapper(str, map) {
+    strMapper = function (str, map) {
       for (var i in map) {
         // check if current value is array
-        if (_typeof(map[i]) === OBJ_TYPE && map[i].length > 0) {
+        if (typeof map[i] === OBJ_TYPE && map[i].length > 0) {
           for (var j = 0; j < map[i].length; j++) {
             if (has(map[i][j], str)) {
               return i === UNKNOWN ? undefined : i;
@@ -1298,15 +1295,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   // Constructor
   ////////////////
 
-  var _UAParser = function UAParser(ua, extensions) {
-    if (_typeof(ua) === OBJ_TYPE) {
+  var UAParser = function (ua, extensions) {
+    if (typeof ua === OBJ_TYPE) {
       extensions = ua;
       ua = undefined;
     }
-    if (!(this instanceof _UAParser)) {
-      return new _UAParser(ua, extensions).getResult();
+    if (!(this instanceof UAParser)) {
+      return new UAParser(ua, extensions).getResult();
     }
-    var _navigator = _typeof(window) !== UNDEF_TYPE && window.navigator ? window.navigator : undefined;
+    var _navigator = typeof window !== UNDEF_TYPE && window.navigator ? window.navigator : undefined;
     var _ua = ua || (_navigator && _navigator.userAgent ? _navigator.userAgent : EMPTY);
     var _uach = _navigator && _navigator.userAgentData ? _navigator.userAgentData : undefined;
     var _rgxmap = extensions ? extend(regexes, extensions) : regexes;
@@ -1318,7 +1315,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       rgxMapper.call(_browser, _ua, _rgxmap.browser);
       _browser[MAJOR] = majorize(_browser[VERSION]);
       // Brave-specific detection
-      if (_isSelfNav && _navigator && _navigator.brave && _typeof(_navigator.brave.isBrave) == FUNC_TYPE) {
+      if (_isSelfNav && _navigator && _navigator.brave && typeof _navigator.brave.isBrave == FUNC_TYPE) {
         _browser[NAME] = 'Brave';
       }
       return _browser;
@@ -1339,7 +1336,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
         _device[TYPE] = MOBILE;
       }
       // iPadOS-specific detection: identified as Mac, but has some iOS-only properties
-      if (_isSelfNav && _device[MODEL] == 'Macintosh' && _navigator && _typeof(_navigator.standalone) !== UNDEF_TYPE && _navigator.maxTouchPoints && _navigator.maxTouchPoints > 2) {
+      if (_isSelfNav && _device[MODEL] == 'Macintosh' && _navigator && typeof _navigator.standalone !== UNDEF_TYPE && _navigator.maxTouchPoints && _navigator.maxTouchPoints > 2) {
         _device[MODEL] = 'iPad';
         _device[TYPE] = TABLET;
       }
@@ -1376,39 +1373,39 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       return _ua;
     };
     this.setUA = function (ua) {
-      _ua = _typeof(ua) === STR_TYPE && ua.length > UA_MAX_LENGTH ? trim(ua, UA_MAX_LENGTH) : ua;
+      _ua = typeof ua === STR_TYPE && ua.length > UA_MAX_LENGTH ? trim(ua, UA_MAX_LENGTH) : ua;
       return this;
     };
     this.setUA(_ua);
     return this;
   };
-  _UAParser.VERSION = LIBVERSION;
-  _UAParser.BROWSER = enumerize([NAME, VERSION, MAJOR]);
-  _UAParser.CPU = enumerize([ARCHITECTURE]);
-  _UAParser.DEVICE = enumerize([MODEL, VENDOR, TYPE, CONSOLE, MOBILE, SMARTTV, TABLET, WEARABLE, EMBEDDED]);
-  _UAParser.ENGINE = _UAParser.OS = enumerize([NAME, VERSION]);
+  UAParser.VERSION = LIBVERSION;
+  UAParser.BROWSER = enumerize([NAME, VERSION, MAJOR]);
+  UAParser.CPU = enumerize([ARCHITECTURE]);
+  UAParser.DEVICE = enumerize([MODEL, VENDOR, TYPE, CONSOLE, MOBILE, SMARTTV, TABLET, WEARABLE, EMBEDDED]);
+  UAParser.ENGINE = UAParser.OS = enumerize([NAME, VERSION]);
 
   ///////////
   // Export
   //////////
 
   // check js environment
-  if (( false ? 0 : _typeof(exports)) !== UNDEF_TYPE) {
+  if (typeof exports !== UNDEF_TYPE) {
     // nodejs env
-    if (( false ? 0 : _typeof(module)) !== UNDEF_TYPE && module.exports) {
-      exports = module.exports = _UAParser;
+    if ("object" !== UNDEF_TYPE && module.exports) {
+      exports = module.exports = UAParser;
     }
-    exports.UAParser = _UAParser;
+    exports.UAParser = UAParser;
   } else {
     // requirejs env (optional)
-    if (( false ? 0 : _typeof(__webpack_require__.amdD)) === FUNC_TYPE && __webpack_require__.amdO) {
+    if ("function" === FUNC_TYPE && __webpack_require__.amdO) {
       !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
-        return _UAParser;
+        return UAParser;
       }).call(exports, __webpack_require__, exports, module),
 		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (_typeof(window) !== UNDEF_TYPE) {
+    } else if (typeof window !== UNDEF_TYPE) {
       // browser env
-      window.UAParser = _UAParser;
+      window.UAParser = UAParser;
     }
   }
 
@@ -1417,9 +1414,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   //   In AMD env the global scope should be kept clean, but jQuery is an exception.
   //   jQuery always exports to global scope, unless jQuery.noConflict(true) is used,
   //   and we should catch that.
-  var $ = _typeof(window) !== UNDEF_TYPE && (window.jQuery || window.Zepto);
+  var $ = typeof window !== UNDEF_TYPE && (window.jQuery || window.Zepto);
   if ($ && !$.ua) {
-    var parser = new _UAParser();
+    var parser = new UAParser();
     $.ua = parser.getResult();
     $.ua.get = function () {
       return parser.getUA();
@@ -1432,7 +1429,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       }
     };
   }
-})((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' ? window : this);
+})(typeof window === 'object' ? window : this);
 
 /***/ }),
 
@@ -1481,11 +1478,11 @@ __webpack_require__.r(__webpack_exports__);
  * @module FactoryMaker
  * @ignore
  */
-var FactoryMaker = function () {
-  var instance;
-  var singletonContexts = [];
-  var singletonFactories = {};
-  var classFactories = {};
+const FactoryMaker = function () {
+  let instance;
+  let singletonContexts = [];
+  const singletonFactories = {};
+  const classFactories = {};
   function extend(name, childInstance, override, context) {
     if (!context[name] && childInstance) {
       context[name] = {
@@ -1508,8 +1505,8 @@ var FactoryMaker = function () {
    * @instance
    */
   function getSingletonInstance(context, className) {
-    for (var i in singletonContexts) {
-      var obj = singletonContexts[i];
+    for (const i in singletonContexts) {
+      const obj = singletonContexts[i];
       if (obj.context === context && obj.name === className) {
         return obj.instance;
       }
@@ -1527,8 +1524,8 @@ var FactoryMaker = function () {
    * @instance
    */
   function setSingletonInstance(context, className, instance) {
-    for (var i in singletonContexts) {
-      var obj = singletonContexts[i];
+    for (const i in singletonContexts) {
+      const obj = singletonContexts[i];
       if (obj.context === context && obj.name === className) {
         singletonContexts[i].instance = instance;
         return;
@@ -1549,9 +1546,7 @@ var FactoryMaker = function () {
    * @instance
    */
   function deleteSingletonInstances(context) {
-    singletonContexts = singletonContexts.filter(function (x) {
-      return x.context !== context;
-    });
+    singletonContexts = singletonContexts.filter(x => x.context !== context);
   }
 
   /*------------------------------------------------------------------------------------------*/
@@ -1582,14 +1577,14 @@ var FactoryMaker = function () {
     return getFactoryByName(name, classFactories);
   }
   function getClassFactory(classConstructor) {
-    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
+    let factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
     if (!factory) {
-      factory = function factory(context) {
+      factory = function (context) {
         if (context === undefined) {
           context = {};
         }
         return {
-          create: function create() {
+          create: function () {
             return merge(classConstructor, context, arguments);
           }
         };
@@ -1612,15 +1607,15 @@ var FactoryMaker = function () {
     return getFactoryByName(name, singletonFactories);
   }
   function getSingletonFactory(classConstructor) {
-    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
+    let factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
     if (!factory) {
-      factory = function factory(context) {
-        var instance;
+      factory = function (context) {
+        let instance;
         if (context === undefined) {
           context = {};
         }
         return {
-          getInstance: function getInstance() {
+          getInstance: function () {
             // If we don't have an instance yet check for one on the context
             if (!instance) {
               instance = getSingletonInstance(context, classConstructor.__dashjs_factory_name);
@@ -1643,23 +1638,23 @@ var FactoryMaker = function () {
     return factory;
   }
   function merge(classConstructor, context, args) {
-    var classInstance;
-    var className = classConstructor.__dashjs_factory_name;
-    var extensionObject = context[className];
+    let classInstance;
+    const className = classConstructor.__dashjs_factory_name;
+    const extensionObject = context[className];
     if (extensionObject) {
-      var extension = extensionObject.instance;
+      let extension = extensionObject.instance;
       if (extensionObject.override) {
         //Override public methods in parent but keep parent.
 
         classInstance = classConstructor.apply({
-          context: context
+          context
         }, args);
         extension = extension.apply({
-          context: context,
+          context,
           factory: instance,
           parent: classInstance
         }, args);
-        for (var prop in extension) {
+        for (const prop in extension) {
           if (classInstance.hasOwnProperty(prop)) {
             classInstance[prop] = extension[prop];
           }
@@ -1668,14 +1663,14 @@ var FactoryMaker = function () {
         //replace parent object completely with new object. Same as dijon.
 
         return extension.apply({
-          context: context,
+          context,
           factory: instance
         }, args);
       }
     } else {
       // Create new instance of the class
       classInstance = classConstructor.apply({
-        context: context
+        context
       }, args);
     }
 
@@ -1716,12 +1711,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var path_browserify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path-browserify */ "./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js");
 /* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/.pnpm/ua-parser-js@1.0.38/node_modules/ua-parser-js/src/ua-parser.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+/* harmony import */ var _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../streaming/constants/Constants.js */ "./src/streaming/constants/Constants.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -1760,187 +1750,255 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 
 
-var Utils = /*#__PURE__*/function () {
-  function Utils() {
-    _classCallCheck(this, Utils);
-  }
-  return _createClass(Utils, null, [{
-    key: "mixin",
-    value: function mixin(dest, source, copy) {
-      var s;
-      var empty = {};
-      if (dest) {
-        for (var name in source) {
-          if (source.hasOwnProperty(name)) {
-            s = source[name];
-            if (!(name in dest) || dest[name] !== s && (!(name in empty) || empty[name] !== s)) {
-              if (_typeof(dest[name]) === 'object' && dest[name] !== null) {
-                dest[name] = Utils.mixin(dest[name], s, copy);
-              } else {
-                dest[name] = copy(s);
-              }
+
+class Utils {
+  static mixin(dest, source, copy) {
+    let s;
+    let empty = {};
+    if (dest) {
+      for (let name in source) {
+        if (source.hasOwnProperty(name)) {
+          s = source[name];
+          if (!(name in dest) || dest[name] !== s && (!(name in empty) || empty[name] !== s)) {
+            if (typeof dest[name] === 'object' && dest[name] !== null) {
+              dest[name] = Utils.mixin(dest[name], s, copy);
+            } else {
+              dest[name] = copy(s);
             }
           }
         }
       }
-      return dest;
     }
-  }, {
-    key: "clone",
-    value: function clone(src) {
-      if (!src || _typeof(src) !== 'object') {
-        return src; // anything
-      }
-      if (src instanceof RegExp) {
-        return new RegExp(src);
-      }
-      var r;
-      if (src instanceof Array) {
-        // array
-        r = [];
-        for (var i = 0, l = src.length; i < l; ++i) {
-          if (i in src) {
-            r.push(Utils.clone(src[i]));
-          }
-        }
-      } else {
-        r = {};
-      }
-      return Utils.mixin(r, src, Utils.clone);
+    return dest;
+  }
+  static clone(src) {
+    if (!src || typeof src !== 'object') {
+      return src; // anything
     }
-  }, {
-    key: "addAditionalQueryParameterToUrl",
-    value: function addAditionalQueryParameterToUrl(url, params) {
-      try {
-        if (!params || params.length === 0) {
-          return url;
+    if (src instanceof RegExp) {
+      return new RegExp(src);
+    }
+    let r;
+    if (src instanceof Array) {
+      // array
+      r = [];
+      for (let i = 0, l = src.length; i < l; ++i) {
+        if (i in src) {
+          r.push(Utils.clone(src[i]));
         }
-        var modifiedUrl = new URL(url);
-        params.forEach(function (param) {
-          if (param.key && param.value) {
-            modifiedUrl.searchParams.set(param.key, param.value);
-          }
-        });
-        return modifiedUrl.href;
-      } catch (e) {
+      }
+    } else {
+      r = {};
+    }
+    return Utils.mixin(r, src, Utils.clone);
+  }
+  static addAdditionalQueryParameterToUrl(url, params) {
+    try {
+      if (!params || params.length === 0) {
         return url;
       }
+      let updatedUrl = url;
+      params.forEach(_ref => {
+        let {
+          key,
+          value
+        } = _ref;
+        const separator = updatedUrl.includes('?') ? '&' : '?';
+        updatedUrl += `${separator}${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      });
+      return updatedUrl;
+    } catch (e) {
+      return url;
     }
-  }, {
-    key: "parseHttpHeaders",
-    value: function parseHttpHeaders(headerStr) {
-      var headers = {};
-      if (!headerStr) {
-        return headers;
-      }
-
-      // Trim headerStr to fix a MS Edge bug with xhr.getAllResponseHeaders method
-      // which send a string starting with a "\n" character
-      var headerPairs = headerStr.trim().split("\r\n");
-      for (var i = 0, ilen = headerPairs.length; i < ilen; i++) {
-        var headerPair = headerPairs[i];
-        var index = headerPair.indexOf(": ");
-        if (index > 0) {
-          headers[headerPair.substring(0, index)] = headerPair.substring(index + 2);
-        }
-      }
+  }
+  static parseHttpHeaders(headerStr) {
+    let headers = {};
+    if (!headerStr) {
       return headers;
     }
-  }, {
-    key: "generateUuid",
-    value: function generateUuid() {
-      var dt = new Date().getTime();
-      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (dt + Math.random() * 16) % 16 | 0;
-        dt = Math.floor(dt / 16);
-        return (c == 'x' ? r : r & 0x3 | 0x8).toString(16);
-      });
-      return uuid;
+
+    // Trim headerStr to fix a MS Edge bug with xhr.getAllResponseHeaders method
+    // which send a string starting with a "\n" character
+    let headerPairs = headerStr.trim().split('\u000d\u000a');
+    for (let i = 0, ilen = headerPairs.length; i < ilen; i++) {
+      let headerPair = headerPairs[i];
+      let index = headerPair.indexOf('\u003a\u0020');
+      if (index > 0) {
+        headers[headerPair.substring(0, index)] = headerPair.substring(index + 2);
+      }
     }
-  }, {
-    key: "generateHashCode",
-    value: function generateHashCode(string) {
-      var hash = 0;
-      if (string.length === 0) {
-        return hash;
-      }
-      for (var i = 0; i < string.length; i++) {
-        var chr = string.charCodeAt(i);
-        hash = (hash << 5) - hash + chr;
-        hash |= 0;
-      }
+    return headers;
+  }
+  static generateUuid() {
+    let dt = new Date().getTime();
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == 'x' ? r : r & 0x3 | 0x8).toString(16);
+    });
+    return uuid;
+  }
+  static generateHashCode(string) {
+    let hash = 0;
+    if (string.length === 0) {
       return hash;
     }
+    for (let i = 0; i < string.length; i++) {
+      const chr = string.charCodeAt(i);
+      hash = (hash << 5) - hash + chr;
+      hash |= 0;
+    }
+    return hash;
+  }
 
-    /**
-     * Compares both urls and returns a relative url (target relative to original)
-     * @param {string} originalUrl
-     * @param {string} targetUrl
-     * @return {string|*}
-     */
-  }, {
-    key: "getRelativeUrl",
-    value: function getRelativeUrl(originalUrl, targetUrl) {
-      try {
-        var original = new URL(originalUrl);
-        var target = new URL(targetUrl);
+  /**
+   * Compares both urls and returns a relative url (target relative to original)
+   * @param {string} originalUrl
+   * @param {string} targetUrl
+   * @return {string|*}
+   */
+  static getRelativeUrl(originalUrl, targetUrl) {
+    try {
+      const original = new URL(originalUrl);
+      const target = new URL(targetUrl);
 
-        // Unify the protocol to compare the origins
-        original.protocol = target.protocol;
-        if (original.origin !== target.origin) {
-          return targetUrl;
-        }
-
-        // Use the relative path implementation of the path library. We need to cut off the actual filename in the end to get the relative path
-        var relativePath = path_browserify__WEBPACK_IMPORTED_MODULE_0__.relative(original.pathname.substr(0, original.pathname.lastIndexOf('/')), target.pathname.substr(0, target.pathname.lastIndexOf('/')));
-
-        // In case the relative path is empty (both path are equal) return the filename only. Otherwise add a slash in front of the filename
-        var startIndexOffset = relativePath.length === 0 ? 1 : 0;
-        relativePath += target.pathname.substr(target.pathname.lastIndexOf('/') + startIndexOffset, target.pathname.length - 1);
-
-        // Build the other candidate, e.g. the 'host relative' path that starts with "/", and return the shortest of the two candidates.
-        if (target.pathname.length < relativePath.length) {
-          return target.pathname;
-        }
-        return relativePath;
-      } catch (e) {
+      // Unify the protocol to compare the origins
+      original.protocol = target.protocol;
+      if (original.origin !== target.origin) {
         return targetUrl;
       }
-    }
-  }, {
-    key: "getHostFromUrl",
-    value: function getHostFromUrl(urlString) {
-      try {
-        var url = new URL(urlString);
-        return url.host;
-      } catch (e) {
-        return null;
-      }
-    }
-  }, {
-    key: "parseUserAgent",
-    value: function parseUserAgent() {
-      var ua = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      try {
-        var uaString = ua === null ? typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '' : '';
-        return (0,ua_parser_js__WEBPACK_IMPORTED_MODULE_1__.UAParser)(uaString);
-      } catch (e) {
-        return {};
-      }
-    }
 
-    /**
-     * Checks for existence of "http" or "https" in a string
-     * @param string
-     * @returns {boolean}
-     */
-  }, {
-    key: "stringHasProtocol",
-    value: function stringHasProtocol(string) {
-      return /(http(s?)):\/\//i.test(string);
+      // Use the relative path implementation of the path library. We need to cut off the actual filename in the end to get the relative path
+      let relativePath = path_browserify__WEBPACK_IMPORTED_MODULE_0__.relative(original.pathname.substr(0, original.pathname.lastIndexOf('/')), target.pathname.substr(0, target.pathname.lastIndexOf('/')));
+
+      // In case the relative path is empty (both path are equal) return the filename only. Otherwise add a slash in front of the filename
+      const startIndexOffset = relativePath.length === 0 ? 1 : 0;
+      relativePath += target.pathname.substr(target.pathname.lastIndexOf('/') + startIndexOffset, target.pathname.length - 1);
+
+      // Build the other candidate, e.g. the 'host relative' path that starts with "/", and return the shortest of the two candidates.
+      if (target.pathname.length < relativePath.length) {
+        return target.pathname;
+      }
+      return relativePath;
+    } catch (e) {
+      return targetUrl;
     }
-  }]);
-}();
+  }
+  static getHostFromUrl(urlString) {
+    try {
+      const url = new URL(urlString);
+      return url.host;
+    } catch (e) {
+      return null;
+    }
+  }
+  static parseUserAgent() {
+    let ua = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    try {
+      const uaString = ua === null ? typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '' : '';
+      return (0,ua_parser_js__WEBPACK_IMPORTED_MODULE_1__.UAParser)(uaString);
+    } catch (e) {
+      return {};
+    }
+  }
+
+  /**
+   * Checks for existence of "http" or "https" in a string
+   * @param string
+   * @returns {boolean}
+   */
+  static stringHasProtocol(string) {
+    return /(http(s?)):\/\//i.test(string);
+  }
+  static bufferSourceToDataView(bufferSource) {
+    return Utils.toDataView(bufferSource, DataView);
+  }
+  static bufferSourceToInt8(bufferSource) {
+    return Utils.toDataView(bufferSource, Uint8Array);
+  }
+  static bufferSourceToHex(data) {
+    const arr = Utils.bufferSourceToInt8(data);
+    let hex = '';
+    for (let value of arr) {
+      value = value.toString(16);
+      if (value.length === 1) {
+        value = '0' + value;
+      }
+      hex += value;
+    }
+    return hex;
+  }
+  static toDataView(bufferSource, Type) {
+    const buffer = Utils.getArrayBuffer(bufferSource);
+    let bytesPerElement = 1;
+    if ('BYTES_PER_ELEMENT' in DataView) {
+      bytesPerElement = DataView.BYTES_PER_ELEMENT;
+    }
+    const dataEnd = ((bufferSource.byteOffset || 0) + bufferSource.byteLength) / bytesPerElement;
+    const rawStart = (bufferSource.byteOffset || 0) / bytesPerElement;
+    const start = Math.floor(Math.max(0, Math.min(rawStart, dataEnd)));
+    const end = Math.floor(Math.min(start + Math.max(Infinity, 0), dataEnd));
+    return new Type(buffer, start, end - start);
+  }
+  static getArrayBuffer(view) {
+    if (view instanceof ArrayBuffer) {
+      return view;
+    } else {
+      return view.buffer;
+    }
+  }
+  static getCodecFamily(codecString) {
+    const {
+      base,
+      profile
+    } = Utils._getCodecParts(codecString);
+    switch (base) {
+      case 'mp4a':
+        switch (profile) {
+          case '69':
+          case '6b':
+          case '40.34':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.MP3;
+          case '66':
+          case '67':
+          case '68':
+          case '40.2':
+          case '40.02':
+          case '40.5':
+          case '40.05':
+          case '40.29':
+          case '40.42':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.AAC;
+          case 'a5':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.AC3;
+          case 'e6':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.EC3;
+          case 'b2':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.DTSX;
+          case 'a9':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.DTSC;
+        }
+        break;
+      case 'avc1':
+      case 'avc3':
+        return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.AVC;
+      case 'hvc1':
+      case 'hvc3':
+        return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.HEVC;
+      default:
+        return base;
+    }
+    return base;
+  }
+  static _getCodecParts(codecString) {
+    const [base, ...rest] = codecString.split('.');
+    const profile = rest.join('.');
+    return {
+      base,
+      profile
+    };
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Utils);
 
 /***/ }),
@@ -1956,12 +2014,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -1996,30 +2048,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * @class
  * @ignore
  */
-var ErrorsBase = /*#__PURE__*/function () {
-  function ErrorsBase() {
-    _classCallCheck(this, ErrorsBase);
-  }
-  return _createClass(ErrorsBase, [{
-    key: "extend",
-    value: function extend(errors, config) {
-      if (!errors) {
-        return;
-      }
-      var override = config ? config.override : false;
-      var publicOnly = config ? config.publicOnly : false;
-      for (var err in errors) {
-        if (!errors.hasOwnProperty(err) || this[err] && !override) {
-          continue;
-        }
-        if (publicOnly && errors[err].indexOf('public_') === -1) {
-          continue;
-        }
-        this[err] = errors[err];
-      }
+class ErrorsBase {
+  extend(errors, config) {
+    if (!errors) {
+      return;
     }
-  }]);
-}();
+    let override = config ? config.override : false;
+    let publicOnly = config ? config.publicOnly : false;
+    for (const err in errors) {
+      if (!errors.hasOwnProperty(err) || this[err] && !override) {
+        continue;
+      }
+      if (publicOnly && errors[err].indexOf('public_') === -1) {
+        continue;
+      }
+      this[err] = errors[err];
+    }
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ErrorsBase);
 
 /***/ }),
@@ -2035,12 +2081,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2075,30 +2115,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * @class
  * @ignore
  */
-var EventsBase = /*#__PURE__*/function () {
-  function EventsBase() {
-    _classCallCheck(this, EventsBase);
-  }
-  return _createClass(EventsBase, [{
-    key: "extend",
-    value: function extend(events, config) {
-      if (!events) {
-        return;
-      }
-      var override = config ? config.override : false;
-      var publicOnly = config ? config.publicOnly : false;
-      for (var evt in events) {
-        if (!events.hasOwnProperty(evt) || this[evt] && !override) {
-          continue;
-        }
-        if (publicOnly && events[evt].indexOf('public_') === -1) {
-          continue;
-        }
-        this[evt] = events[evt];
-      }
+class EventsBase {
+  extend(events, config) {
+    if (!events) {
+      return;
     }
-  }]);
-}();
+    let override = config ? config.override : false;
+    let publicOnly = config ? config.publicOnly : false;
+    for (const evt in events) {
+      if (!events.hasOwnProperty(evt) || this[evt] && !override) {
+        continue;
+      }
+      if (publicOnly && events[evt].indexOf('public_') === -1) {
+        continue;
+      }
+      this[evt] = events[evt];
+    }
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EventsBase);
 
 /***/ }),
@@ -2627,7 +2661,17 @@ __webpack_require__.r(__webpack_exports__);
    */
   ID3_SCHEME_ID_URI: 'https://aomedia.org/emsg/ID3',
   COMMON_ACCESS_TOKEN_HEADER: 'common-access-token',
-  DASH_ROLE_SCHEME_ID: 'urn:mpeg:dash:role:2011'
+  DASH_ROLE_SCHEME_ID: 'urn:mpeg:dash:role:2011',
+  CODEC_FAMILIES: {
+    MP3: 'mp3',
+    AAC: 'aac',
+    AC3: 'ac3',
+    EC3: 'ec3',
+    DTSX: 'dtsx',
+    DTSC: 'dtsc',
+    AVC: 'avc',
+    HEVC: 'hevc'
+  }
 });
 
 /***/ }),
@@ -2706,6 +2750,15 @@ __webpack_require__.r(__webpack_exports__);
       HW_SECURE_DECODE: 'HW_SECURE_DECODE',
       HW_SECURE_ALL: 'HW_SECURE_ALL'
     }
+  },
+  MEDIA_KEY_STATUSES: {
+    USABLE: 'usable',
+    EXPIRED: 'expired',
+    RELEASED: 'released',
+    OUTPUT_RESTRICTED: 'output-restricted',
+    OUTPUT_DOWNSCALED: 'output-downscaled',
+    STATUS_PENDING: 'status-pending',
+    INTERNAL_ERROR: 'internal-error'
   }
 });
 
@@ -2724,12 +2777,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _dash_constants_DashConstants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../dash/constants/DashConstants.js */ "./src/dash/constants/DashConstants.js");
 /* harmony import */ var _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/ProtectionConstants.js */ "./src/streaming/constants/ProtectionConstants.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2762,7 +2809,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  */
 
 
-var LICENSE_SERVER_MANIFEST_CONFIGURATIONS = {
+const LICENSE_SERVER_MANIFEST_CONFIGURATIONS = {
   prefixes: ['clearkey', 'dashif', 'ck']
 };
 
@@ -2770,225 +2817,211 @@ var LICENSE_SERVER_MANIFEST_CONFIGURATIONS = {
  * @class
  * @ignore
  */
-var CommonEncryption = /*#__PURE__*/function () {
-  function CommonEncryption() {
-    _classCallCheck(this, CommonEncryption);
+class CommonEncryption {
+  /**
+   * Find and return the ContentProtection element in the given array
+   * that indicates support for MP4 Common Encryption
+   *
+   * @param {Array} cpArray array of content protection elements
+   * @returns {Object|null} the Common Encryption content protection element or
+   * null if one was not found
+   */
+  static findMp4ProtectionElement(cpArray) {
+    let retVal = null;
+    for (let i = 0; i < cpArray.length; ++i) {
+      let cp = cpArray[i];
+      if (cp.schemeIdUri && cp.schemeIdUri.toLowerCase() === _dash_constants_DashConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MP4_PROTECTION_SCHEME && cp.value && (cp.value.toLowerCase() === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCRYPTION_SCHEME_CENC || cp.value.toLowerCase() === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCRYPTION_SCHEME_CBCS)) {
+        retVal = cp;
+      }
+    }
+    return retVal;
   }
-  return _createClass(CommonEncryption, null, [{
-    key: "findMp4ProtectionElement",
-    value:
-    /**
-     * Find and return the ContentProtection element in the given array
-     * that indicates support for MP4 Common Encryption
-     *
-     * @param {Array} cpArray array of content protection elements
-     * @returns {Object|null} the Common Encryption content protection element or
-     * null if one was not found
-     */
-    function findMp4ProtectionElement(cpArray) {
-      var retVal = null;
-      for (var i = 0; i < cpArray.length; ++i) {
-        var cp = cpArray[i];
-        if (cp.schemeIdUri && cp.schemeIdUri.toLowerCase() === _dash_constants_DashConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MP4_PROTECTION_SCHEME && cp.value && (cp.value.toLowerCase() === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCRYPTION_SCHEME_CENC || cp.value.toLowerCase() === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].ENCRYPTION_SCHEME_CBCS)) {
-          retVal = cp;
-        }
-      }
-      return retVal;
+
+  /**
+   * Returns just the data portion of a single PSSH
+   *
+   * @param {ArrayBuffer} pssh - the PSSH
+   * @return {ArrayBuffer} data portion of the PSSH
+   */
+  static getPSSHData(pssh) {
+    let offset = 8; // Box size and type fields
+    let view = new DataView(pssh);
+
+    // Read version
+    let version = view.getUint8(offset);
+    offset += 20; // Version (1), flags (3), system ID (16)
+
+    if (version > 0) {
+      offset += 4 + 16 * view.getUint32(offset); // Key ID count (4) and All key IDs (16*count)
     }
+    offset += 4; // Data size
+    return pssh.slice(offset);
+  }
 
-    /**
-     * Returns just the data portion of a single PSSH
-     *
-     * @param {ArrayBuffer} pssh - the PSSH
-     * @return {ArrayBuffer} data portion of the PSSH
-     */
-  }, {
-    key: "getPSSHData",
-    value: function getPSSHData(pssh) {
-      var offset = 8; // Box size and type fields
-      var view = new DataView(pssh);
-
-      // Read version
-      var version = view.getUint8(offset);
-      offset += 20; // Version (1), flags (3), system ID (16)
-
-      if (version > 0) {
-        offset += 4 + 16 * view.getUint32(offset); // Key ID count (4) and All key IDs (16*count)
-      }
-      offset += 4; // Data size
-      return pssh.slice(offset);
+  /**
+   * Returns the PSSH associated with the given key system from the concatenated
+   * list of PSSH boxes in the given initData
+   *
+   * @param {KeySystem} keySystem the desired
+   * key system
+   * @param {ArrayBuffer} initData 'cenc' initialization data.  Concatenated list of PSSH.
+   * @returns {ArrayBuffer|null} The PSSH box data corresponding to the given key system, null if not found
+   * or null if a valid association could not be found.
+   */
+  static getPSSHForKeySystem(keySystem, initData) {
+    let psshList = CommonEncryption.parsePSSHList(initData);
+    if (keySystem && psshList.hasOwnProperty(keySystem.uuid.toLowerCase())) {
+      return psshList[keySystem.uuid.toLowerCase()];
     }
+    return null;
+  }
 
-    /**
-     * Returns the PSSH associated with the given key system from the concatenated
-     * list of PSSH boxes in the given initData
-     *
-     * @param {KeySystem} keySystem the desired
-     * key system
-     * @param {ArrayBuffer} initData 'cenc' initialization data.  Concatenated list of PSSH.
-     * @returns {ArrayBuffer|null} The PSSH box data corresponding to the given key system, null if not found
-     * or null if a valid association could not be found.
-     */
-  }, {
-    key: "getPSSHForKeySystem",
-    value: function getPSSHForKeySystem(keySystem, initData) {
-      var psshList = CommonEncryption.parsePSSHList(initData);
-      if (keySystem && psshList.hasOwnProperty(keySystem.uuid.toLowerCase())) {
-        return psshList[keySystem.uuid.toLowerCase()];
-      }
-      return null;
+  /**
+   * Parse a standard common encryption PSSH which contains a simple
+   * base64-encoding of the init data
+   *
+   * @param {Object} cpData the ContentProtection element
+   * @param {BASE64} BASE64 reference
+   * @returns {ArrayBuffer|null} the init data or null if not found
+   */
+  static parseInitDataFromContentProtection(cpData, BASE64) {
+    if ('pssh' in cpData && cpData.pssh) {
+      // Remove whitespaces and newlines from pssh text
+      cpData.pssh.__text = cpData.pssh.__text.replace(/\r?\n|\r/g, '').replace(/\s+/g, '');
+      return BASE64.decodeArray(cpData.pssh.__text).buffer;
     }
+    return null;
+  }
 
-    /**
-     * Parse a standard common encryption PSSH which contains a simple
-     * base64-encoding of the init data
-     *
-     * @param {Object} cpData the ContentProtection element
-     * @param {BASE64} BASE64 reference
-     * @returns {ArrayBuffer|null} the init data or null if not found
-     */
-  }, {
-    key: "parseInitDataFromContentProtection",
-    value: function parseInitDataFromContentProtection(cpData, BASE64) {
-      if ('pssh' in cpData && cpData.pssh) {
-        // Remove whitespaces and newlines from pssh text
-        cpData.pssh.__text = cpData.pssh.__text.replace(/\r?\n|\r/g, '').replace(/\s+/g, '');
-        return BASE64.decodeArray(cpData.pssh.__text).buffer;
-      }
-      return null;
+  /**
+   * Parses list of PSSH boxes into keysystem-specific PSSH data
+   *
+   * @param {ArrayBuffer} data - the concatenated list of PSSH boxes as provided by
+   * CDM as initialization data when CommonEncryption content is detected
+   * @returns {Object|Array} an object that has a property named according to each of
+   * the detected key system UUIDs (e.g. 00000000-0000-0000-0000-0000000000)
+   * and a ArrayBuffer (the entire PSSH box) as the property value
+   */
+  static parsePSSHList(data) {
+    if (data === null || data === undefined) {
+      return [];
     }
+    let dv = new DataView(data.buffer || data); // data.buffer first for Uint8Array support
+    let done = false;
+    let pssh = {};
 
-    /**
-     * Parses list of PSSH boxes into keysystem-specific PSSH data
-     *
-     * @param {ArrayBuffer} data - the concatenated list of PSSH boxes as provided by
-     * CDM as initialization data when CommonEncryption content is detected
-     * @returns {Object|Array} an object that has a property named according to each of
-     * the detected key system UUIDs (e.g. 00000000-0000-0000-0000-0000000000)
-     * and a ArrayBuffer (the entire PSSH box) as the property value
-     */
-  }, {
-    key: "parsePSSHList",
-    value: function parsePSSHList(data) {
-      if (data === null || data === undefined) {
-        return [];
+    // TODO: Need to check every data read for end of buffer
+    let byteCursor = 0;
+    while (!done) {
+      let size, nextBox, version, systemID;
+      let boxStart = byteCursor;
+      if (byteCursor >= dv.buffer.byteLength) {
+        break;
       }
-      var dv = new DataView(data.buffer || data); // data.buffer first for Uint8Array support
-      var done = false;
-      var pssh = {};
 
-      // TODO: Need to check every data read for end of buffer
-      var byteCursor = 0;
-      while (!done) {
-        var size = void 0,
-          nextBox = void 0,
-          version = void 0,
-          systemID = void 0;
-        var boxStart = byteCursor;
-        if (byteCursor >= dv.buffer.byteLength) {
-          break;
-        }
+      /* Box size */
+      size = dv.getUint32(byteCursor);
+      nextBox = byteCursor + size;
+      byteCursor += 4;
 
-        /* Box size */
-        size = dv.getUint32(byteCursor);
-        nextBox = byteCursor + size;
-        byteCursor += 4;
-
-        /* Verify PSSH */
-        if (dv.getUint32(byteCursor) !== 0x70737368) {
-          byteCursor = nextBox;
-          continue;
-        }
-        byteCursor += 4;
-
-        /* Version must be 0 or 1 */
-        version = dv.getUint8(byteCursor);
-        if (version !== 0 && version !== 1) {
-          byteCursor = nextBox;
-          continue;
-        }
-        byteCursor++;
-        byteCursor += 3; /* skip flags */
-
-        // 16-byte UUID/SystemID
-        systemID = '';
-        var i = void 0,
-          val = void 0;
-        for (i = 0; i < 4; i++) {
-          val = dv.getUint8(byteCursor + i).toString(16);
-          systemID += val.length === 1 ? '0' + val : val;
-        }
-        byteCursor += 4;
-        systemID += '-';
-        for (i = 0; i < 2; i++) {
-          val = dv.getUint8(byteCursor + i).toString(16);
-          systemID += val.length === 1 ? '0' + val : val;
-        }
-        byteCursor += 2;
-        systemID += '-';
-        for (i = 0; i < 2; i++) {
-          val = dv.getUint8(byteCursor + i).toString(16);
-          systemID += val.length === 1 ? '0' + val : val;
-        }
-        byteCursor += 2;
-        systemID += '-';
-        for (i = 0; i < 2; i++) {
-          val = dv.getUint8(byteCursor + i).toString(16);
-          systemID += val.length === 1 ? '0' + val : val;
-        }
-        byteCursor += 2;
-        systemID += '-';
-        for (i = 0; i < 6; i++) {
-          val = dv.getUint8(byteCursor + i).toString(16);
-          systemID += val.length === 1 ? '0' + val : val;
-        }
-        byteCursor += 6;
-        systemID = systemID.toLowerCase();
-
-        /* PSSH Data Size */
-        byteCursor += 4;
-
-        /* PSSH Data */
-        pssh[systemID] = dv.buffer.slice(boxStart, nextBox);
+      /* Verify PSSH */
+      if (dv.getUint32(byteCursor) !== 0x70737368) {
         byteCursor = nextBox;
+        continue;
       }
-      return pssh;
+      byteCursor += 4;
+
+      /* Version must be 0 or 1 */
+      version = dv.getUint8(byteCursor);
+      if (version !== 0 && version !== 1) {
+        byteCursor = nextBox;
+        continue;
+      }
+      byteCursor++;
+      byteCursor += 3; /* skip flags */
+
+      // 16-byte UUID/SystemID
+      systemID = '';
+      let i, val;
+      for (i = 0; i < 4; i++) {
+        val = dv.getUint8(byteCursor + i).toString(16);
+        systemID += val.length === 1 ? '0' + val : val;
+      }
+      byteCursor += 4;
+      systemID += '-';
+      for (i = 0; i < 2; i++) {
+        val = dv.getUint8(byteCursor + i).toString(16);
+        systemID += val.length === 1 ? '0' + val : val;
+      }
+      byteCursor += 2;
+      systemID += '-';
+      for (i = 0; i < 2; i++) {
+        val = dv.getUint8(byteCursor + i).toString(16);
+        systemID += val.length === 1 ? '0' + val : val;
+      }
+      byteCursor += 2;
+      systemID += '-';
+      for (i = 0; i < 2; i++) {
+        val = dv.getUint8(byteCursor + i).toString(16);
+        systemID += val.length === 1 ? '0' + val : val;
+      }
+      byteCursor += 2;
+      systemID += '-';
+      for (i = 0; i < 6; i++) {
+        val = dv.getUint8(byteCursor + i).toString(16);
+        systemID += val.length === 1 ? '0' + val : val;
+      }
+      byteCursor += 6;
+      systemID = systemID.toLowerCase();
+
+      /* PSSH Data Size */
+      byteCursor += 4;
+
+      /* PSSH Data */
+      pssh[systemID] = dv.buffer.slice(boxStart, nextBox);
+      byteCursor = nextBox;
     }
-  }, {
-    key: "getLicenseServerUrlFromMediaInfo",
-    value: function getLicenseServerUrlFromMediaInfo(mediaInfoArr, schemeIdUri) {
-      try {
-        if (!mediaInfoArr || mediaInfoArr.length === 0) {
-          return null;
-        }
-        var i = 0;
-        var licenseServer = null;
-        while (i < mediaInfoArr.length && !licenseServer) {
-          var mediaInfo = mediaInfoArr[i];
-          if (mediaInfo && mediaInfo.contentProtection && mediaInfo.contentProtection.length > 0) {
-            var targetProtectionData = mediaInfo.contentProtection.filter(function (cp) {
-              return cp.schemeIdUri && cp.schemeIdUri === schemeIdUri;
-            });
-            if (targetProtectionData && targetProtectionData.length > 0) {
-              var j = 0;
-              while (j < targetProtectionData.length && !licenseServer) {
-                var contentProtection = targetProtectionData[j];
-                if (contentProtection.laUrl && contentProtection.laUrl.__prefix && LICENSE_SERVER_MANIFEST_CONFIGURATIONS.prefixes.includes(contentProtection.laUrl.__prefix) && contentProtection.laUrl.__text) {
-                  licenseServer = contentProtection.laUrl.__text;
-                }
-                j += 1;
-              }
-            }
-          }
-          i += 1;
-        }
-        return licenseServer;
-      } catch (e) {
+    return pssh;
+  }
+  static getLicenseServerUrlFromMediaInfo(mediaInfoArr, schemeIdUri) {
+    try {
+      if (!mediaInfoArr || mediaInfoArr.length === 0) {
         return null;
       }
+      let i = 0;
+      let licenseServer = null;
+      while (i < mediaInfoArr.length && !licenseServer) {
+        const mediaInfo = mediaInfoArr[i];
+        if (mediaInfo && mediaInfo.contentProtection && mediaInfo.contentProtection.length > 0) {
+          const targetProtectionData = mediaInfo.contentProtection.filter(cp => {
+            return cp.schemeIdUri && cp.schemeIdUri === schemeIdUri;
+          });
+          if (targetProtectionData && targetProtectionData.length > 0) {
+            let j = 0;
+            while (j < targetProtectionData.length && !licenseServer) {
+              const contentProtection = targetProtectionData[j];
+              if (contentProtection.laUrl && contentProtection.laUrl.__prefix && LICENSE_SERVER_MANIFEST_CONFIGURATIONS.prefixes.includes(contentProtection.laUrl.__prefix) && contentProtection.laUrl.__text) {
+                licenseServer = contentProtection.laUrl.__text;
+              }
+              j += 1;
+            }
+          }
+        }
+        i += 1;
+      }
+      return licenseServer;
+    } catch (e) {
+      return null;
     }
-  }]);
-}();
+  }
+  static hexKidToBufferSource(hexKid) {
+    const cleanedHexKid = hexKid.replace(/-/g, '');
+    const typedArray = new Uint8Array(cleanedHexKid.match(/[\da-f]{2}/gi).map(function (h) {
+      return parseInt(h, 16);
+    }));
+    return typedArray.buffer;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CommonEncryption);
 
 /***/ }),
@@ -3005,19 +3038,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/events/EventsBase.js */ "./src/core/events/EventsBase.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3053,16 +3073,14 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
 /**
  * @class
  */
-var ProtectionEvents = /*#__PURE__*/function (_EventsBase) {
+class ProtectionEvents extends _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
   /**
    * @description Public facing external events to be used when including protection package.
    * All public events will be aggregated into the MediaPlayerEvents Class and can be accessed
    * via MediaPlayer.events.  public_ is the prefix that we use to move event names to MediaPlayerEvents.
    */
-  function ProtectionEvents() {
-    var _this;
-    _classCallCheck(this, ProtectionEvents);
-    _this = _callSuper(this, ProtectionEvents);
+  constructor() {
+    super();
 
     /**
      * Event ID for events delivered when the protection set receives
@@ -3070,13 +3088,13 @@ var ProtectionEvents = /*#__PURE__*/function (_EventsBase) {
      *
      * @ignore
      */
-    _this.INTERNAL_KEY_MESSAGE = 'internalKeyMessage';
+    this.INTERNAL_KEY_MESSAGE = 'internalKeyMessage';
 
     /**
      * Event ID for events delivered when the status of one decryption keys has changed
      * @ignore
      */
-    _this.INTERNAL_KEY_STATUS_CHANGED = 'internalkeyStatusChanged';
+    this.INTERNAL_KEY_STATUSES_CHANGED = 'internalkeyStatusesChanged';
 
     /**
      * Event ID for events delivered when a new key has been added
@@ -3087,126 +3105,130 @@ var ProtectionEvents = /*#__PURE__*/function (_EventsBase) {
      * is preferred.
      * @event ProtectionEvents#KEY_ADDED
      */
-    _this.KEY_ADDED = 'public_keyAdded';
+    this.KEY_ADDED = 'public_keyAdded';
     /**
      * Event ID for events delivered when an error is encountered by the CDM
      * while processing a license server response message
      * @event ProtectionEvents#KEY_ERROR
      */
-    _this.KEY_ERROR = 'public_keyError';
+    this.KEY_ERROR = 'public_keyError';
 
     /**
      * Event ID for events delivered when the protection set receives
      * a key message from the CDM
      * @event ProtectionEvents#KEY_MESSAGE
      */
-    _this.KEY_MESSAGE = 'public_keyMessage';
+    this.KEY_MESSAGE = 'public_keyMessage';
 
     /**
      * Event ID for events delivered when a key session close
      * process has completed
      * @event ProtectionEvents#KEY_SESSION_CLOSED
      */
-    _this.KEY_SESSION_CLOSED = 'public_keySessionClosed';
+    this.KEY_SESSION_CLOSED = 'public_keySessionClosed';
 
     /**
      * Event ID for events delivered when a new key sessions creation
      * process has completed
      * @event ProtectionEvents#KEY_SESSION_CREATED
      */
-    _this.KEY_SESSION_CREATED = 'public_keySessionCreated';
+    this.KEY_SESSION_CREATED = 'public_keySessionCreated';
 
     /**
      * Event ID for events delivered when a key session removal
      * process has completed
      * @event ProtectionEvents#KEY_SESSION_REMOVED
      */
-    _this.KEY_SESSION_REMOVED = 'public_keySessionRemoved';
+    this.KEY_SESSION_REMOVED = 'public_keySessionRemoved';
 
     /**
      * Event ID for events delivered when the status of one or more
      * decryption keys has changed
      * @event ProtectionEvents#KEY_STATUSES_CHANGED
      */
-    _this.KEY_STATUSES_CHANGED = 'public_keyStatusesChanged';
+    this.KEY_STATUSES_CHANGED = 'public_keyStatusesChanged';
+
+    /**
+     * Triggered when the key statuses Map() of the ProtectionController was updated. This happens after there is a keystatuseschange.
+     * The event can be used as an indicator when to refresh the list of possible Representations
+     * @event ProtectionEvents#KEY_STATUSES_MAP_UPDATED
+     */
+    this.KEY_STATUSES_MAP_UPDATED = 'keyStatusesMapUpdated';
 
     /**
      * Event ID for events delivered when a key system access procedure
      * has completed
      * @event ProtectionEvents#KEY_SYSTEM_ACCESS_COMPLETE
      */
-    _this.KEY_SYSTEM_ACCESS_COMPLETE = 'public_keySystemAccessComplete';
+    this.KEY_SYSTEM_ACCESS_COMPLETE = 'public_keySystemAccessComplete';
 
     /**
      * Event ID for events delivered when a key system selection procedure
      * completes
      * @event ProtectionEvents#KEY_SYSTEM_SELECTED
      */
-    _this.KEY_SYSTEM_SELECTED = 'public_keySystemSelected';
+    this.KEY_SYSTEM_SELECTED = 'public_keySystemSelected';
 
     /**
      * Event ID for events delivered when a license request procedure
      * has completed
      * @event ProtectionEvents#LICENSE_REQUEST_COMPLETE
      */
-    _this.LICENSE_REQUEST_COMPLETE = 'public_licenseRequestComplete';
+    this.LICENSE_REQUEST_COMPLETE = 'public_licenseRequestComplete';
 
     /**
      * Sending a license rquest
      * @event ProtectionEvents#LICENSE_REQUEST_SENDING
      */
-    _this.LICENSE_REQUEST_SENDING = 'public_licenseRequestSending';
+    this.LICENSE_REQUEST_SENDING = 'public_licenseRequestSending';
 
     /**
      * Event ID for needkey/encrypted events
      * @ignore
      */
-    _this.NEED_KEY = 'needkey';
+    this.NEED_KEY = 'needkey';
 
     /**
      * Event ID for events delivered when the Protection system is detected and created.
      * @event ProtectionEvents#PROTECTION_CREATED
      */
-    _this.PROTECTION_CREATED = 'public_protectioncreated';
+    this.PROTECTION_CREATED = 'public_protectioncreated';
 
     /**
      * Event ID for events delivered when the Protection system is destroyed.
      * @event ProtectionEvents#PROTECTION_DESTROYED
      */
-    _this.PROTECTION_DESTROYED = 'public_protectiondestroyed';
+    this.PROTECTION_DESTROYED = 'public_protectiondestroyed';
 
     /**
      * Event ID for events delivered when a new server certificate has
      * been delivered to the CDM
      * @ignore
      */
-    _this.SERVER_CERTIFICATE_UPDATED = 'serverCertificateUpdated';
+    this.SERVER_CERTIFICATE_UPDATED = 'serverCertificateUpdated';
 
     /**
      * Event ID for events delivered when the process of shutting down
      * a protection set has completed
      * @ignore
      */
-    _this.TEARDOWN_COMPLETE = 'protectionTeardownComplete';
+    this.TEARDOWN_COMPLETE = 'protectionTeardownComplete';
 
     /**
      * Event ID for events delivered when a HTMLMediaElement has been
      * associated with the protection set
      * @ignore
      */
-    _this.VIDEO_ELEMENT_SELECTED = 'videoElementSelected';
+    this.VIDEO_ELEMENT_SELECTED = 'videoElementSelected';
 
     /**
      * Triggered when the key session has been updated successfully
      * @ignore
      */
-    _this.KEY_SESSION_UPDATED = 'public_keySessionUpdated';
-    return _this;
+    this.KEY_SESSION_UPDATED = 'public_keySessionUpdated';
   }
-  _inherits(ProtectionEvents, _EventsBase);
-  return _createClass(ProtectionEvents);
-}(_core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var protectionEvents = new ProtectionEvents();
+}
+let protectionEvents = new ProtectionEvents();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (protectionEvents);
 
 /***/ }),
@@ -3234,7 +3256,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants_Constants_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../constants/Constants.js */ "./src/streaming/constants/Constants.js");
 /* harmony import */ var _core_FactoryMaker_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../core/FactoryMaker.js */ "./src/core/FactoryMaker.js");
 /* harmony import */ var _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../constants/ProtectionConstants.js */ "./src/streaming/constants/ProtectionConstants.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3278,11 +3299,11 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 
 
 
-var NEEDKEY_BEFORE_INITIALIZE_RETRIES = 5;
-var NEEDKEY_BEFORE_INITIALIZE_TIMEOUT = 500;
-var LICENSE_SERVER_REQUEST_RETRIES = 3;
-var LICENSE_SERVER_REQUEST_RETRY_INTERVAL = 1000;
-var LICENSE_SERVER_REQUEST_DEFAULT_TIMEOUT = 8000;
+const NEEDKEY_BEFORE_INITIALIZE_RETRIES = 5;
+const NEEDKEY_BEFORE_INITIALIZE_TIMEOUT = 500;
+const LICENSE_SERVER_REQUEST_RETRIES = 3;
+const LICENSE_SERVER_REQUEST_RETRY_INTERVAL = 1000;
+const LICENSE_SERVER_REQUEST_DEFAULT_TIMEOUT = 8000;
 
 /**
  * @module ProtectionController
@@ -3301,18 +3322,18 @@ var LICENSE_SERVER_REQUEST_DEFAULT_TIMEOUT = 8000;
 
 function ProtectionController(config) {
   config = config || {};
-  var BASE64 = config.BASE64;
-  var cmcdModel = config.cmcdModel;
-  var constants = config.constants;
-  var customParametersModel = config.customParametersModel;
-  var debug = config.debug;
-  var eventBus = config.eventBus;
-  var events = config.events;
-  var protectionKeyController = config.protectionKeyController;
-  var settings = config.settings;
-  var protectionModel = config.protectionModel;
-  var needkeyRetries = [];
-  var instance, logger, pendingMediaTypesToHandle, mediaInfoArr, applicationProvidedProtectionData, sessionType, robustnessLevel, selectedKeySystem, keySystemSelectionInProgress, licenseXhrRequest, licenseRequestRetryTimeout;
+  const BASE64 = config.BASE64;
+  const cmcdModel = config.cmcdModel;
+  const constants = config.constants;
+  const customParametersModel = config.customParametersModel;
+  const debug = config.debug;
+  const eventBus = config.eventBus;
+  const events = config.events;
+  const protectionKeyController = config.protectionKeyController;
+  const settings = config.settings;
+  let protectionModel = config.protectionModel;
+  let needkeyRetries = [];
+  let applicationProvidedProtectionData, instance, keyStatusMap, keySystemSelectionInProgress, licenseRequestRetryTimeout, licenseXhrRequest, logger, mediaInfoArr, pendingMediaTypesToHandle, robustnessLevel, selectedKeySystem, sessionType;
   function setup() {
     logger = debug.getLogger(instance);
     pendingMediaTypesToHandle = [];
@@ -3321,8 +3342,8 @@ function ProtectionController(config) {
     robustnessLevel = '';
     licenseXhrRequest = null;
     licenseRequestRetryTimeout = null;
+    keyStatusMap = new Map();
     eventBus.on(events.INTERNAL_KEY_MESSAGE, _onKeyMessage, instance);
-    eventBus.on(events.INTERNAL_KEY_STATUS_CHANGED, _onKeyStatusChanged, instance);
   }
   function _checkConfig() {
     if (!eventBus || !eventBus.hasOwnProperty('on') || !protectionKeyController || !protectionKeyController.hasOwnProperty('getSupportedKeySystemMetadataFromContentProtection')) {
@@ -3358,9 +3379,9 @@ function ProtectionController(config) {
     if (!mediaInfoArr || mediaInfoArr.length === 0) {
       return;
     }
-    var supportedKeySystemsMetadata = [];
-    mediaInfoArr.forEach(function (mediaInfo) {
-      var keySystemsMetadata = protectionKeyController.getSupportedKeySystemMetadataFromContentProtection(mediaInfo.contentProtection, applicationProvidedProtectionData, sessionType);
+    let supportedKeySystemsMetadata = [];
+    mediaInfoArr.forEach(mediaInfo => {
+      const keySystemsMetadata = protectionKeyController.getSupportedKeySystemMetadataFromContentProtection(mediaInfo.contentProtection, applicationProvidedProtectionData, sessionType);
       // We assume that the same key systems are signaled for each AS. We can use the first entry we find
       if (keySystemsMetadata.length > 0) {
         if (supportedKeySystemsMetadata.length === 0) {
@@ -3419,19 +3440,19 @@ function ProtectionController(config) {
     supportedKeySystemsMetadata = _sortKeySystemsByPriority(supportedKeySystemsMetadata);
 
     // Add all key systems to our request list since we have yet to select a key system
-    var keySystemConfigurationsToRequest = _getKeySystemConfigurations(supportedKeySystemsMetadata);
-    var keySystemAccess;
-    protectionModel.requestKeySystemAccess(keySystemConfigurationsToRequest).then(function (event) {
+    const keySystemConfigurationsToRequest = _getKeySystemConfigurations(supportedKeySystemsMetadata);
+    let keySystemAccess;
+    protectionModel.requestKeySystemAccess(keySystemConfigurationsToRequest).then(event => {
       keySystemAccess = event.data;
       return _onKeySystemAccessed(keySystemAccess);
-    }).then(function (keySystem) {
+    }).then(keySystem => {
       _onMediaKeysCreated(keySystem, keySystemAccess);
-    })["catch"](function (event) {
+    }).catch(event => {
       _handleKeySystemSelectionError(event, fromManifest);
     });
   }
   function _onKeySystemAccessed(keySystemAccess) {
-    var selectedSystemString = keySystemAccess && keySystemAccess.selectedSystemString ? keySystemAccess.selectedSystemString : keySystemAccess.keySystem.systemString;
+    let selectedSystemString = keySystemAccess && keySystemAccess.selectedSystemString ? keySystemAccess.selectedSystemString : keySystemAccess.keySystem.systemString;
     logger.info('DRM: KeySystem Access Granted for system string (' + selectedSystemString + ')!  Selecting key system...');
     return protectionModel.selectKeySystem(keySystemAccess);
   }
@@ -3443,7 +3464,7 @@ function ProtectionController(config) {
     });
 
     // Set server certificate from protData
-    var protData = _getProtDataForKeySystem(selectedKeySystem);
+    const protData = _getProtDataForKeySystem(selectedKeySystem);
     if (protData && protData.serverCertificate && protData.serverCertificate.length > 0) {
       protectionModel.setServerCertificate(BASE64.decodeArray(protData.serverCertificate).buffer);
     }
@@ -3456,11 +3477,11 @@ function ProtectionController(config) {
    */
   function _handlePendingMediaTypes() {
     // Create key sessions for the different AdaptationSets
-    var ksIdx;
-    for (var i = 0; i < pendingMediaTypesToHandle.length; i++) {
+    let ksIdx;
+    for (let i = 0; i < pendingMediaTypesToHandle.length; i++) {
       for (ksIdx = 0; ksIdx < pendingMediaTypesToHandle[i].length; ksIdx++) {
         if (selectedKeySystem === pendingMediaTypesToHandle[i][ksIdx].ks) {
-          var keySystemMetadata = pendingMediaTypesToHandle[i][ksIdx];
+          const keySystemMetadata = pendingMediaTypesToHandle[i][ksIdx];
           _loadOrCreateKeySession(keySystemMetadata);
           break;
         }
@@ -3479,16 +3500,16 @@ function ProtectionController(config) {
     }
   }
   function _sortKeySystemsByPriority(supportedKeySystems) {
-    return supportedKeySystems.sort(function (ksA, ksB) {
-      var indexA = applicationProvidedProtectionData && applicationProvidedProtectionData[ksA.ks.systemString] && applicationProvidedProtectionData[ksA.ks.systemString].priority >= 0 ? applicationProvidedProtectionData[ksA.ks.systemString].priority : supportedKeySystems.length;
-      var indexB = applicationProvidedProtectionData && applicationProvidedProtectionData[ksB.ks.systemString] && applicationProvidedProtectionData[ksB.ks.systemString].priority >= 0 ? applicationProvidedProtectionData[ksB.ks.systemString].priority : supportedKeySystems.length;
+    return supportedKeySystems.sort((ksA, ksB) => {
+      let indexA = applicationProvidedProtectionData && applicationProvidedProtectionData[ksA.ks.systemString] && applicationProvidedProtectionData[ksA.ks.systemString].priority >= 0 ? applicationProvidedProtectionData[ksA.ks.systemString].priority : supportedKeySystems.length;
+      let indexB = applicationProvidedProtectionData && applicationProvidedProtectionData[ksB.ks.systemString] && applicationProvidedProtectionData[ksB.ks.systemString].priority >= 0 ? applicationProvidedProtectionData[ksB.ks.systemString].priority : supportedKeySystems.length;
       return indexA - indexB;
     });
   }
   function _getKeySystemConfigurations(supportedKeySystemsMetadata) {
-    var keySystemConfigurationsToRequest = [];
-    for (var i = 0; i < supportedKeySystemsMetadata.length; i++) {
-      var keySystemConfiguration = _getKeySystemConfiguration(supportedKeySystemsMetadata[i]);
+    const keySystemConfigurationsToRequest = [];
+    for (let i = 0; i < supportedKeySystemsMetadata.length; i++) {
+      const keySystemConfiguration = _getKeySystemConfiguration(supportedKeySystemsMetadata[i]);
       keySystemConfigurationsToRequest.push({
         ks: supportedKeySystemsMetadata[i].ks,
         configs: [keySystemConfiguration],
@@ -3505,16 +3526,16 @@ function ProtectionController(config) {
    * @private
    */
   function _getKeySystemConfiguration(keySystemData) {
-    var protData = keySystemData.protData;
-    var audioCapabilities = [];
-    var videoCapabilities = [];
-    var initDataTypes = protData && protData.initDataTypes && protData.initDataTypes.length > 0 ? protData.initDataTypes : [_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].INITIALIZATION_DATA_TYPE_CENC];
-    var audioRobustness = protData && protData.audioRobustness && protData.audioRobustness.length > 0 ? protData.audioRobustness : robustnessLevel;
-    var videoRobustness = protData && protData.videoRobustness && protData.videoRobustness.length > 0 ? protData.videoRobustness : robustnessLevel;
-    var ksSessionType = keySystemData.sessionType;
-    var distinctiveIdentifier = protData && protData.distinctiveIdentifier ? protData.distinctiveIdentifier : 'optional';
-    var persistentState = protData && protData.persistentState ? protData.persistentState : ksSessionType === 'temporary' ? 'optional' : 'required';
-    mediaInfoArr.forEach(function (media) {
+    const protData = keySystemData.protData;
+    const audioCapabilities = [];
+    const videoCapabilities = [];
+    const initDataTypes = protData && protData.initDataTypes && protData.initDataTypes.length > 0 ? protData.initDataTypes : [_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].INITIALIZATION_DATA_TYPE_CENC];
+    const audioRobustness = protData && protData.audioRobustness && protData.audioRobustness.length > 0 ? protData.audioRobustness : robustnessLevel;
+    const videoRobustness = protData && protData.videoRobustness && protData.videoRobustness.length > 0 ? protData.videoRobustness : robustnessLevel;
+    const ksSessionType = keySystemData.sessionType;
+    const distinctiveIdentifier = protData && protData.distinctiveIdentifier ? protData.distinctiveIdentifier : 'optional';
+    const persistentState = protData && protData.persistentState ? protData.persistentState : ksSessionType === 'temporary' ? 'optional' : 'required';
+    mediaInfoArr.forEach(media => {
       if (media.type === constants.AUDIO) {
         audioCapabilities.push(new _vo_MediaCapability_js__WEBPACK_IMPORTED_MODULE_1__["default"](media.codec, audioRobustness));
       } else if (media.type === constants.VIDEO) {
@@ -3550,7 +3571,7 @@ function ProtectionController(config) {
     // For Clearkey: if parameters for generating init data was provided by the user, use them for generating
     // initData and overwrite possible initData indicated in encrypted event (EME)
     if (keySystemMetadata.protData && keySystemMetadata.protData.hasOwnProperty('clearkeys') && Object.keys(keySystemMetadata.protData.clearkeys).length !== 0) {
-      var initData = {
+      const initData = {
         kids: Object.keys(keySystemMetadata.protData.clearkeys)
       };
       keySystemMetadata.initData = new TextEncoder().encode(JSON.stringify(initData));
@@ -3586,7 +3607,7 @@ function ProtectionController(config) {
     if (keySystemMetadata && _doesSessionForKeyIdExists(keySystemMetadata.keyId)) {
       return;
     }
-    var initDataForKS = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHForKeySystem(selectedKeySystem, keySystemMetadata ? keySystemMetadata.initData : null);
+    const initDataForKS = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHForKeySystem(selectedKeySystem, keySystemMetadata ? keySystemMetadata.initData : null);
     if (initDataForKS) {
       // Check for duplicate initData
       if (_isInitDataDuplicate(initDataForKS)) {
@@ -3619,7 +3640,7 @@ function ProtectionController(config) {
    */
   function _getProtDataForKeySystem(keySystem) {
     if (keySystem) {
-      var keySystemString = keySystem.systemString;
+      const keySystemString = keySystem.systemString;
       if (applicationProvidedProtectionData) {
         return keySystemString in applicationProvidedProtectionData ? applicationProvidedProtectionData[keySystemString] : null;
       }
@@ -3665,8 +3686,8 @@ function ProtectionController(config) {
       return false;
     }
     try {
-      var sessions = protectionModel.getSessions();
-      for (var i = 0; i < sessions.length; i++) {
+      const sessions = protectionModel.getSessionTokens();
+      for (let i = 0; i < sessions.length; i++) {
         if (sessions[i].getKeyId() === keyId) {
           return true;
         }
@@ -3688,8 +3709,8 @@ function ProtectionController(config) {
       return false;
     }
     try {
-      var currentInitData = protectionModel.getAllInitData();
-      for (var i = 0; i < currentInitData.length; i++) {
+      const currentInitData = protectionModel.getAllInitData();
+      for (let i = 0; i < currentInitData.length; i++) {
         if (protectionKeyController.initDataEquals(initDataForKS, currentInitData[i])) {
           logger.debug('DRM: Ignoring initData because we have already seen it!');
           return true;
@@ -3836,38 +3857,20 @@ function ProtectionController(config) {
    */
   function reset() {
     eventBus.off(events.INTERNAL_KEY_MESSAGE, _onKeyMessage, instance);
-    eventBus.off(events.INTERNAL_KEY_STATUS_CHANGED, _onKeyStatusChanged, instance);
     _checkConfig();
     _abortLicenseRequest();
     setMediaElement(null);
     selectedKeySystem = null;
     keySystemSelectionInProgress = false;
+    keyStatusMap = new Map();
     if (protectionModel) {
       protectionModel.reset();
       protectionModel = null;
     }
-    needkeyRetries.forEach(function (retryTimeout) {
-      return clearTimeout(retryTimeout);
-    });
+    needkeyRetries.forEach(retryTimeout => clearTimeout(retryTimeout));
     needkeyRetries = [];
     mediaInfoArr = [];
     pendingMediaTypesToHandle = [];
-  }
-
-  /**
-   * Event handler for when the status of the key has changed
-   * @param {object} e
-   * @private
-   */
-  function _onKeyStatusChanged(e) {
-    if (e.error) {
-      eventBus.trigger(events.KEY_STATUSES_CHANGED, {
-        data: null,
-        error: e.error
-      });
-    } else {
-      logger.debug('DRM: key status = ' + e.status);
-    }
   }
 
   /**
@@ -3879,16 +3882,16 @@ function ProtectionController(config) {
     logger.debug('DRM: onKeyMessage');
 
     // Dispatch event to applications indicating we received a key message
-    var keyMessage = e.data;
+    const keyMessage = e.data;
     eventBus.trigger(events.KEY_MESSAGE, {
       data: keyMessage
     });
-    var messageType = keyMessage.messageType ? keyMessage.messageType : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].MEDIA_KEY_MESSAGE_TYPES.LICENSE_REQUEST;
-    var message = keyMessage.message;
-    var sessionToken = keyMessage.sessionToken;
-    var protData = _getProtDataForKeySystem(selectedKeySystem);
-    var licenseServerModelInstance = protectionKeyController.getLicenseServerModelInstance(selectedKeySystem, protData, messageType);
-    var eventData = {
+    const messageType = keyMessage.messageType ? keyMessage.messageType : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].MEDIA_KEY_MESSAGE_TYPES.LICENSE_REQUEST;
+    const message = keyMessage.message;
+    const sessionToken = keyMessage.sessionToken;
+    const protData = _getProtDataForKeySystem(selectedKeySystem);
+    const licenseServerModelInstance = protectionKeyController.getLicenseServerModelInstance(selectedKeySystem, protData, messageType);
+    const eventData = {
       sessionToken: sessionToken,
       messageType: messageType
     };
@@ -3908,7 +3911,7 @@ function ProtectionController(config) {
 
     // Perform any special handling for ClearKey
     if (protectionKeyController.isClearKey(selectedKeySystem)) {
-      var clearkeys = protectionKeyController.processClearKeyLicenseRequest(selectedKeySystem, protData, message);
+      const clearkeys = protectionKeyController.processClearKeyLicenseRequest(selectedKeySystem, protData, message);
       if (clearkeys && clearkeys.keyPairs && clearkeys.keyPairs.length > 0) {
         logger.debug('DRM: ClearKey license request handled by application!');
         _sendLicenseRequestCompleteEvent(eventData);
@@ -3942,16 +3945,16 @@ function ProtectionController(config) {
    * @private
    */
   function _issueLicenseRequest(keyMessage, licenseServerData, protData) {
-    var sessionToken = keyMessage.sessionToken;
-    var messageType = keyMessage.messageType ? keyMessage.messageType : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].MEDIA_KEY_MESSAGE_TYPES.LICENSE_REQUEST;
-    var eventData = {
+    const sessionToken = keyMessage.sessionToken;
+    const messageType = keyMessage.messageType ? keyMessage.messageType : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].MEDIA_KEY_MESSAGE_TYPES.LICENSE_REQUEST;
+    const eventData = {
       sessionToken: sessionToken,
       messageType: messageType
     };
-    var keySystemString = selectedKeySystem ? selectedKeySystem.systemString : null;
+    const keySystemString = selectedKeySystem ? selectedKeySystem.systemString : null;
 
     // Determine license server URL
-    var url = _getLicenseServerUrl(protData, messageType, sessionToken, keyMessage, licenseServerData);
+    let url = _getLicenseServerUrl(protData, messageType, sessionToken, keyMessage, licenseServerData);
 
     // Ensure valid license server URL
     if (!url) {
@@ -3960,15 +3963,15 @@ function ProtectionController(config) {
     }
 
     // Set optional XMLHttpRequest headers from protection data and message
-    var reqHeaders = {};
-    var withCredentials = false;
+    const reqHeaders = {};
+    let withCredentials = false;
     if (protData) {
       _updateHeaders(reqHeaders, protData.httpRequestHeaders);
     }
-    var message = keyMessage.message;
-    var headersFromMessage = selectedKeySystem.getRequestHeadersFromMessage(message);
+    const message = keyMessage.message;
+    const headersFromMessage = selectedKeySystem.getRequestHeadersFromMessage(message);
     _updateHeaders(reqHeaders, headersFromMessage);
-    Object.keys(reqHeaders).forEach(function (key) {
+    Object.keys(reqHeaders).forEach(key => {
       if ('authorization' === key.toLowerCase()) {
         withCredentials = true;
       }
@@ -3978,16 +3981,16 @@ function ProtectionController(config) {
     if (protData && typeof protData.withCredentials == 'boolean') {
       withCredentials = protData.withCredentials;
     }
-    var onLoad = function onLoad(xhr) {
+    const onLoad = function (xhr) {
       if (!protectionModel) {
         return;
       }
       if (xhr.status >= 200 && xhr.status <= 299) {
-        var responseHeaders = _core_Utils_js__WEBPACK_IMPORTED_MODULE_8__["default"].parseHttpHeaders(xhr.getAllResponseHeaders ? xhr.getAllResponseHeaders() : null);
-        var licenseResponse = new _vo_LicenseResponse_js__WEBPACK_IMPORTED_MODULE_6__["default"](xhr.responseURL, responseHeaders, xhr.response);
-        var licenseResponseFilters = customParametersModel.getLicenseResponseFilters();
-        _applyFilters(licenseResponseFilters, licenseResponse).then(function () {
-          var licenseMessage = licenseServerData.getLicenseMessage(licenseResponse.data, keySystemString, messageType);
+        const responseHeaders = _core_Utils_js__WEBPACK_IMPORTED_MODULE_8__["default"].parseHttpHeaders(xhr.getAllResponseHeaders ? xhr.getAllResponseHeaders() : null);
+        let licenseResponse = new _vo_LicenseResponse_js__WEBPACK_IMPORTED_MODULE_6__["default"](xhr.responseURL, responseHeaders, xhr.response);
+        const licenseResponseFilters = customParametersModel.getLicenseResponseFilters();
+        _applyFilters(licenseResponseFilters, licenseResponse).then(() => {
+          const licenseMessage = licenseServerData.getLicenseMessage(licenseResponse.data, keySystemString, messageType);
           if (licenseMessage !== null) {
             _sendLicenseRequestCompleteEvent(eventData);
             protectionModel.updateKeySession(sessionToken, licenseMessage);
@@ -3999,21 +4002,21 @@ function ProtectionController(config) {
         _reportError(xhr, eventData, keySystemString, messageType, licenseServerData);
       }
     };
-    var onAbort = function onAbort(xhr) {
+    const onAbort = function (xhr) {
       _sendLicenseRequestCompleteEvent(eventData, new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_4__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE, _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE + keySystemString + ' update, XHR aborted. status is "' + xhr.statusText + '" (' + xhr.status + '), readyState is ' + xhr.readyState));
     };
-    var onError = function onError(xhr) {
+    const onError = function (xhr) {
       _sendLicenseRequestCompleteEvent(eventData, new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_4__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE, _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE + keySystemString + ' update, XHR error. status is "' + xhr.statusText + '" (' + xhr.status + '), readyState is ' + xhr.readyState));
     };
-    var reqPayload = selectedKeySystem.getLicenseRequestFromMessage(message);
-    var reqMethod = licenseServerData.getHTTPMethod(messageType);
-    var responseType = licenseServerData.getResponseType(keySystemString, messageType);
-    var timeout = protData && !isNaN(protData.httpTimeout) ? protData.httpTimeout : LICENSE_SERVER_REQUEST_DEFAULT_TIMEOUT;
-    var sessionId = sessionToken.getSessionId() || null;
-    var licenseRequest = new _vo_LicenseRequest_js__WEBPACK_IMPORTED_MODULE_5__["default"](url, reqMethod, responseType, reqHeaders, withCredentials, messageType, sessionId, reqPayload);
-    var retryAttempts = !isNaN(settings.get().streaming.retryAttempts[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE]) ? settings.get().streaming.retryAttempts[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE] : LICENSE_SERVER_REQUEST_RETRIES;
-    var licenseRequestFilters = customParametersModel.getLicenseRequestFilters();
-    _applyFilters(licenseRequestFilters, licenseRequest).then(function () {
+    const reqPayload = selectedKeySystem.getLicenseRequestFromMessage(message);
+    const reqMethod = licenseServerData.getHTTPMethod(messageType);
+    const responseType = licenseServerData.getResponseType(keySystemString, messageType);
+    const timeout = protData && !isNaN(protData.httpTimeout) ? protData.httpTimeout : LICENSE_SERVER_REQUEST_DEFAULT_TIMEOUT;
+    const sessionId = sessionToken.getSessionId() || null;
+    let licenseRequest = new _vo_LicenseRequest_js__WEBPACK_IMPORTED_MODULE_5__["default"](url, reqMethod, responseType, reqHeaders, withCredentials, messageType, sessionId, reqPayload);
+    const retryAttempts = !isNaN(settings.get().streaming.retryAttempts[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE]) ? settings.get().streaming.retryAttempts[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE] : LICENSE_SERVER_REQUEST_RETRIES;
+    const licenseRequestFilters = customParametersModel.getLicenseRequestFilters();
+    _applyFilters(licenseRequestFilters, licenseRequest).then(() => {
       _doLicenseRequest(licenseRequest, retryAttempts, timeout, onLoad, onAbort, onError);
     });
   }
@@ -4029,17 +4032,17 @@ function ProtectionController(config) {
    * @private
    */
   function _doLicenseRequest(request, retriesCount, timeout, onLoad, onAbort, onError) {
-    var xhr = new XMLHttpRequest();
-    var cmcdParameters = cmcdModel.getCmcdParametersFromManifest();
+    const xhr = new XMLHttpRequest();
+    const cmcdParameters = cmcdModel.getCmcdParametersFromManifest();
     if (cmcdModel.isCmcdEnabled()) {
-      var cmcdMode = cmcdParameters.mode ? cmcdParameters.mode : settings.get().streaming.cmcd.mode;
+      const cmcdMode = cmcdParameters.mode ? cmcdParameters.mode : settings.get().streaming.cmcd.mode;
       if (cmcdMode === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_9__["default"].CMCD_MODE_QUERY) {
-        var cmcdParams = cmcdModel.getQueryParameter({
+        const cmcdParams = cmcdModel.getQueryParameter({
           url: request.url,
           type: _vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE
         });
         if (cmcdParams) {
-          request.url = _core_Utils_js__WEBPACK_IMPORTED_MODULE_8__["default"].addAditionalQueryParameterToUrl(request.url, [cmcdParams]);
+          request.url = _core_Utils_js__WEBPACK_IMPORTED_MODULE_8__["default"].addAdditionalQueryParameterToUrl(request.url, [cmcdParams]);
         }
       }
     }
@@ -4049,19 +4052,19 @@ function ProtectionController(config) {
     if (timeout > 0) {
       xhr.timeout = timeout;
     }
-    for (var key in request.headers) {
+    for (const key in request.headers) {
       xhr.setRequestHeader(key, request.headers[key]);
     }
     if (cmcdModel.isCmcdEnabled()) {
-      var _cmcdMode = cmcdParameters.mode ? cmcdParameters.mode : settings.get().streaming.cmcd.mode;
-      if (_cmcdMode === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_9__["default"].CMCD_MODE_HEADER) {
-        var cmcdHeaders = cmcdModel.getHeaderParameters({
+      const cmcdMode = cmcdParameters.mode ? cmcdParameters.mode : settings.get().streaming.cmcd.mode;
+      if (cmcdMode === _constants_Constants_js__WEBPACK_IMPORTED_MODULE_9__["default"].CMCD_MODE_HEADER) {
+        const cmcdHeaders = cmcdModel.getHeaderParameters({
           url: request.url,
           type: _vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE
         });
         if (cmcdHeaders) {
-          for (var header in cmcdHeaders) {
-            var value = cmcdHeaders[header];
+          for (const header in cmcdHeaders) {
+            let value = cmcdHeaders[header];
             if (value) {
               xhr.setRequestHeader(header, value);
             }
@@ -4069,10 +4072,10 @@ function ProtectionController(config) {
         }
       }
     }
-    var _retryRequest = function _retryRequest() {
+    const _retryRequest = function () {
       // fail silently and retry
       retriesCount--;
-      var retryInterval = !isNaN(settings.get().streaming.retryIntervals[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE]) ? settings.get().streaming.retryIntervals[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE] : LICENSE_SERVER_REQUEST_RETRY_INTERVAL;
+      const retryInterval = !isNaN(settings.get().streaming.retryIntervals[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE]) ? settings.get().streaming.retryIntervals[_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.LICENSE] : LICENSE_SERVER_REQUEST_RETRY_INTERVAL;
       licenseRequestRetryTimeout = setTimeout(function () {
         _doLicenseRequest(request, retriesCount, timeout, onLoad, onAbort, onError);
       }, retryInterval);
@@ -4137,15 +4140,15 @@ function ProtectionController(config) {
    * @private
    */
   function _getLicenseServerUrl(protData, messageType, sessionToken, keyMessage, licenseServerData) {
-    var url = null;
-    var message = keyMessage.message;
+    let url = null;
+    const message = keyMessage.message;
 
     // Check if the url is defined by the application
     if (protData && protData.serverURL) {
-      var serverURL = protData.serverURL;
+      const serverURL = protData.serverURL;
       if (typeof serverURL === 'string' && serverURL !== '') {
         url = serverURL;
-      } else if (_typeof(serverURL) === 'object' && serverURL.hasOwnProperty(messageType)) {
+      } else if (typeof serverURL === 'object' && serverURL.hasOwnProperty(messageType)) {
         url = serverURL[messageType];
       }
     }
@@ -4162,7 +4165,7 @@ function ProtectionController(config) {
 
       // In case we are not using Clearky we can still get a url from the pssh.
       if (!url && !protectionKeyController.isClearKey(selectedKeySystem)) {
-        var psshData = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHData(sessionToken.initData);
+        const psshData = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHData(sessionToken.initData);
         url = selectedKeySystem.getLicenseServerURLFromInitData(psshData);
 
         // Still no url, check the keymessage
@@ -4184,7 +4187,7 @@ function ProtectionController(config) {
    */
   function _updateHeaders(reqHeaders, headers) {
     if (headers) {
-      for (var key in headers) {
+      for (const key in headers) {
         reqHeaders[key] = headers[key];
       }
     }
@@ -4200,8 +4203,8 @@ function ProtectionController(config) {
    * @private
    */
   function _reportError(xhr, eventData, keySystemString, messageType, licenseServerData) {
-    var errorMsg = 'NONE';
-    var data = null;
+    let errorMsg = 'NONE';
+    let data = null;
     if (xhr.response) {
       errorMsg = licenseServerData.getErrorResponse(xhr.response, keySystemString, messageType);
       data = {
@@ -4224,8 +4227,8 @@ function ProtectionController(config) {
     if (!filters) {
       return Promise.resolve();
     }
-    return filters.reduce(function (prev, next) {
-      return prev.then(function () {
+    return filters.reduce((prev, next) => {
+      return prev.then(() => {
         return next(param);
       });
     }, Promise.resolve());
@@ -4250,7 +4253,7 @@ function ProtectionController(config) {
         logger.warn('DRM: onNeedKey called before initializeForMedia, wait until initialized');
         retry = typeof retry === 'undefined' ? 1 : retry + 1;
         if (retry < NEEDKEY_BEFORE_INITIALIZE_RETRIES) {
-          needkeyRetries.push(setTimeout(function () {
+          needkeyRetries.push(setTimeout(() => {
             _onNeedKey(event, retry);
           }, NEEDKEY_BEFORE_INITIALIZE_TIMEOUT));
           return;
@@ -4259,14 +4262,14 @@ function ProtectionController(config) {
 
       // Some browsers return initData as Uint8Array (IE), some as ArrayBuffer (Chrome).
       // Convert to ArrayBuffer
-      var abInitData = event.key.initData;
+      let abInitData = event.key.initData;
       if (ArrayBuffer.isView(abInitData)) {
         abInitData = abInitData.buffer;
       }
 
       // If key system has already been selected and initData already seen, then do nothing
       if (selectedKeySystem) {
-        var initDataForKS = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHForKeySystem(selectedKeySystem, abInitData);
+        const initDataForKS = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPSSHForKeySystem(selectedKeySystem, abInitData);
         if (initDataForKS) {
           // Check for duplicate initData
           if (_isInitDataDuplicate(initDataForKS)) {
@@ -4275,7 +4278,7 @@ function ProtectionController(config) {
         }
       }
       logger.debug('DRM: initData:', String.fromCharCode.apply(null, new Uint8Array(abInitData)));
-      var supportedKs = protectionKeyController.getSupportedKeySystemsFromSegmentPssh(abInitData, applicationProvidedProtectionData, sessionType);
+      const supportedKs = protectionKeyController.getSupportedKeySystemsFromSegmentPssh(abInitData, applicationProvidedProtectionData, sessionType);
       if (supportedKs.length === 0) {
         logger.debug('DRM: Received needkey event with initData, but we don\'t support any of the key systems!');
         return;
@@ -4301,24 +4304,91 @@ function ProtectionController(config) {
       protectionKeyController.setKeySystems(keySystems);
     }
   }
+  function updateKeyStatusesMap(e) {
+    try {
+      if (!e || !e.sessionToken || !e.parsedKeyStatuses) {
+        return;
+      }
+      const parsedKeyStatuses = e.parsedKeyStatuses;
+      const ua = _core_Utils_js__WEBPACK_IMPORTED_MODULE_8__["default"].parseUserAgent();
+      const isEdgeBrowser = ua && ua.browser && ua.browser.name && ua.browser.name.toLowerCase() === 'edge';
+      parsedKeyStatuses.forEach(keyStatus => {
+        if (isEdgeBrowser && selectedKeySystem.uuid === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].PLAYREADY_UUID && keyStatus.keyId && keyStatus.keyId.byteLength === 16) {
+          _handlePlayreadyKeyId(keyStatus.keyId);
+        }
+        const keyIdInHex = _core_Utils_js__WEBPACK_IMPORTED_MODULE_8__["default"].bufferSourceToHex(keyStatus.keyId).slice(0, 32);
+        keyStatusMap.set(keyIdInHex, keyStatus.status);
+      });
+      eventBus.trigger(events.KEY_STATUSES_MAP_UPDATED, {
+        keyStatusMap
+      });
+    } catch (e) {
+      logger.error(e);
+    }
+  }
+  function _handlePlayreadyKeyId(keyId) {
+    const dataView = _core_Utils_js__WEBPACK_IMPORTED_MODULE_8__["default"].bufferSourceToDataView(keyId);
+    const part0 = dataView.getUint32(0, /* LE= */true);
+    const part1 = dataView.getUint16(4, /* LE= */true);
+    const part2 = dataView.getUint16(6, /* LE= */true);
+    // Write it back in big-endian:
+    dataView.setUint32(0, part0, /* BE= */false);
+    dataView.setUint16(4, part1, /* BE= */false);
+    dataView.setUint16(6, part2, /* BE= */false);
+  }
+  function areKeyIdsUsable(normalizedKeyIds) {
+    try {
+      if (!normalizedKeyIds || normalizedKeyIds.size === 0) {
+        return true;
+      }
+      let usable = true;
+      normalizedKeyIds.forEach(normalizedKeyId => {
+        const keyStatus = keyStatusMap.get(normalizedKeyId);
+        usable = !keyStatus || keyStatus && keyStatus !== _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].MEDIA_KEY_STATUSES.INTERNAL_ERROR && keyStatus !== _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].MEDIA_KEY_STATUSES.OUTPUT_RESTRICTED;
+      });
+      return usable;
+    } catch (error) {
+      logger.error(error);
+      return true;
+    }
+  }
+  function areKeyIdsExpired(normalizedKeyIds) {
+    try {
+      if (!normalizedKeyIds || normalizedKeyIds.size === 0) {
+        return false;
+      }
+      let expired = false;
+      normalizedKeyIds.forEach(normalizedKeyId => {
+        const keyStatus = keyStatusMap.get(normalizedKeyId);
+        expired = keyStatus && keyStatus === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_11__["default"].MEDIA_KEY_STATUSES.EXPIRED;
+      });
+      return expired;
+    } catch (error) {
+      logger.error(error);
+      return true;
+    }
+  }
   instance = {
-    clearMediaInfoArray: clearMediaInfoArray,
-    closeKeySession: closeKeySession,
-    createKeySession: createKeySession,
-    getKeySystems: getKeySystems,
-    getSupportedKeySystemMetadataFromContentProtection: getSupportedKeySystemMetadataFromContentProtection,
-    handleKeySystemFromManifest: handleKeySystemFromManifest,
-    initializeForMedia: initializeForMedia,
-    loadKeySession: loadKeySession,
-    removeKeySession: removeKeySession,
-    reset: reset,
-    setKeySystems: setKeySystems,
-    setMediaElement: setMediaElement,
-    setProtectionData: setProtectionData,
-    setRobustnessLevel: setRobustnessLevel,
-    setServerCertificate: setServerCertificate,
-    setSessionType: setSessionType,
-    stop: stop
+    areKeyIdsExpired,
+    areKeyIdsUsable,
+    clearMediaInfoArray,
+    closeKeySession,
+    createKeySession,
+    getKeySystems,
+    getSupportedKeySystemMetadataFromContentProtection,
+    handleKeySystemFromManifest,
+    initializeForMedia,
+    loadKeySession,
+    removeKeySession,
+    reset,
+    setKeySystems,
+    setMediaElement,
+    setProtectionData,
+    setRobustnessLevel,
+    setServerCertificate,
+    setSessionType,
+    stop,
+    updateKeyStatusesMap
   };
   setup();
   return instance;
@@ -4400,8 +4470,8 @@ __webpack_require__.r(__webpack_exports__);
  * @description Media protection key system functionality that can be modified/overridden by applications
  */
 function ProtectionKeyController() {
-  var context = this.context;
-  var instance, debug, logger, keySystems, BASE64, settings, clearkeyKeySystem, clearkeyW3CKeySystem;
+  let context = this.context;
+  let instance, debug, logger, keySystems, BASE64, settings, clearkeyKeySystem, clearkeyW3CKeySystem;
   function setConfig(config) {
     if (!config) {
       return;
@@ -4419,7 +4489,7 @@ function ProtectionKeyController() {
   }
   function initialize() {
     keySystems = [];
-    var keySystem;
+    let keySystem;
 
     // PlayReady
     keySystem = (0,_drm_KeySystemPlayReady_js__WEBPACK_IMPORTED_MODULE_4__["default"])(context).getInstance({
@@ -4489,7 +4559,7 @@ function ProtectionKeyController() {
    * @instance
    */
   function getKeySystemBySystemString(systemString) {
-    for (var i = 0; i < keySystems.length; i++) {
+    for (let i = 0; i < keySystems.length; i++) {
       if (keySystems[i].systemString === systemString) {
         return keySystems[i];
       }
@@ -4527,9 +4597,9 @@ function ProtectionKeyController() {
    */
   function initDataEquals(initData1, initData2) {
     if (initData1.byteLength === initData2.byteLength) {
-      var data1 = new Uint8Array(initData1);
-      var data2 = new Uint8Array(initData2);
-      for (var j = 0; j < data1.length; j++) {
+      let data1 = new Uint8Array(initData1);
+      let data2 = new Uint8Array(initData2);
+      for (let j = 0; j < data1.length; j++) {
         if (data1[j] !== data2[j]) {
           return false;
         }
@@ -4556,23 +4626,23 @@ function ProtectionKeyController() {
    * @instance
    */
   function getSupportedKeySystemMetadataFromContentProtection(contentProtectionElements, applicationSpecifiedProtectionData, sessionType) {
-    var contentProtectionElement, keySystem, ksIdx, cpIdx;
-    var supportedKS = [];
+    let contentProtectionElement, keySystem, ksIdx, cpIdx;
+    let supportedKS = [];
     if (!contentProtectionElements || !contentProtectionElements.length) {
       return supportedKS;
     }
-    var mp4ProtectionElement = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].findMp4ProtectionElement(contentProtectionElements);
+    const mp4ProtectionElement = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].findMp4ProtectionElement(contentProtectionElements);
     for (ksIdx = 0; ksIdx < keySystems.length; ksIdx++) {
       keySystem = keySystems[ksIdx];
 
       // Get protection data that applies for current key system
-      var protData = _getProtDataForKeySystem(keySystem.systemString, applicationSpecifiedProtectionData);
+      const protData = _getProtDataForKeySystem(keySystem.systemString, applicationSpecifiedProtectionData);
       for (cpIdx = 0; cpIdx < contentProtectionElements.length; cpIdx++) {
         contentProtectionElement = contentProtectionElements[cpIdx];
         if (contentProtectionElement.schemeIdUri.toLowerCase() === keySystem.schemeIdURI) {
           // Look for DRM-specific ContentProtection
-          var initData = keySystem.getInitData(contentProtectionElement, mp4ProtectionElement);
-          supportedKS.push(new _vo_KeySystemMetadata_js__WEBPACK_IMPORTED_MODULE_11__["default"]({
+          let initData = keySystem.getInitData(contentProtectionElement, mp4ProtectionElement);
+          const keySystemMetadata = new _vo_KeySystemMetadata_js__WEBPACK_IMPORTED_MODULE_11__["default"]({
             ks: keySystems[ksIdx],
             keyId: contentProtectionElement.keyId,
             initData: initData,
@@ -4580,7 +4650,12 @@ function ProtectionKeyController() {
             cdmData: keySystem.getCDMData(protData ? protData.cdmData : null),
             sessionId: _getSessionId(protData, contentProtectionElement),
             sessionType: _getSessionType(protData, sessionType)
-          }));
+          });
+          if (protData) {
+            supportedKS.unshift(keySystemMetadata);
+          } else {
+            supportedKS.push(keySystemMetadata);
+          }
         }
       }
     }
@@ -4604,15 +4679,15 @@ function ProtectionKeyController() {
    * @instance
    */
   function getSupportedKeySystemsFromSegmentPssh(initData, protDataSet, sessionType) {
-    var supportedKS = [];
-    var pssh = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].parsePSSHList(initData);
-    var ks, keySystemString;
-    for (var ksIdx = 0; ksIdx < keySystems.length; ++ksIdx) {
+    let supportedKS = [];
+    let pssh = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].parsePSSHList(initData);
+    let ks, keySystemString;
+    for (let ksIdx = 0; ksIdx < keySystems.length; ++ksIdx) {
       ks = keySystems[ksIdx];
       keySystemString = ks.systemString;
 
       // Get protection data that applies for current key system
-      var protData = _getProtDataForKeySystem(keySystemString, protDataSet);
+      const protData = _getProtDataForKeySystem(keySystemString, protDataSet);
       if (ks.uuid in pssh) {
         supportedKS.push({
           ks: ks,
@@ -4650,7 +4725,7 @@ function ProtectionKeyController() {
     if (messageType === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_9__["default"].MEDIA_KEY_MESSAGE_TYPES.LICENSE_RELEASE || messageType === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_9__["default"].MEDIA_KEY_MESSAGE_TYPES.INDIVIDUALIZATION_REQUEST) {
       return null;
     }
-    var licenseServerData = null;
+    let licenseServerData = null;
     if (protData && protData.hasOwnProperty('drmtoday')) {
       licenseServerData = (0,_servers_DRMToday_js__WEBPACK_IMPORTED_MODULE_5__["default"])(context).getInstance({
         BASE64: BASE64
@@ -4686,7 +4761,7 @@ function ProtectionKeyController() {
     }
   }
   function setProtectionData(protectionDataSet) {
-    var getProtectionData = function getProtectionData(keySystemString) {
+    var getProtectionData = function (keySystemString) {
       var protData = null;
       if (protectionDataSet) {
         protData = keySystemString in protectionDataSet ? protectionDataSet[keySystemString] : null;
@@ -4719,18 +4794,18 @@ function ProtectionKeyController() {
     return protData && protData.sessionType ? protData.sessionType : sessionType;
   }
   instance = {
-    getKeySystemBySystemString: getKeySystemBySystemString,
-    getKeySystems: getKeySystems,
-    getLicenseServerModelInstance: getLicenseServerModelInstance,
-    getSupportedKeySystemMetadataFromContentProtection: getSupportedKeySystemMetadataFromContentProtection,
-    getSupportedKeySystemsFromSegmentPssh: getSupportedKeySystemsFromSegmentPssh,
-    initDataEquals: initDataEquals,
-    initialize: initialize,
-    isClearKey: isClearKey,
-    processClearKeyLicenseRequest: processClearKeyLicenseRequest,
-    setConfig: setConfig,
-    setKeySystems: setKeySystems,
-    setProtectionData: setProtectionData
+    getKeySystemBySystemString,
+    getKeySystems,
+    getLicenseServerModelInstance,
+    getSupportedKeySystemMetadataFromContentProtection,
+    getSupportedKeySystemsFromSegmentPssh,
+    initDataEquals,
+    initialize,
+    isClearKey,
+    processClearKeyLicenseRequest,
+    setConfig,
+    setKeySystems,
+    setProtectionData
   };
   return instance;
 }
@@ -4791,13 +4866,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_UUID;
-var systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_KEYSTEM_STRING;
-var schemeIdURI = 'urn:uuid:' + uuid;
+const uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_UUID;
+const systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_KEYSTEM_STRING;
+const schemeIdURI = 'urn:uuid:' + uuid;
 function KeySystemClearKey(config) {
   config = config || {};
-  var instance;
-  var BASE64 = config.BASE64;
+  let instance;
+  const BASE64 = config.BASE64;
 
   /**
    * Returns desired clearkeys (as specified in the CDM message) from protection data
@@ -4810,15 +4885,15 @@ function KeySystemClearKey(config) {
    * @memberof KeySystemClearKey
    */
   function getClearKeysFromProtectionData(protectionData, message) {
-    var clearkeySet = null;
+    let clearkeySet = null;
     if (protectionData) {
       // ClearKey is the only system that does not require a license server URL, so we
       // handle it here when keys are specified in protection data
-      var jsonMsg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message)));
-      var keyPairs = [];
-      for (var i = 0; i < jsonMsg.kids.length; i++) {
-        var clearkeyID = jsonMsg.kids[i];
-        var clearkey = protectionData.clearkeys && protectionData.clearkeys.hasOwnProperty(clearkeyID) ? protectionData.clearkeys[clearkeyID] : null;
+      const jsonMsg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message)));
+      const keyPairs = [];
+      for (let i = 0; i < jsonMsg.kids.length; i++) {
+        const clearkeyID = jsonMsg.kids[i];
+        const clearkey = protectionData.clearkeys && protectionData.clearkeys.hasOwnProperty(clearkeyID) ? protectionData.clearkeys[clearkeyID] : null;
         if (!clearkey) {
           throw new Error('DRM: ClearKey keyID (' + clearkeyID + ') is not known!');
         }
@@ -4831,10 +4906,10 @@ function KeySystemClearKey(config) {
   }
   function getInitData(cp, cencContentProtection) {
     try {
-      var initData = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_2__["default"].parseInitDataFromContentProtection(cp, BASE64);
+      let initData = _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_2__["default"].parseInitDataFromContentProtection(cp, BASE64);
       if (!initData && cencContentProtection) {
-        var cencDefaultKid = cencDefaultKidToBase64Representation(cencContentProtection.cencDefaultKid);
-        var data = {
+        const cencDefaultKid = cencDefaultKidToBase64Representation(cencContentProtection.cencDefaultKid);
+        const data = {
           kids: [cencDefaultKid]
         };
         initData = new TextEncoder().encode(JSON.stringify(data));
@@ -4846,8 +4921,8 @@ function KeySystemClearKey(config) {
   }
   function cencDefaultKidToBase64Representation(cencDefaultKid) {
     try {
-      var kid = cencDefaultKid.replace(/-/g, '');
-      kid = btoa(kid.match(/\w{2}/g).map(function (a) {
+      let kid = cencDefaultKid.replace(/-/g, '');
+      kid = btoa(kid.match(/\w{2}/g).map(a => {
         return String.fromCharCode(parseInt(a, 16));
       }).join(''));
       return kid.replace(/=/g, '').replace(/\//g, '_').replace(/\+/g, '-');
@@ -4874,15 +4949,15 @@ function KeySystemClearKey(config) {
     return null;
   }
   instance = {
-    uuid: uuid,
-    schemeIdURI: schemeIdURI,
-    systemString: systemString,
-    getInitData: getInitData,
-    getRequestHeadersFromMessage: getRequestHeadersFromMessage,
-    getLicenseRequestFromMessage: getLicenseRequestFromMessage,
-    getLicenseServerURLFromInitData: getLicenseServerURLFromInitData,
-    getCDMData: getCDMData,
-    getClearKeysFromProtectionData: getClearKeysFromProtectionData
+    uuid,
+    schemeIdURI,
+    systemString,
+    getInitData,
+    getRequestHeadersFromMessage,
+    getLicenseRequestFromMessage,
+    getLicenseServerURLFromInitData,
+    getCDMData,
+    getClearKeysFromProtectionData
   };
   return instance;
 }
@@ -4945,25 +5020,25 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].PLAYREADY_UUID;
-var systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].PLAYREADY_KEYSTEM_STRING;
-var schemeIdURI = 'urn:uuid:' + uuid;
-var PRCDMData = '<PlayReadyCDMData type="LicenseAcquisition"><LicenseAcquisition version="1.0" Proactive="false"><CustomData encoding="base64encoded">%CUSTOMDATA%</CustomData></LicenseAcquisition></PlayReadyCDMData>';
+const uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].PLAYREADY_UUID;
+const systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].PLAYREADY_KEYSTEM_STRING;
+const schemeIdURI = 'urn:uuid:' + uuid;
+const PRCDMData = '<PlayReadyCDMData type="LicenseAcquisition"><LicenseAcquisition version="1.0" Proactive="false"><CustomData encoding="base64encoded">%CUSTOMDATA%</CustomData></LicenseAcquisition></PlayReadyCDMData>';
 function KeySystemPlayReady(config) {
   config = config || {};
-  var instance;
-  var messageFormat = 'utf-16';
-  var BASE64 = config.BASE64;
-  var settings = config.settings;
+  let instance;
+  let messageFormat = 'utf-16';
+  const BASE64 = config.BASE64;
+  const settings = config.settings;
   function checkConfig() {
     if (!BASE64 || !BASE64.hasOwnProperty('decodeArray') || !BASE64.hasOwnProperty('decodeArray')) {
       throw new Error('Missing config parameter(s)');
     }
   }
   function getRequestHeadersFromMessage(message) {
-    var msg, xmlDoc;
-    var headers = {};
-    var parser = new DOMParser();
+    let msg, xmlDoc;
+    const headers = {};
+    const parser = new DOMParser();
     if (settings && settings.get().streaming.protection.detectPlayreadyMessageFormat) {
       // If message format configured/defaulted to utf-16 AND number of bytes is odd, assume 'unwrapped' raw CDM message.
       if (messageFormat === 'utf-16' && message && message.byteLength % 2 === 1) {
@@ -4971,12 +5046,12 @@ function KeySystemPlayReady(config) {
         return headers;
       }
     }
-    var dataview = messageFormat === 'utf-16' ? new Uint16Array(message) : new Uint8Array(message);
+    const dataview = messageFormat === 'utf-16' ? new Uint16Array(message) : new Uint8Array(message);
     msg = String.fromCharCode.apply(null, dataview);
     xmlDoc = parser.parseFromString(msg, 'application/xml');
-    var headerNameList = xmlDoc.getElementsByTagName('name');
-    var headerValueList = xmlDoc.getElementsByTagName('value');
-    for (var i = 0; i < headerNameList.length; i++) {
+    const headerNameList = xmlDoc.getElementsByTagName('name');
+    const headerValueList = xmlDoc.getElementsByTagName('value');
+    for (let i = 0; i < headerNameList.length; i++) {
       headers[headerNameList[i].childNodes[0].nodeValue] = headerValueList[i].childNodes[0].nodeValue;
     }
     // Some versions of the PlayReady CDM return 'Content' instead of 'Content-Type'.
@@ -4994,20 +5069,20 @@ function KeySystemPlayReady(config) {
     return headers;
   }
   function getLicenseRequestFromMessage(message) {
-    var licenseRequest = null;
-    var parser = new DOMParser();
+    let licenseRequest = null;
+    const parser = new DOMParser();
     if (settings && settings.get().streaming.protection.detectPlayreadyMessageFormat) {
       // If message format configured/defaulted to utf-16 AND number of bytes is odd, assume 'unwrapped' raw CDM message.
       if (messageFormat === 'utf-16' && message && message.byteLength % 2 === 1) {
         return message;
       }
     }
-    var dataview = messageFormat === 'utf-16' ? new Uint16Array(message) : new Uint8Array(message);
+    const dataview = messageFormat === 'utf-16' ? new Uint16Array(message) : new Uint8Array(message);
     checkConfig();
-    var msg = String.fromCharCode.apply(null, dataview);
-    var xmlDoc = parser.parseFromString(msg, 'application/xml');
+    const msg = String.fromCharCode.apply(null, dataview);
+    const xmlDoc = parser.parseFromString(msg, 'application/xml');
     if (xmlDoc.getElementsByTagName('PlayReadyKeyMessage')[0]) {
-      var Challenge = xmlDoc.getElementsByTagName('Challenge')[0].childNodes[0].nodeValue;
+      const Challenge = xmlDoc.getElementsByTagName('Challenge')[0].childNodes[0].nodeValue;
       if (Challenge) {
         licenseRequest = BASE64.decode(Challenge);
       }
@@ -5021,27 +5096,27 @@ function KeySystemPlayReady(config) {
   }
   function getLicenseServerURLFromInitData(initData) {
     if (initData) {
-      var data = new DataView(initData);
-      var numRecords = data.getUint16(4, true);
-      var offset = 6;
-      var parser = new DOMParser();
-      for (var i = 0; i < numRecords; i++) {
+      const data = new DataView(initData);
+      const numRecords = data.getUint16(4, true);
+      let offset = 6;
+      const parser = new DOMParser();
+      for (let i = 0; i < numRecords; i++) {
         // Parse the PlayReady Record header
-        var recordType = data.getUint16(offset, true);
+        const recordType = data.getUint16(offset, true);
         offset += 2;
-        var recordLength = data.getUint16(offset, true);
+        const recordLength = data.getUint16(offset, true);
         offset += 2;
         if (recordType !== 0x0001) {
           offset += recordLength;
           continue;
         }
-        var recordData = initData.slice(offset, offset + recordLength);
-        var record = String.fromCharCode.apply(null, new Uint16Array(recordData));
-        var xmlDoc = parser.parseFromString(record, 'application/xml');
+        const recordData = initData.slice(offset, offset + recordLength);
+        const record = String.fromCharCode.apply(null, new Uint16Array(recordData));
+        const xmlDoc = parser.parseFromString(record, 'application/xml');
 
         // First try <LA_URL>
         if (xmlDoc.getElementsByTagName('LA_URL')[0]) {
-          var laurl = xmlDoc.getElementsByTagName('LA_URL')[0].childNodes[0].nodeValue;
+          const laurl = xmlDoc.getElementsByTagName('LA_URL')[0].childNodes[0].nodeValue;
           if (laurl) {
             return laurl;
           }
@@ -5049,7 +5124,7 @@ function KeySystemPlayReady(config) {
 
         // Optionally, try <LUI_URL>
         if (xmlDoc.getElementsByTagName('LUI_URL')[0]) {
-          var luiurl = xmlDoc.getElementsByTagName('LUI_URL')[0].childNodes[0].nodeValue;
+          const luiurl = xmlDoc.getElementsByTagName('LUI_URL')[0].childNodes[0].nodeValue;
           if (luiurl) {
             return luiurl;
           }
@@ -5067,11 +5142,11 @@ function KeySystemPlayReady(config) {
     // *   Protection SystemID (16)
     // *   protection system data size (4) - length of decoded PROHeader
     // *   decoded PROHeader data from MPD file
-    var PSSHBoxType = new Uint8Array([0x70, 0x73, 0x73, 0x68, 0x00, 0x00, 0x00, 0x00]); //'PSSH' 8 bytes
-    var playreadySystemID = new Uint8Array([0x9a, 0x04, 0xf0, 0x79, 0x98, 0x40, 0x42, 0x86, 0xab, 0x92, 0xe6, 0x5b, 0xe0, 0x88, 0x5f, 0x95]);
-    var byteCursor = 0;
-    var uint8arraydecodedPROHeader = null;
-    var PROSize, PSSHSize, PSSHBoxBuffer, PSSHBox, PSSHData;
+    const PSSHBoxType = new Uint8Array([0x70, 0x73, 0x73, 0x68, 0x00, 0x00, 0x00, 0x00]); //'PSSH' 8 bytes
+    const playreadySystemID = new Uint8Array([0x9a, 0x04, 0xf0, 0x79, 0x98, 0x40, 0x42, 0x86, 0xab, 0x92, 0xe6, 0x5b, 0xe0, 0x88, 0x5f, 0x95]);
+    let byteCursor = 0;
+    let uint8arraydecodedPROHeader = null;
+    let PROSize, PSSHSize, PSSHBoxBuffer, PSSHBox, PSSHData;
     checkConfig();
     if (!cpData) {
       return null;
@@ -5125,7 +5200,7 @@ function KeySystemPlayReady(config) {
    * Get Playready Custom data
    */
   function getCDMData(_cdmData) {
-    var customData, cdmData, cdmDataBytes, i;
+    let customData, cdmData, cdmDataBytes, i;
     checkConfig();
     if (!_cdmData) {
       return null;
@@ -5155,15 +5230,15 @@ function KeySystemPlayReady(config) {
     return new Uint8Array(cdmDataBytes).buffer;
   }
   instance = {
-    uuid: uuid,
-    schemeIdURI: schemeIdURI,
-    systemString: systemString,
-    getInitData: getInitData,
-    getRequestHeadersFromMessage: getRequestHeadersFromMessage,
-    getLicenseRequestFromMessage: getLicenseRequestFromMessage,
-    getLicenseServerURLFromInitData: getLicenseServerURLFromInitData,
-    getCDMData: getCDMData,
-    setPlayReadyMessageFormat: setPlayReadyMessageFormat
+    uuid,
+    schemeIdURI,
+    systemString,
+    getInitData,
+    getRequestHeadersFromMessage,
+    getLicenseRequestFromMessage,
+    getLicenseServerURLFromInitData,
+    getCDMData,
+    setPlayReadyMessageFormat
   };
   return instance;
 }
@@ -5224,13 +5299,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].W3C_CLEARKEY_UUID;
-var systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_KEYSTEM_STRING;
-var schemeIdURI = 'urn:uuid:' + uuid;
+const uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].W3C_CLEARKEY_UUID;
+const systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CLEARKEY_KEYSTEM_STRING;
+const schemeIdURI = 'urn:uuid:' + uuid;
 function KeySystemW3CClearKey(config) {
-  var instance;
-  var BASE64 = config.BASE64;
-  var logger = config.debug.getLogger(instance);
+  let instance;
+  const BASE64 = config.BASE64;
+  const logger = config.debug.getLogger(instance);
   /**
    * Returns desired clearkeys (as specified in the CDM message) from protection data
    *
@@ -5242,15 +5317,15 @@ function KeySystemW3CClearKey(config) {
    * @memberof KeySystemClearKey
    */
   function getClearKeysFromProtectionData(protectionData, message) {
-    var clearkeySet = null;
+    let clearkeySet = null;
     if (protectionData) {
       // ClearKey is the only system that does not require a license server URL, so we
       // handle it here when keys are specified in protection data
-      var jsonMsg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message)));
-      var keyPairs = [];
-      for (var i = 0; i < jsonMsg.kids.length; i++) {
-        var clearkeyID = jsonMsg.kids[i];
-        var clearkey = protectionData.clearkeys && protectionData.clearkeys.hasOwnProperty(clearkeyID) ? protectionData.clearkeys[clearkeyID] : null;
+      const jsonMsg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(message)));
+      const keyPairs = [];
+      for (let i = 0; i < jsonMsg.kids.length; i++) {
+        const clearkeyID = jsonMsg.kids[i];
+        const clearkey = protectionData.clearkeys && protectionData.clearkeys.hasOwnProperty(clearkeyID) ? protectionData.clearkeys[clearkeyID] : null;
         if (!clearkey) {
           throw new Error('DRM: ClearKey keyID (' + clearkeyID + ') is not known!');
         }
@@ -5353,13 +5428,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].WIDEVINE_UUID;
-var systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].WIDEVINE_KEYSTEM_STRING;
-var schemeIdURI = 'urn:uuid:' + uuid;
+const uuid = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].WIDEVINE_UUID;
+const systemString = _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_1__["default"].WIDEVINE_KEYSTEM_STRING;
+const schemeIdURI = 'urn:uuid:' + uuid;
 function KeySystemWidevine(config) {
   config = config || {};
-  var instance;
-  var BASE64 = config.BASE64;
+  let instance;
+  const BASE64 = config.BASE64;
   function getInitData(cp) {
     return _CommonEncryption_js__WEBPACK_IMPORTED_MODULE_0__["default"].parseInitDataFromContentProtection(cp, BASE64);
   }
@@ -5379,14 +5454,14 @@ function KeySystemWidevine(config) {
     return null;
   }
   instance = {
-    uuid: uuid,
-    schemeIdURI: schemeIdURI,
-    systemString: systemString,
-    getInitData: getInitData,
-    getRequestHeadersFromMessage: getRequestHeadersFromMessage,
-    getLicenseRequestFromMessage: getLicenseRequestFromMessage,
-    getLicenseServerURLFromInitData: getLicenseServerURLFromInitData,
-    getCDMData: getCDMData
+    uuid,
+    schemeIdURI,
+    systemString,
+    getInitData,
+    getRequestHeadersFromMessage,
+    getLicenseRequestFromMessage,
+    getLicenseServerURLFromInitData,
+    getCDMData
   };
   return instance;
 }
@@ -5407,19 +5482,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../core/errors/ErrorsBase.js */ "./src/core/errors/ErrorsBase.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -5455,93 +5517,88 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
 /**
  * @class
  */
-var ProtectionErrors = /*#__PURE__*/function (_ErrorsBase) {
-  function ProtectionErrors() {
-    var _this;
-    _classCallCheck(this, ProtectionErrors);
-    _this = _callSuper(this, ProtectionErrors);
+class ProtectionErrors extends _core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor() {
+    super();
 
     /**
      *  Generid key Error code
      */
-    _this.MEDIA_KEYERR_CODE = 100;
+    this.MEDIA_KEYERR_CODE = 100;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-    _this.MEDIA_KEYERR_UNKNOWN_CODE = 101;
+    this.MEDIA_KEYERR_UNKNOWN_CODE = 101;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-    _this.MEDIA_KEYERR_CLIENT_CODE = 102;
+    this.MEDIA_KEYERR_CLIENT_CODE = 102;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-    _this.MEDIA_KEYERR_SERVICE_CODE = 103;
+    this.MEDIA_KEYERR_SERVICE_CODE = 103;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-    _this.MEDIA_KEYERR_OUTPUT_CODE = 104;
+    this.MEDIA_KEYERR_OUTPUT_CODE = 104;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-    _this.MEDIA_KEYERR_HARDWARECHANGE_CODE = 105;
+    this.MEDIA_KEYERR_HARDWARECHANGE_CODE = 105;
     /**
      *  Error code returned by keyerror api for ProtectionModel_01b
      */
-    _this.MEDIA_KEYERR_DOMAIN_CODE = 106;
+    this.MEDIA_KEYERR_DOMAIN_CODE = 106;
 
     /**
      *  Error code returned when an error occured in keymessage event for ProtectionModel_01b
      */
-    _this.MEDIA_KEY_MESSAGE_ERROR_CODE = 107;
+    this.MEDIA_KEY_MESSAGE_ERROR_CODE = 107;
     /**
      *  Error code returned when challenge is invalid in keymessage event (event triggered by CDM)
      */
-    _this.MEDIA_KEY_MESSAGE_NO_CHALLENGE_ERROR_CODE = 108;
+    this.MEDIA_KEY_MESSAGE_NO_CHALLENGE_ERROR_CODE = 108;
     /**
      *  Error code returned when License server certificate has not been successfully updated
      */
-    _this.SERVER_CERTIFICATE_UPDATED_ERROR_CODE = 109;
+    this.SERVER_CERTIFICATE_UPDATED_ERROR_CODE = 109;
     /**
      *  Error code returned when license validity has expired
      */
-    _this.KEY_STATUS_CHANGED_EXPIRED_ERROR_CODE = 110;
+    this.KEY_STATUS_CHANGED_EXPIRED_ERROR_CODE = 110;
     /**
      *  Error code returned when no licenser url is defined
      */
-    _this.MEDIA_KEY_MESSAGE_NO_LICENSE_SERVER_URL_ERROR_CODE = 111;
+    this.MEDIA_KEY_MESSAGE_NO_LICENSE_SERVER_URL_ERROR_CODE = 111;
     /**
      *  Error code returned when key system access is denied
      */
-    _this.KEY_SYSTEM_ACCESS_DENIED_ERROR_CODE = 112;
+    this.KEY_SYSTEM_ACCESS_DENIED_ERROR_CODE = 112;
     /**
      *  Error code returned when key session has not been successfully created
      */
-    _this.KEY_SESSION_CREATED_ERROR_CODE = 113;
+    this.KEY_SESSION_CREATED_ERROR_CODE = 113;
     /**
      *  Error code returned when license request failed after a keymessage event has been triggered
      */
-    _this.MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE = 114;
-    _this.MEDIA_KEYERR_UNKNOWN_MESSAGE = 'An unspecified error occurred. This value is used for errors that don\'t match any of the other codes.';
-    _this.MEDIA_KEYERR_CLIENT_MESSAGE = 'The Key System could not be installed or updated.';
-    _this.MEDIA_KEYERR_SERVICE_MESSAGE = 'The message passed into update indicated an error from the license service.';
-    _this.MEDIA_KEYERR_OUTPUT_MESSAGE = 'There is no available output device with the required characteristics for the content protection system.';
-    _this.MEDIA_KEYERR_HARDWARECHANGE_MESSAGE = 'A hardware configuration change caused a content protection error.';
-    _this.MEDIA_KEYERR_DOMAIN_MESSAGE = 'An error occurred in a multi-device domain licensing configuration. The most common error is a failure to join the domain.';
-    _this.MEDIA_KEY_MESSAGE_ERROR_MESSAGE = 'Multiple key sessions were creates with a user-agent that does not support sessionIDs!! Unpredictable behavior ahead!';
-    _this.MEDIA_KEY_MESSAGE_NO_CHALLENGE_ERROR_MESSAGE = 'DRM: Empty key message from CDM';
-    _this.SERVER_CERTIFICATE_UPDATED_ERROR_MESSAGE = 'Error updating server certificate -- ';
-    _this.KEY_STATUS_CHANGED_EXPIRED_ERROR_MESSAGE = 'DRM: KeyStatusChange error! -- License has expired';
-    _this.MEDIA_KEY_MESSAGE_NO_LICENSE_SERVER_URL_ERROR_MESSAGE = 'DRM: No license server URL specified!';
-    _this.KEY_SYSTEM_ACCESS_DENIED_ERROR_MESSAGE = 'DRM: KeySystem Access Denied! -- ';
-    _this.KEY_SESSION_CREATED_ERROR_MESSAGE = 'DRM: unable to create session! --';
-    _this.MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE = 'DRM: licenser error! --';
-    return _this;
+    this.MEDIA_KEY_MESSAGE_LICENSER_ERROR_CODE = 114;
+    this.MEDIA_KEYERR_UNKNOWN_MESSAGE = 'An unspecified error occurred. This value is used for errors that don\'t match any of the other codes.';
+    this.MEDIA_KEYERR_CLIENT_MESSAGE = 'The Key System could not be installed or updated.';
+    this.MEDIA_KEYERR_SERVICE_MESSAGE = 'The message passed into update indicated an error from the license service.';
+    this.MEDIA_KEYERR_OUTPUT_MESSAGE = 'There is no available output device with the required characteristics for the content protection system.';
+    this.MEDIA_KEYERR_HARDWARECHANGE_MESSAGE = 'A hardware configuration change caused a content protection error.';
+    this.MEDIA_KEYERR_DOMAIN_MESSAGE = 'An error occurred in a multi-device domain licensing configuration. The most common error is a failure to join the domain.';
+    this.MEDIA_KEY_MESSAGE_ERROR_MESSAGE = 'Multiple key sessions were creates with a user-agent that does not support sessionIDs!! Unpredictable behavior ahead!';
+    this.MEDIA_KEY_MESSAGE_NO_CHALLENGE_ERROR_MESSAGE = 'DRM: Empty key message from CDM';
+    this.SERVER_CERTIFICATE_UPDATED_ERROR_MESSAGE = 'Error updating server certificate -- ';
+    this.KEY_STATUS_CHANGED_EXPIRED_ERROR_MESSAGE = 'DRM: KeyStatusChange error! -- License has expired';
+    this.MEDIA_KEY_MESSAGE_NO_LICENSE_SERVER_URL_ERROR_MESSAGE = 'DRM: No license server URL specified!';
+    this.KEY_SYSTEM_ACCESS_DENIED_ERROR_MESSAGE = 'DRM: KeySystem Access Denied! -- ';
+    this.KEY_SESSION_CREATED_ERROR_MESSAGE = 'DRM: unable to create session! --';
+    this.MEDIA_KEY_MESSAGE_LICENSER_ERROR_MESSAGE = 'DRM: licenser error! --';
   }
-  _inherits(ProtectionErrors, _ErrorsBase);
-  return _createClass(ProtectionErrors);
-}(_core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var protectionErrors = new ProtectionErrors();
+}
+let protectionErrors = new ProtectionErrors();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (protectionErrors);
 
 /***/ }),
@@ -5612,34 +5669,34 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var SYSTEM_STRING_PRIORITY = {};
+const SYSTEM_STRING_PRIORITY = {};
 SYSTEM_STRING_PRIORITY[_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].PLAYREADY_KEYSTEM_STRING] = [_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].PLAYREADY_KEYSTEM_STRING, _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].PLAYREADY_RECOMMENDATION_KEYSTEM_STRING];
 SYSTEM_STRING_PRIORITY[_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].WIDEVINE_KEYSTEM_STRING] = [_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].WIDEVINE_KEYSTEM_STRING];
 SYSTEM_STRING_PRIORITY[_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CLEARKEY_KEYSTEM_STRING] = [_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CLEARKEY_KEYSTEM_STRING];
 function DefaultProtectionModel(config) {
   config = config || {};
-  var context = this.context;
-  var eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
-  var events = config.events;
-  var debug = config.debug;
-  var instance, logger, keySystem, videoElement, mediaKeys, sessions, eventHandler, protectionKeyController;
+  const context = this.context;
+  const eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
+  const events = config.events;
+  const debug = config.debug;
+  let instance, logger, keySystem, videoElement, mediaKeys, sessionTokens, eventHandler, protectionKeyController;
   function setup() {
     logger = debug.getLogger(instance);
     keySystem = null;
     videoElement = null;
     mediaKeys = null;
-    sessions = [];
+    sessionTokens = [];
     protectionKeyController = (0,_controllers_ProtectionKeyController_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
     eventHandler = createEventHandler();
   }
   function reset() {
-    var numSessions = sessions.length;
-    var session;
+    const numSessions = sessionTokens.length;
+    let session;
     if (numSessions !== 0) {
       // Called when we are done closing a session.  Success or fail
-      var done = function done(session) {
+      const done = function (session) {
         removeSession(session);
-        if (sessions.length === 0) {
+        if (sessionTokens.length === 0) {
           if (videoElement) {
             videoElement.removeEventListener('encrypted', eventHandler);
             videoElement.setMediaKeys(null).then(function () {
@@ -5650,8 +5707,8 @@ function DefaultProtectionModel(config) {
           }
         }
       };
-      for (var i = 0; i < numSessions; i++) {
-        session = sessions[i];
+      for (let i = 0; i < numSessions; i++) {
+        session = sessionTokens[i];
         (function (s) {
           _closeKeySessionInternal(session);
           done(s);
@@ -5663,9 +5720,9 @@ function DefaultProtectionModel(config) {
   }
   function stop() {
     // Close and remove not usable sessions
-    var session;
-    for (var i = 0; i < sessions.length; i++) {
-      session = sessions[i];
+    let session;
+    for (let i = 0; i < sessionTokens.length; i++) {
+      session = sessionTokens[i];
       if (!session.getUsable()) {
         _closeKeySessionInternal(session);
         removeSession(session);
@@ -5673,19 +5730,19 @@ function DefaultProtectionModel(config) {
     }
   }
   function getAllInitData() {
-    var retVal = [];
-    for (var i = 0; i < sessions.length; i++) {
-      if (sessions[i].initData) {
-        retVal.push(sessions[i].initData);
+    const retVal = [];
+    for (let i = 0; i < sessionTokens.length; i++) {
+      if (sessionTokens[i].initData) {
+        retVal.push(sessionTokens[i].initData);
       }
     }
     return retVal;
   }
-  function getSessions() {
-    return sessions;
+  function getSessionTokens() {
+    return sessionTokens;
   }
   function requestKeySystemAccess(keySystemConfigurationsToRequest) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       _requestKeySystemAccessInternal(keySystemConfigurationsToRequest, 0, resolve, reject);
     });
   }
@@ -5701,7 +5758,7 @@ function DefaultProtectionModel(config) {
   function _requestKeySystemAccessInternal(keySystemConfigurationsToRequest, idx, resolve, reject) {
     // In case requestMediaKeySystemAccess is not available we can not proceed and dispatch an error
     if (navigator.requestMediaKeySystemAccess === undefined || typeof navigator.requestMediaKeySystemAccess !== 'function') {
-      var msg = 'Insecure origins are not allowed';
+      const msg = 'Insecure origins are not allowed';
       eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
         error: msg
       });
@@ -5713,18 +5770,18 @@ function DefaultProtectionModel(config) {
 
     // If a systemStringPriority is defined by the application we use these values. Otherwise, we use the default system string
     // This is useful for DRM systems such as Playready for which multiple system strings are possible for instance com.microsoft.playready and com.microsoft.playready.recommendation
-    var protDataSystemStringPriority = keySystemConfigurationsToRequest[idx].protData && keySystemConfigurationsToRequest[idx].protData.systemStringPriority ? keySystemConfigurationsToRequest[idx].protData.systemStringPriority : null;
-    var configs = keySystemConfigurationsToRequest[idx].configs;
-    var currentKeySystem = keySystemConfigurationsToRequest[idx].ks;
-    var systemString = currentKeySystem.systemString;
+    const protDataSystemStringPriority = keySystemConfigurationsToRequest[idx].protData && keySystemConfigurationsToRequest[idx].protData.systemStringPriority ? keySystemConfigurationsToRequest[idx].protData.systemStringPriority : null;
+    const configs = keySystemConfigurationsToRequest[idx].configs;
+    const currentKeySystem = keySystemConfigurationsToRequest[idx].ks;
+    let systemString = currentKeySystem.systemString;
 
     // Use the default values in case no values are provided by the application
-    var systemStringsToApply = protDataSystemStringPriority ? protDataSystemStringPriority : SYSTEM_STRING_PRIORITY[systemString] ? SYSTEM_STRING_PRIORITY[systemString] : [systemString];
+    const systemStringsToApply = protDataSystemStringPriority ? protDataSystemStringPriority : SYSTEM_STRING_PRIORITY[systemString] ? SYSTEM_STRING_PRIORITY[systemString] : [systemString];
 
     // Check all the available system strings and the available configurations for support
-    _checkAccessForKeySystem(systemStringsToApply, configs).then(function (data) {
-      var configuration = data && data.nativeMediaKeySystemAccessObject && typeof data.nativeMediaKeySystemAccessObject.getConfiguration === 'function' ? data.nativeMediaKeySystemAccessObject.getConfiguration() : null;
-      var keySystemAccess = new _vo_KeySystemAccess_js__WEBPACK_IMPORTED_MODULE_5__["default"](currentKeySystem, configuration);
+    _checkAccessForKeySystem(systemStringsToApply, configs).then(data => {
+      const configuration = data && data.nativeMediaKeySystemAccessObject && typeof data.nativeMediaKeySystemAccessObject.getConfiguration === 'function' ? data.nativeMediaKeySystemAccessObject.getConfiguration() : null;
+      const keySystemAccess = new _vo_KeySystemAccess_js__WEBPACK_IMPORTED_MODULE_5__["default"](currentKeySystem, configuration);
       keySystemAccess.selectedSystemString = data.selectedSystemString;
       keySystemAccess.nativeMediaKeySystemAccessObject = data.nativeMediaKeySystemAccessObject;
       eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
@@ -5733,11 +5790,11 @@ function DefaultProtectionModel(config) {
       resolve({
         data: keySystemAccess
       });
-    })["catch"](function (e) {
+    }).catch(e => {
       if (idx + 1 < keySystemConfigurationsToRequest.length) {
         _requestKeySystemAccessInternal(keySystemConfigurationsToRequest, idx + 1, resolve, reject);
       } else {
-        var errorMessage = 'Key system access denied! ';
+        const errorMessage = 'Key system access denied! ';
         eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
           error: errorMessage + e.message
         });
@@ -5756,7 +5813,7 @@ function DefaultProtectionModel(config) {
    * @private
    */
   function _checkAccessForKeySystem(systemStringsToApply, configs) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       _checkAccessForSystemStrings(systemStringsToApply, configs, 0, resolve, reject);
     });
   }
@@ -5771,14 +5828,14 @@ function DefaultProtectionModel(config) {
    * @private
    */
   function _checkAccessForSystemStrings(systemStringsToApply, configs, idx, resolve, reject) {
-    var systemString = systemStringsToApply[idx];
-    logger.debug("Requesting key system access for system string ".concat(systemString));
-    navigator.requestMediaKeySystemAccess(systemString, configs).then(function (mediaKeySystemAccess) {
+    const systemString = systemStringsToApply[idx];
+    logger.debug(`Requesting key system access for system string ${systemString}`);
+    navigator.requestMediaKeySystemAccess(systemString, configs).then(mediaKeySystemAccess => {
       resolve({
         nativeMediaKeySystemAccessObject: mediaKeySystemAccess,
         selectedSystemString: systemString
       });
-    })["catch"](function (e) {
+    }).catch(e => {
       if (idx + 1 < systemStringsToApply.length) {
         _checkAccessForSystemStrings(systemStringsToApply, configs, idx + 1, resolve, reject);
       } else {
@@ -5793,8 +5850,8 @@ function DefaultProtectionModel(config) {
    * @return {Promise<unknown>}
    */
   function selectKeySystem(keySystemAccess) {
-    return new Promise(function (resolve, reject) {
-      keySystemAccess.nativeMediaKeySystemAccessObject.createMediaKeys().then(function (mkeys) {
+    return new Promise((resolve, reject) => {
+      keySystemAccess.nativeMediaKeySystemAccessObject.createMediaKeys().then(mkeys => {
         keySystem = keySystemAccess.keySystem;
         mediaKeys = mkeys;
         if (videoElement) {
@@ -5802,9 +5859,9 @@ function DefaultProtectionModel(config) {
         } else {
           return Promise.resolve();
         }
-      }).then(function () {
+      }).then(() => {
         resolve(keySystem);
-      })["catch"](function () {
+      }).catch(function () {
         reject({
           error: 'Error selecting keys system (' + keySystemAccess.keySystem.systemString + ')! Could not create MediaKeys -- TODO'
         });
@@ -5834,12 +5891,12 @@ function DefaultProtectionModel(config) {
     }
   }
   function setServerCertificate(serverCertificate) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       mediaKeys.setServerCertificate(serverCertificate).then(function () {
         logger.info('DRM: License server certificate successfully updated.');
         eventBus.trigger(events.SERVER_CERTIFICATE_UPDATED);
         resolve();
-      })["catch"](function (error) {
+      }).catch(error => {
         reject(error);
         eventBus.trigger(events.SERVER_CERTIFICATE_UPDATED, {
           error: new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_3__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"].SERVER_CERTIFICATE_UPDATED_ERROR_CODE, _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"].SERVER_CERTIFICATE_UPDATED_ERROR_MESSAGE + error.name)
@@ -5856,17 +5913,17 @@ function DefaultProtectionModel(config) {
     if (!keySystem || !mediaKeys) {
       throw new Error('Can not create sessions until you have selected a key system');
     }
-    var mediaKeySession = mediaKeys.createSession(keySystemMetadata.sessionType);
-    var sessionToken = _createSessionToken(mediaKeySession, keySystemMetadata);
+    const mediaKeySession = mediaKeys.createSession(keySystemMetadata.sessionType);
+    const sessionToken = _createSessionToken(mediaKeySession, keySystemMetadata);
 
     // The "keyids" type is used for Clearkey when keys are provided directly in the protection data and a request to a license server is not needed
-    var dataType = keySystem.systemString === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CLEARKEY_KEYSTEM_STRING && (keySystemMetadata.initData || keySystemMetadata.protData && keySystemMetadata.protData.clearkeys) ? _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].INITIALIZATION_DATA_TYPE_KEYIDS : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].INITIALIZATION_DATA_TYPE_CENC;
+    const dataType = keySystem.systemString === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].CLEARKEY_KEYSTEM_STRING && (keySystemMetadata.initData || keySystemMetadata.protData && keySystemMetadata.protData.clearkeys) ? _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].INITIALIZATION_DATA_TYPE_KEYIDS : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].INITIALIZATION_DATA_TYPE_CENC;
     mediaKeySession.generateRequest(dataType, keySystemMetadata.initData).then(function () {
       logger.debug('DRM: Session created.  SessionID = ' + sessionToken.getSessionId());
       eventBus.trigger(events.KEY_SESSION_CREATED, {
         data: sessionToken
       });
-    })["catch"](function (error) {
+    }).catch(function (error) {
       removeSession(sessionToken);
       eventBus.trigger(events.KEY_SESSION_CREATED, {
         data: null,
@@ -5875,15 +5932,15 @@ function DefaultProtectionModel(config) {
     });
   }
   function updateKeySession(sessionToken, message) {
-    var session = sessionToken.session;
+    const session = sessionToken.session;
 
     // Send our request to the key session
     if (protectionKeyController.isClearKey(keySystem)) {
       message = message.toJWK();
     }
-    session.update(message).then(function () {
+    session.update(message).then(() => {
       eventBus.trigger(events.KEY_SESSION_UPDATED);
-    })["catch"](function (error) {
+    }).catch(function (error) {
       eventBus.trigger(events.KEY_ERROR, {
         error: new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_3__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"].MEDIA_KEYERR_CODE, 'Error sending update() message! ' + error.name, sessionToken)
       });
@@ -5893,17 +5950,17 @@ function DefaultProtectionModel(config) {
     if (!keySystem || !mediaKeys) {
       throw new Error('Can not load sessions until you have selected a key system');
     }
-    var sessionId = keySystemMetadata.sessionId;
+    const sessionId = keySystemMetadata.sessionId;
 
     // Check if session Id is not already loaded or loading
-    for (var i = 0; i < sessions.length; i++) {
-      if (sessionId === sessions[i].sessionId) {
+    for (let i = 0; i < sessionTokens.length; i++) {
+      if (sessionId === sessionTokens[i].sessionId) {
         logger.warn('DRM: Ignoring session ID because we have already seen it!');
         return;
       }
     }
-    var session = mediaKeys.createSession(keySystemMetadata.sessionType);
-    var sessionToken = _createSessionToken(session, keySystemMetadata);
+    const session = mediaKeys.createSession(keySystemMetadata.sessionType);
+    const sessionToken = _createSessionToken(session, keySystemMetadata);
 
     // Load persisted session data into our newly created session object
     session.load(sessionId).then(function (success) {
@@ -5919,7 +5976,7 @@ function DefaultProtectionModel(config) {
           error: new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_3__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"].KEY_SESSION_CREATED_ERROR_CODE, _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"].KEY_SESSION_CREATED_ERROR_MESSAGE + 'Could not load session! Invalid Session ID (' + sessionId + ')')
         });
       }
-    })["catch"](function (error) {
+    }).catch(function (error) {
       removeSession(sessionToken);
       eventBus.trigger(events.KEY_SESSION_CREATED, {
         data: null,
@@ -5928,7 +5985,7 @@ function DefaultProtectionModel(config) {
     });
   }
   function removeKeySession(sessionToken) {
-    var session = sessionToken.session;
+    const session = sessionToken.session;
     session.remove().then(function () {
       logger.debug('DRM: Session removed.  SessionID = ' + sessionToken.getSessionId());
       eventBus.trigger(events.KEY_SESSION_REMOVED, {
@@ -5943,7 +6000,7 @@ function DefaultProtectionModel(config) {
   }
   function closeKeySession(sessionToken) {
     // Send our request to the key session
-    _closeKeySessionInternal(sessionToken)["catch"](function (error) {
+    _closeKeySessionInternal(sessionToken).catch(function (error) {
       removeSession(sessionToken);
       eventBus.trigger(events.KEY_SESSION_CLOSED, {
         data: null,
@@ -5955,7 +6012,7 @@ function DefaultProtectionModel(config) {
     if (!sessionToken || !sessionToken.session) {
       return Promise.resolve;
     }
-    var session = sessionToken.session;
+    const session = sessionToken.session;
 
     // Remove event listeners
     session.removeEventListener('keystatuseschange', sessionToken);
@@ -5970,11 +6027,11 @@ function DefaultProtectionModel(config) {
   // versions of the same events
   function createEventHandler() {
     return {
-      handleEvent: function handleEvent(event) {
+      handleEvent: function (event) {
         switch (event.type) {
           case 'encrypted':
             if (event.initData) {
-              var initData = ArrayBuffer.isView(event.initData) ? event.initData.buffer : event.initData;
+              let initData = ArrayBuffer.isView(event.initData) ? event.initData.buffer : event.initData;
               eventBus.trigger(events.NEED_KEY, {
                 key: new _vo_NeedKey_js__WEBPACK_IMPORTED_MODULE_1__["default"](initData, event.initDataType)
               });
@@ -5986,16 +6043,103 @@ function DefaultProtectionModel(config) {
   }
   function removeSession(token) {
     // Remove from our session list
-    for (var i = 0; i < sessions.length; i++) {
-      if (sessions[i] === token) {
-        sessions.splice(i, 1);
+    for (let i = 0; i < sessionTokens.length; i++) {
+      if (sessionTokens[i] === token) {
+        sessionTokens.splice(i, 1);
         break;
       }
     }
   }
-  function parseKeyStatus(args) {
-    // Edge and Chrome implement different version of keystatues, param are not on same order
-    var status, keyId;
+
+  // Function to create our session token objects which manage the EME
+  // MediaKeySession and session-specific event handler
+  function _createSessionToken(session, keySystemMetadata) {
+    const token = {
+      // Implements SessionToken
+      session: session,
+      keyId: keySystemMetadata.keyId,
+      initData: keySystemMetadata.initData,
+      sessionId: keySystemMetadata.sessionId,
+      sessionType: keySystemMetadata.sessionType,
+      // This is our main event handler for all desired MediaKeySession events
+      // These events are translated into our API-independent versions of the
+      // same events
+      handleEvent: function (event) {
+        switch (event.type) {
+          case 'keystatuseschange':
+            this._onKeyStatusesChange(event);
+            break;
+          case 'message':
+            this._onKeyMessage(event);
+            break;
+        }
+      },
+      _onKeyStatusesChange: function (event) {
+        eventBus.trigger(events.KEY_STATUSES_CHANGED, {
+          data: this
+        });
+        const keyStatuses = [];
+        event.target.keyStatuses.forEach(function () {
+          keyStatuses.push(_parseKeyStatus(arguments));
+        });
+        eventBus.trigger(events.INTERNAL_KEY_STATUSES_CHANGED, {
+          parsedKeyStatuses: keyStatuses,
+          sessionToken: token
+        });
+      },
+      _onKeyMessage: function (event) {
+        let message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
+        eventBus.trigger(events.INTERNAL_KEY_MESSAGE, {
+          data: new _vo_KeyMessage_js__WEBPACK_IMPORTED_MODULE_4__["default"](this, message, undefined, event.messageType)
+        });
+      },
+      getKeyId: function () {
+        return this.keyId;
+      },
+      getSessionId: function () {
+        return session.sessionId;
+      },
+      getSessionType: function () {
+        return this.sessionType;
+      },
+      getExpirationTime: function () {
+        return session.expiration;
+      },
+      getKeyStatuses: function () {
+        return session.keyStatuses;
+      },
+      getUsable: function () {
+        let usable = false;
+        session.keyStatuses.forEach(function () {
+          let keyStatus = _parseKeyStatus(arguments);
+          if (keyStatus.status === _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEY_STATUSES.USABLE) {
+            usable = true;
+          }
+        });
+        return usable;
+      }
+    };
+
+    // Add all event listeners
+    session.addEventListener('keystatuseschange', token);
+    session.addEventListener('message', token);
+
+    // Register callback for session closed Promise
+    session.closed.then(() => {
+      removeSession(token);
+      logger.debug('DRM: Session closed.  SessionID = ' + token.getSessionId());
+      eventBus.trigger(events.KEY_SESSION_CLOSED, {
+        data: token.getSessionId()
+      });
+    });
+
+    // Add to our session list
+    sessionTokens.push(token);
+    return token;
+  }
+  function _parseKeyStatus(args) {
+    // Edge and Chrome implement different version of keystatuses, param are not on same order
+    let status, keyId;
     if (args && args.length > 0) {
       if (args[0]) {
         if (typeof args[0] === 'string') {
@@ -6017,112 +6161,20 @@ function DefaultProtectionModel(config) {
       keyId: keyId
     };
   }
-
-  // Function to create our session token objects which manage the EME
-  // MediaKeySession and session-specific event handler
-  function _createSessionToken(session, keySystemMetadata) {
-    var token = {
-      // Implements SessionToken
-      session: session,
-      keyId: keySystemMetadata.keyId,
-      initData: keySystemMetadata.initData,
-      sessionId: keySystemMetadata.sessionId,
-      sessionType: keySystemMetadata.sessionType,
-      // This is our main event handler for all desired MediaKeySession events
-      // These events are translated into our API-independent versions of the
-      // same events
-      handleEvent: function handleEvent(event) {
-        switch (event.type) {
-          case 'keystatuseschange':
-            this._onKeyStatusChange(event);
-            break;
-          case 'message':
-            this._onKeyMessage(event);
-            break;
-        }
-      },
-      _onKeyStatusChange: function _onKeyStatusChange(event) {
-        eventBus.trigger(events.KEY_STATUSES_CHANGED, {
-          data: this
-        });
-        event.target.keyStatuses.forEach(function () {
-          var keyStatus = parseKeyStatus(arguments);
-          switch (keyStatus.status) {
-            case 'expired':
-              eventBus.trigger(events.INTERNAL_KEY_STATUS_CHANGED, {
-                error: new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_3__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"].KEY_STATUS_CHANGED_EXPIRED_ERROR_CODE, _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"].KEY_STATUS_CHANGED_EXPIRED_ERROR_MESSAGE)
-              });
-              break;
-            default:
-              eventBus.trigger(events.INTERNAL_KEY_STATUS_CHANGED, keyStatus);
-              break;
-          }
-        });
-      },
-      _onKeyMessage: function _onKeyMessage(event) {
-        var message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
-        eventBus.trigger(events.INTERNAL_KEY_MESSAGE, {
-          data: new _vo_KeyMessage_js__WEBPACK_IMPORTED_MODULE_4__["default"](this, message, undefined, event.messageType)
-        });
-      },
-      getKeyId: function getKeyId() {
-        return this.keyId;
-      },
-      getSessionId: function getSessionId() {
-        return session.sessionId;
-      },
-      getSessionType: function getSessionType() {
-        return this.sessionType;
-      },
-      getExpirationTime: function getExpirationTime() {
-        return session.expiration;
-      },
-      getKeyStatuses: function getKeyStatuses() {
-        return session.keyStatuses;
-      },
-      getUsable: function getUsable() {
-        var usable = false;
-        session.keyStatuses.forEach(function () {
-          var keyStatus = parseKeyStatus(arguments);
-          if (keyStatus.status === 'usable') {
-            usable = true;
-          }
-        });
-        return usable;
-      }
-    };
-
-    // Add all event listeners
-    session.addEventListener('keystatuseschange', token);
-    session.addEventListener('message', token);
-
-    // Register callback for session closed Promise
-    session.closed.then(function () {
-      removeSession(token);
-      logger.debug('DRM: Session closed.  SessionID = ' + token.getSessionId());
-      eventBus.trigger(events.KEY_SESSION_CLOSED, {
-        data: token.getSessionId()
-      });
-    });
-
-    // Add to our session list
-    sessions.push(token);
-    return token;
-  }
   instance = {
-    closeKeySession: closeKeySession,
-    createKeySession: createKeySession,
-    getAllInitData: getAllInitData,
-    getSessions: getSessions,
-    loadKeySession: loadKeySession,
-    removeKeySession: removeKeySession,
-    requestKeySystemAccess: requestKeySystemAccess,
-    reset: reset,
-    selectKeySystem: selectKeySystem,
-    setMediaElement: setMediaElement,
-    setServerCertificate: setServerCertificate,
-    stop: stop,
-    updateKeySession: updateKeySession
+    closeKeySession,
+    createKeySession,
+    getAllInitData,
+    getSessionTokens,
+    loadKeySession,
+    removeKeySession,
+    requestKeySystemAccess,
+    reset,
+    selectKeySystem,
+    setMediaElement,
+    setServerCertificate,
+    stop,
+    updateKeySession
   };
   setup();
   return instance;
@@ -6202,13 +6254,13 @@ __webpack_require__.r(__webpack_exports__);
 
 function ProtectionModel_01b(config) {
   config = config || {};
-  var context = this.context;
-  var eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
-  var events = config.events;
-  var debug = config.debug;
-  var api = config.api;
-  var errHandler = config.errHandler;
-  var instance, logger, videoElement, keySystem, protectionKeyController,
+  const context = this.context;
+  const eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
+  const events = config.events;
+  const debug = config.debug;
+  const api = config.api;
+  const errHandler = config.errHandler;
+  let instance, logger, videoElement, keySystem, protectionKeyController,
     // With this version of the EME APIs, sessionIds are not assigned to
     // sessions until the first key message is received.  We are assuming
     // that in the case of multiple sessions, key messages will be received
@@ -6218,7 +6270,7 @@ function ProtectionModel_01b(config) {
     pendingSessions,
     // List of sessions that have been initialized.  Only the first position will
     // be used in the case that the CDM does not support sessionIds
-    sessions,
+    sessionTokens,
     // Not all CDMs support the notion of sessionIds.  Without sessionIds
     // there is no way for us to differentiate between sessions, therefore
     // we must only allow a single session.  Once we receive the first key
@@ -6233,7 +6285,7 @@ function ProtectionModel_01b(config) {
     videoElement = null;
     keySystem = null;
     pendingSessions = [];
-    sessions = [];
+    sessionTokens = [];
     protectionKeyController = (0,_controllers_ProtectionKeyController_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
     eventHandler = createEventHandler();
   }
@@ -6241,27 +6293,27 @@ function ProtectionModel_01b(config) {
     if (videoElement) {
       removeEventListeners();
     }
-    for (var i = 0; i < sessions.length; i++) {
-      closeKeySession(sessions[i]);
+    for (let i = 0; i < sessionTokens.length; i++) {
+      closeKeySession(sessionTokens[i]);
     }
     eventBus.trigger(events.TEARDOWN_COMPLETE);
   }
   function getAllInitData() {
-    var retVal = [];
-    for (var i = 0; i < pendingSessions.length; i++) {
+    const retVal = [];
+    for (let i = 0; i < pendingSessions.length; i++) {
       retVal.push(pendingSessions[i].initData);
     }
-    for (var _i = 0; _i < sessions.length; _i++) {
-      retVal.push(sessions[_i].initData);
+    for (let i = 0; i < sessionTokens.length; i++) {
+      retVal.push(sessionTokens[i].initData);
     }
     return retVal;
   }
-  function getSessions() {
-    return sessions.concat(pendingSessions);
+  function getSessionTokens() {
+    return sessionTokens.concat(pendingSessions);
   }
   function requestKeySystemAccess(ksConfigurations) {
-    return new Promise(function (resolve, reject) {
-      var ve = videoElement;
+    return new Promise((resolve, reject) => {
+      let ve = videoElement;
       if (!ve) {
         // Must have a video element to do this capability tests
         ve = document.createElement('video');
@@ -6269,22 +6321,22 @@ function ProtectionModel_01b(config) {
 
       // Try key systems in order, first one with supported key system configuration
       // is used
-      var found = false;
-      for (var ksIdx = 0; ksIdx < ksConfigurations.length; ksIdx++) {
-        var systemString = ksConfigurations[ksIdx].ks.systemString;
-        var configs = ksConfigurations[ksIdx].configs;
-        var supportedAudio = null;
-        var supportedVideo = null;
+      let found = false;
+      for (let ksIdx = 0; ksIdx < ksConfigurations.length; ksIdx++) {
+        const systemString = ksConfigurations[ksIdx].ks.systemString;
+        const configs = ksConfigurations[ksIdx].configs;
+        let supportedAudio = null;
+        let supportedVideo = null;
 
         // Try key system configs in order, first one with supported audio/video
         // is used
-        for (var configIdx = 0; configIdx < configs.length; configIdx++) {
+        for (let configIdx = 0; configIdx < configs.length; configIdx++) {
           //let audios = configs[configIdx].audioCapabilities;
-          var videos = configs[configIdx].videoCapabilities;
+          const videos = configs[configIdx].videoCapabilities;
           // Look for supported video container/codecs
           if (videos && videos.length !== 0) {
             supportedVideo = []; // Indicates that we have a requested video config
-            for (var videoIdx = 0; videoIdx < videos.length; videoIdx++) {
+            for (let videoIdx = 0; videoIdx < videos.length; videoIdx++) {
               if (ve.canPlayType(videos[videoIdx].contentType, systemString) !== '') {
                 supportedVideo.push(videos[videoIdx]);
               }
@@ -6299,9 +6351,9 @@ function ProtectionModel_01b(config) {
 
           // This configuration is supported
           found = true;
-          var ksConfig = new _vo_KeySystemConfiguration_js__WEBPACK_IMPORTED_MODULE_4__["default"](supportedAudio, supportedVideo);
-          var ks = protectionKeyController.getKeySystemBySystemString(systemString);
-          var keySystemAccess = new _vo_KeySystemAccess_js__WEBPACK_IMPORTED_MODULE_5__["default"](ks, ksConfig);
+          const ksConfig = new _vo_KeySystemConfiguration_js__WEBPACK_IMPORTED_MODULE_4__["default"](supportedAudio, supportedVideo);
+          const ks = protectionKeyController.getKeySystemBySystemString(systemString);
+          const keySystemAccess = new _vo_KeySystemAccess_js__WEBPACK_IMPORTED_MODULE_5__["default"](ks, ksConfig);
           eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
             data: keySystemAccess
           });
@@ -6312,7 +6364,7 @@ function ProtectionModel_01b(config) {
         }
       }
       if (!found) {
-        var errorMessage = 'Key system access denied! -- No valid audio/video content configurations detected!';
+        const errorMessage = 'Key system access denied! -- No valid audio/video content configurations detected!';
         eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
           error: errorMessage
         });
@@ -6336,10 +6388,10 @@ function ProtectionModel_01b(config) {
       removeEventListeners();
 
       // Close any open sessions - avoids memory leak on LG webOS 2016/2017 TVs
-      for (var i = 0; i < sessions.length; i++) {
-        closeKeySession(sessions[i]);
+      for (var i = 0; i < sessionTokens.length; i++) {
+        closeKeySession(sessionTokens[i]);
       }
-      sessions = [];
+      sessionTokens = [];
     }
     videoElement = mediaElement;
 
@@ -6358,23 +6410,34 @@ function ProtectionModel_01b(config) {
     }
 
     // Determine if creating a new session is allowed
-    if (moreSessionsAllowed || sessions.length === 0) {
-      var newSession = {
+    if (moreSessionsAllowed || sessionTokens.length === 0) {
+      const newSession = {
         // Implements SessionToken
         sessionId: null,
         keyId: ksInfo.keyId,
         initData: ksInfo.initData,
-        getKeyId: function getKeyId() {
+        getKeyId: function () {
           return this.keyId;
         },
-        getSessionId: function getSessionId() {
+        getSessionId: function () {
           return this.sessionId;
         },
-        getExpirationTime: function getExpirationTime() {
+        getExpirationTime: function () {
           return NaN;
         },
-        getSessionType: function getSessionType() {
+        getSessionType: function () {
           return 'temporary';
+        },
+        getKeyStatuses: function () {
+          return {
+            size: 0,
+            has: () => {
+              return false;
+            },
+            get: () => {
+              return undefined;
+            }
+          };
         }
       };
       pendingSessions.push(newSession);
@@ -6387,13 +6450,13 @@ function ProtectionModel_01b(config) {
     }
   }
   function updateKeySession(sessionToken, message) {
-    var sessionId = sessionToken.sessionId;
+    const sessionId = sessionToken.sessionId;
     if (!protectionKeyController.isClearKey(keySystem)) {
       // Send our request to the CDM
       videoElement[api.addKey](keySystem.systemString, new Uint8Array(message), new Uint8Array(sessionToken.initData), sessionId);
     } else {
       // For clearkey, message is a ClearKeyKeySet
-      for (var i = 0; i < message.keyPairs.length; i++) {
+      for (let i = 0; i < message.keyPairs.length; i++) {
         videoElement[api.addKey](keySystem.systemString, message.keyPairs[i].key, message.keyPairs[i].keyID, sessionId);
       }
     }
@@ -6421,23 +6484,23 @@ function ProtectionModel_01b(config) {
   }
   function createEventHandler() {
     return {
-      handleEvent: function handleEvent(event) {
-        var sessionToken = null;
+      handleEvent: function (event) {
+        let sessionToken = null;
         switch (event.type) {
           case api.needkey:
-            var initData = ArrayBuffer.isView(event.initData) ? event.initData.buffer : event.initData;
+            let initData = ArrayBuffer.isView(event.initData) ? event.initData.buffer : event.initData;
             eventBus.trigger(events.NEED_KEY, {
               key: new _vo_NeedKey_js__WEBPACK_IMPORTED_MODULE_1__["default"](initData, _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_8__["default"].INITIALIZATION_DATA_TYPE_CENC)
             });
             break;
           case api.keyerror:
-            sessionToken = findSessionByID(sessions, event.sessionId);
+            sessionToken = findSessionByID(sessionTokens, event.sessionId);
             if (!sessionToken) {
               sessionToken = findSessionByID(pendingSessions, event.sessionId);
             }
             if (sessionToken) {
-              var code = _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_CODE;
-              var msg = '';
+              let code = _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_CODE;
+              let msg = '';
               switch (event.errorCode.code) {
                 case 1:
                   code = _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEYERR_UNKNOWN_CODE;
@@ -6474,7 +6537,7 @@ function ProtectionModel_01b(config) {
             }
             break;
           case api.keyadded:
-            sessionToken = findSessionByID(sessions, event.sessionId);
+            sessionToken = findSessionByID(sessionTokens, event.sessionId);
             if (!sessionToken) {
               sessionToken = findSessionByID(pendingSessions, event.sessionId);
             }
@@ -6495,12 +6558,12 @@ function ProtectionModel_01b(config) {
             // SessionIDs supported
             if (moreSessionsAllowed) {
               // Attempt to find an uninitialized token with this sessionId
-              sessionToken = findSessionByID(sessions, event.sessionId);
+              sessionToken = findSessionByID(sessionTokens, event.sessionId);
               if (!sessionToken && pendingSessions.length > 0) {
                 // This is the first message for our latest session, so set the
                 // sessionId and add it to our list
                 sessionToken = pendingSessions.shift();
-                sessions.push(sessionToken);
+                sessionTokens.push(sessionToken);
                 sessionToken.sessionId = event.sessionId;
                 eventBus.trigger(events.KEY_SESSION_CREATED, {
                   data: sessionToken
@@ -6509,13 +6572,13 @@ function ProtectionModel_01b(config) {
             } else if (pendingSessions.length > 0) {
               // SessionIDs not supported
               sessionToken = pendingSessions.shift();
-              sessions.push(sessionToken);
+              sessionTokens.push(sessionToken);
               if (pendingSessions.length !== 0) {
                 errHandler.error(new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_2__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEY_MESSAGE_ERROR_CODE, _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_6__["default"].MEDIA_KEY_MESSAGE_ERROR_MESSAGE));
               }
             }
             if (sessionToken) {
-              var message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
+              let message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
 
               // For ClearKey, the spec mandates that you pass this message to the
               // addKey method, so we always save it to the token since there is no
@@ -6545,8 +6608,8 @@ function ProtectionModel_01b(config) {
     if (!sessionId || !sessionArray) {
       return null;
     } else {
-      var len = sessionArray.length;
-      for (var i = 0; i < len; i++) {
+      const len = sessionArray.length;
+      for (let i = 0; i < len; i++) {
         if (sessionArray[i].sessionId == sessionId) {
           return sessionArray[i];
         }
@@ -6561,19 +6624,19 @@ function ProtectionModel_01b(config) {
     videoElement.removeEventListener(api.keyadded, eventHandler);
   }
   instance = {
-    getAllInitData: getAllInitData,
-    getSessions: getSessions,
-    requestKeySystemAccess: requestKeySystemAccess,
-    selectKeySystem: selectKeySystem,
-    setMediaElement: setMediaElement,
-    createKeySession: createKeySession,
-    updateKeySession: updateKeySession,
-    closeKeySession: closeKeySession,
-    setServerCertificate: setServerCertificate,
-    loadKeySession: loadKeySession,
-    removeKeySession: removeKeySession,
+    getAllInitData,
+    getSessionTokens,
+    requestKeySystemAccess,
+    selectKeySystem,
+    setMediaElement,
+    createKeySession,
+    updateKeySession,
+    closeKeySession,
+    setServerCertificate,
+    loadKeySession,
+    removeKeySession,
     stop: reset,
-    reset: reset
+    reset
   };
   setup();
   return instance;
@@ -6654,26 +6717,26 @@ __webpack_require__.r(__webpack_exports__);
 
 function ProtectionModel_3Feb2014(config) {
   config = config || {};
-  var context = this.context;
-  var eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
-  var events = config.events;
-  var debug = config.debug;
-  var api = config.api;
-  var instance, logger, videoElement, keySystem, mediaKeys, keySystemAccess, sessions, eventHandler, protectionKeyController;
+  const context = this.context;
+  const eventBus = config.eventBus; //Need to pass in here so we can use same instance since this is optional module
+  const events = config.events;
+  const debug = config.debug;
+  const api = config.api;
+  let instance, logger, videoElement, keySystem, mediaKeys, keySystemAccess, sessionTokens, eventHandler, protectionKeyController;
   function setup() {
     logger = debug.getLogger(instance);
     videoElement = null;
     keySystem = null;
     mediaKeys = null;
     keySystemAccess = null;
-    sessions = [];
+    sessionTokens = [];
     protectionKeyController = (0,_controllers_ProtectionKeyController_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
     eventHandler = createEventHandler();
   }
   function reset() {
     try {
-      for (var i = 0; i < sessions.length; i++) {
-        closeKeySession(sessions[i]);
+      for (let i = 0; i < sessionTokens.length; i++) {
+        closeKeySession(sessionTokens[i]);
       }
       if (videoElement) {
         videoElement.removeEventListener(api.needkey, eventHandler);
@@ -6686,36 +6749,36 @@ function ProtectionModel_3Feb2014(config) {
     }
   }
   function getAllInitData() {
-    var retVal = [];
-    for (var i = 0; i < sessions.length; i++) {
-      retVal.push(sessions[i].initData);
+    const retVal = [];
+    for (let i = 0; i < sessionTokens.length; i++) {
+      retVal.push(sessionTokens[i].initData);
     }
     return retVal;
   }
-  function getSessions() {
-    return sessions;
+  function getSessionTokens() {
+    return sessionTokens;
   }
   function requestKeySystemAccess(ksConfigurations) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       // Try key systems in order, first one with supported key system configuration
       // is used
-      var found = false;
-      for (var ksIdx = 0; ksIdx < ksConfigurations.length; ksIdx++) {
-        var systemString = ksConfigurations[ksIdx].ks.systemString;
-        var configs = ksConfigurations[ksIdx].configs;
-        var supportedAudio = null;
-        var supportedVideo = null;
+      let found = false;
+      for (let ksIdx = 0; ksIdx < ksConfigurations.length; ksIdx++) {
+        const systemString = ksConfigurations[ksIdx].ks.systemString;
+        const configs = ksConfigurations[ksIdx].configs;
+        let supportedAudio = null;
+        let supportedVideo = null;
 
         // Try key system configs in order, first one with supported audio/video
         // is used
-        for (var configIdx = 0; configIdx < configs.length; configIdx++) {
-          var audios = configs[configIdx].audioCapabilities;
-          var videos = configs[configIdx].videoCapabilities;
+        for (let configIdx = 0; configIdx < configs.length; configIdx++) {
+          const audios = configs[configIdx].audioCapabilities;
+          const videos = configs[configIdx].videoCapabilities;
 
           // Look for supported audio container/codecs
           if (audios && audios.length !== 0) {
             supportedAudio = []; // Indicates that we have a requested audio config
-            for (var audioIdx = 0; audioIdx < audios.length; audioIdx++) {
+            for (let audioIdx = 0; audioIdx < audios.length; audioIdx++) {
               if (window[api.MediaKeys].isTypeSupported(systemString, audios[audioIdx].contentType)) {
                 supportedAudio.push(audios[audioIdx]);
               }
@@ -6725,7 +6788,7 @@ function ProtectionModel_3Feb2014(config) {
           // Look for supported video container/codecs
           if (videos && videos.length !== 0) {
             supportedVideo = []; // Indicates that we have a requested video config
-            for (var videoIdx = 0; videoIdx < videos.length; videoIdx++) {
+            for (let videoIdx = 0; videoIdx < videos.length; videoIdx++) {
               if (window[api.MediaKeys].isTypeSupported(systemString, videos[videoIdx].contentType)) {
                 supportedVideo.push(videos[videoIdx]);
               }
@@ -6740,20 +6803,20 @@ function ProtectionModel_3Feb2014(config) {
 
           // This configuration is supported
           found = true;
-          var ksConfig = new _vo_KeySystemConfiguration_js__WEBPACK_IMPORTED_MODULE_5__["default"](supportedAudio, supportedVideo);
-          var ks = protectionKeyController.getKeySystemBySystemString(systemString);
-          var _keySystemAccess = new _vo_KeySystemAccess_js__WEBPACK_IMPORTED_MODULE_6__["default"](ks, ksConfig);
+          const ksConfig = new _vo_KeySystemConfiguration_js__WEBPACK_IMPORTED_MODULE_5__["default"](supportedAudio, supportedVideo);
+          const ks = protectionKeyController.getKeySystemBySystemString(systemString);
+          const keySystemAccess = new _vo_KeySystemAccess_js__WEBPACK_IMPORTED_MODULE_6__["default"](ks, ksConfig);
           eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
-            data: _keySystemAccess
+            data: keySystemAccess
           });
           resolve({
-            data: _keySystemAccess
+            data: keySystemAccess
           });
           break;
         }
       }
       if (!found) {
-        var errorMessage = 'Key system access denied! -- No valid audio/video content configurations detected!';
+        const errorMessage = 'Key system access denied! -- No valid audio/video content configurations detected!';
         eventBus.trigger(events.KEY_SYSTEM_ACCESS_COMPLETE, {
           error: errorMessage
         });
@@ -6764,7 +6827,7 @@ function ProtectionModel_3Feb2014(config) {
     });
   }
   function selectKeySystem(ksAccess) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       try {
         mediaKeys = ksAccess.mediaKeys = new window[api.MediaKeys](ksAccess.keySystem.systemString);
         keySystem = ksAccess.keySystem;
@@ -6808,7 +6871,7 @@ function ProtectionModel_3Feb2014(config) {
     // TODO:  Not sure if there is a way to concatenate all capability data into a RFC6386-compatible format
 
     // If player is trying to playback Audio only stream - don't error out.
-    var capabilities = null;
+    let capabilities = null;
     if (keySystemAccess.ksConfiguration.videoCapabilities && keySystemAccess.ksConfiguration.videoCapabilities.length > 0) {
       capabilities = keySystemAccess.ksConfiguration.videoCapabilities[0];
     }
@@ -6818,9 +6881,9 @@ function ProtectionModel_3Feb2014(config) {
     if (capabilities === null) {
       throw new Error('Can not create sessions for unknown content types.');
     }
-    var contentType = capabilities.contentType;
-    var session = mediaKeys.createSession(contentType, new Uint8Array(ksInfo.initData), ksInfo.cdmData ? new Uint8Array(ksInfo.cdmData) : null);
-    var sessionToken = createSessionToken(session, ksInfo);
+    const contentType = capabilities.contentType;
+    const session = mediaKeys.createSession(contentType, new Uint8Array(ksInfo.initData), ksInfo.cdmData ? new Uint8Array(ksInfo.cdmData) : null);
+    const sessionToken = createSessionToken(session, ksInfo);
 
     // Add all event listeners
     session.addEventListener(api.error, sessionToken);
@@ -6829,14 +6892,14 @@ function ProtectionModel_3Feb2014(config) {
     session.addEventListener(api.close, sessionToken);
 
     // Add to our session list
-    sessions.push(sessionToken);
+    sessionTokens.push(sessionToken);
     logger.debug('DRM: Session created.  SessionID = ' + sessionToken.getSessionId());
     eventBus.trigger(events.KEY_SESSION_CREATED, {
       data: sessionToken
     });
   }
   function updateKeySession(sessionToken, message) {
-    var session = sessionToken.session;
+    const session = sessionToken.session;
     if (!protectionKeyController.isClearKey(keySystem)) {
       // Send our request to the key session
       session.update(new Uint8Array(message));
@@ -6854,7 +6917,7 @@ function ProtectionModel_3Feb2014(config) {
    * @param {Object} sessionToken - the session token
    */
   function closeKeySession(sessionToken) {
-    var session = sessionToken.session;
+    const session = sessionToken.session;
 
     // Remove event listeners
     session.removeEventListener(api.error, sessionToken);
@@ -6863,9 +6926,9 @@ function ProtectionModel_3Feb2014(config) {
     session.removeEventListener(api.close, sessionToken);
 
     // Remove from our session list
-    for (var i = 0; i < sessions.length; i++) {
-      if (sessions[i] === sessionToken) {
-        sessions.splice(i, 1);
+    for (let i = 0; i < sessionTokens.length; i++) {
+      if (sessionTokens[i] === sessionToken) {
+        sessionTokens.splice(i, 1);
         break;
       }
     }
@@ -6884,11 +6947,11 @@ function ProtectionModel_3Feb2014(config) {
   }
   function createEventHandler() {
     return {
-      handleEvent: function handleEvent(event) {
+      handleEvent: function (event) {
         switch (event.type) {
           case api.needkey:
             if (event.initData) {
-              var initData = ArrayBuffer.isView(event.initData) ? event.initData.buffer : event.initData;
+              const initData = ArrayBuffer.isView(event.initData) ? event.initData.buffer : event.initData;
               eventBus.trigger(events.NEED_KEY, {
                 key: new _vo_NeedKey_js__WEBPACK_IMPORTED_MODULE_1__["default"](initData, _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_8__["default"].INITIALIZATION_DATA_TYPE_CENC)
               });
@@ -6903,8 +6966,8 @@ function ProtectionModel_3Feb2014(config) {
   // readyState, so we need this logic to ensure we don't set the keys
   // too early
   function setMediaKeys() {
-    var boundDoSetKeys = null;
-    var doSetKeys = function doSetKeys() {
+    let boundDoSetKeys = null;
+    const doSetKeys = function () {
       videoElement.removeEventListener('loadedmetadata', boundDoSetKeys);
       videoElement[api.setMediaKeys](mediaKeys);
       eventBus.trigger(events.VIDEO_ELEMENT_SELECTED);
@@ -6925,31 +6988,42 @@ function ProtectionModel_3Feb2014(config) {
       session: keySession,
       keyId: ksInfo.keyId,
       initData: ksInfo.initData,
-      getKeyId: function getKeyId() {
+      getKeyId: function () {
         return this.keyId;
       },
-      getSessionId: function getSessionId() {
+      getSessionId: function () {
         return this.session.sessionId;
       },
-      getExpirationTime: function getExpirationTime() {
+      getExpirationTime: function () {
         return NaN;
       },
-      getSessionType: function getSessionType() {
+      getSessionType: function () {
         return 'temporary';
+      },
+      getKeyStatuses: function () {
+        return {
+          size: 0,
+          has: () => {
+            return false;
+          },
+          get: () => {
+            return undefined;
+          }
+        };
       },
       // This is our main event handler for all desired MediaKeySession events
       // These events are translated into our API-independent versions of the
       // same events
-      handleEvent: function handleEvent(event) {
+      handleEvent: function (event) {
         switch (event.type) {
           case api.error:
-            var errorStr = 'KeyError'; // TODO: Make better string from event
+            let errorStr = 'KeyError'; // TODO: Make better string from event
             eventBus.trigger(events.KEY_ERROR, {
               error: new _vo_DashJSError_js__WEBPACK_IMPORTED_MODULE_2__["default"](_errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_3__["default"].MEDIA_KEYERR_CODE, errorStr, this)
             });
             break;
           case api.message:
-            var message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
+            let message = ArrayBuffer.isView(event.message) ? event.message.buffer : event.message;
             eventBus.trigger(events.INTERNAL_KEY_MESSAGE, {
               data: new _vo_KeyMessage_js__WEBPACK_IMPORTED_MODULE_4__["default"](this, message, event.destinationURL)
             });
@@ -6969,19 +7043,19 @@ function ProtectionModel_3Feb2014(config) {
     };
   }
   instance = {
-    getAllInitData: getAllInitData,
-    getSessions: getSessions,
-    requestKeySystemAccess: requestKeySystemAccess,
-    selectKeySystem: selectKeySystem,
-    setMediaElement: setMediaElement,
-    createKeySession: createKeySession,
-    updateKeySession: updateKeySession,
-    closeKeySession: closeKeySession,
-    setServerCertificate: setServerCertificate,
-    loadKeySession: loadKeySession,
-    removeKeySession: removeKeySession,
+    getAllInitData,
+    getSessionTokens,
+    requestKeySystemAccess,
+    selectKeySystem,
+    setMediaElement,
+    createKeySession,
+    updateKeySession,
+    closeKeySession,
+    setServerCertificate,
+    loadKeySession,
+    removeKeySession,
     stop: reset,
-    reset: reset
+    reset
   };
   setup();
   return instance;
@@ -7049,7 +7123,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function ClearKey() {
-  var instance;
+  let instance;
   function getServerURLFromMessage(url /* message, messageType*/) {
     return url;
   }
@@ -7065,11 +7139,11 @@ function ClearKey() {
     if (!serverResponse.hasOwnProperty('keys')) {
       return null;
     }
-    var keyPairs = [];
-    for (var i = 0; i < serverResponse.keys.length; i++) {
-      var keypair = serverResponse.keys[i];
-      var keyid = keypair.kid.replace(/=/g, '');
-      var key = keypair.k.replace(/=/g, '');
+    let keyPairs = [];
+    for (let i = 0; i < serverResponse.keys.length; i++) {
+      let keypair = serverResponse.keys[i];
+      let keyid = keypair.kid.replace(/=/g, '');
+      let key = keypair.k.replace(/=/g, '');
       keyPairs.push(new _vo_KeyPair_js__WEBPACK_IMPORTED_MODULE_0__["default"](keyid, key));
     }
     return new _vo_ClearKeyKeySet_js__WEBPACK_IMPORTED_MODULE_1__["default"](keyPairs);
@@ -7078,11 +7152,11 @@ function ClearKey() {
     return String.fromCharCode.apply(null, new Uint8Array(serverResponse));
   }
   instance = {
-    getServerURLFromMessage: getServerURLFromMessage,
-    getHTTPMethod: getHTTPMethod,
-    getResponseType: getResponseType,
-    getLicenseMessage: getLicenseMessage,
-    getErrorResponse: getErrorResponse
+    getServerURLFromMessage,
+    getHTTPMethod,
+    getResponseType,
+    getLicenseMessage,
+    getErrorResponse
   };
   return instance;
 }
@@ -7146,27 +7220,27 @@ __webpack_require__.r(__webpack_exports__);
 
 function DRMToday(config) {
   config = config || {};
-  var BASE64 = config.BASE64;
-  var keySystems = {};
+  const BASE64 = config.BASE64;
+  const keySystems = {};
   keySystems[_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].WIDEVINE_KEYSTEM_STRING] = {
     responseType: 'json',
-    getLicenseMessage: function getLicenseMessage(response) {
+    getLicenseMessage: function (response) {
       return BASE64.decodeArray(response.license);
     },
-    getErrorResponse: function getErrorResponse(response) {
+    getErrorResponse: function (response) {
       return response;
     }
   };
   keySystems[_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].PLAYREADY_KEYSTEM_STRING] = {
     responseType: 'arraybuffer',
-    getLicenseMessage: function getLicenseMessage(response) {
+    getLicenseMessage: function (response) {
       return response;
     },
-    getErrorResponse: function getErrorResponse(response) {
+    getErrorResponse: function (response) {
       return String.fromCharCode.apply(null, new Uint8Array(response));
     }
   };
-  var instance;
+  let instance;
   function checkConfig() {
     if (!BASE64 || !BASE64.hasOwnProperty('decodeArray')) {
       throw new Error('Missing config parameter(s)');
@@ -7190,11 +7264,11 @@ function DRMToday(config) {
     return keySystems[keySystemStr].getErrorResponse(serverResponse);
   }
   instance = {
-    getServerURLFromMessage: getServerURLFromMessage,
-    getHTTPMethod: getHTTPMethod,
-    getResponseType: getResponseType,
-    getLicenseMessage: getLicenseMessage,
-    getErrorResponse: getErrorResponse
+    getServerURLFromMessage,
+    getHTTPMethod,
+    getResponseType,
+    getLicenseMessage,
+    getErrorResponse
   };
   return instance;
 }
@@ -7261,21 +7335,21 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 function PlayReady() {
-  var instance;
-  var soap = 'http://schemas.xmlsoap.org/soap/envelope/';
+  let instance;
+  const soap = 'http://schemas.xmlsoap.org/soap/envelope/';
   function uintToString(arrayBuffer) {
-    var encodedString = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
-    var decodedString = decodeURIComponent(escape(encodedString));
+    const encodedString = String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
+    const decodedString = decodeURIComponent(escape(encodedString));
     return decodedString;
   }
   function parseServerResponse(serverResponse) {
     if (window.DOMParser) {
-      var stringResponse = uintToString(serverResponse);
-      var parser = new window.DOMParser();
-      var xmlDoc = parser.parseFromString(stringResponse, 'text/xml');
-      var envelope = xmlDoc ? xmlDoc.getElementsByTagNameNS(soap, 'Envelope')[0] : null;
-      var body = envelope ? envelope.getElementsByTagNameNS(soap, 'Body')[0] : null;
-      var fault = body ? body.getElementsByTagNameNS(soap, 'Fault')[0] : null;
+      const stringResponse = uintToString(serverResponse);
+      const parser = new window.DOMParser();
+      const xmlDoc = parser.parseFromString(stringResponse, 'text/xml');
+      const envelope = xmlDoc ? xmlDoc.getElementsByTagNameNS(soap, 'Envelope')[0] : null;
+      const body = envelope ? envelope.getElementsByTagNameNS(soap, 'Body')[0] : null;
+      const fault = body ? body.getElementsByTagNameNS(soap, 'Fault')[0] : null;
       if (fault) {
         return null;
       }
@@ -7283,21 +7357,21 @@ function PlayReady() {
     return serverResponse;
   }
   function parseErrorResponse(serverResponse) {
-    var faultstring = '';
-    var statusCode = '';
-    var message = '';
-    var idStart = -1;
-    var idEnd = -1;
+    let faultstring = '';
+    let statusCode = '';
+    let message = '';
+    let idStart = -1;
+    let idEnd = -1;
     if (window.DOMParser) {
-      var stringResponse = uintToString(serverResponse);
-      var parser = new window.DOMParser();
-      var xmlDoc = parser.parseFromString(stringResponse, 'text/xml');
-      var envelope = xmlDoc ? xmlDoc.getElementsByTagNameNS(soap, 'Envelope')[0] : null;
-      var body = envelope ? envelope.getElementsByTagNameNS(soap, 'Body')[0] : null;
-      var fault = body ? body.getElementsByTagNameNS(soap, 'Fault')[0] : null;
-      var detail = fault ? fault.getElementsByTagName('detail')[0] : null;
-      var exception = detail ? detail.getElementsByTagName('Exception')[0] : null;
-      var node = null;
+      const stringResponse = uintToString(serverResponse);
+      const parser = new window.DOMParser();
+      const xmlDoc = parser.parseFromString(stringResponse, 'text/xml');
+      const envelope = xmlDoc ? xmlDoc.getElementsByTagNameNS(soap, 'Envelope')[0] : null;
+      const body = envelope ? envelope.getElementsByTagNameNS(soap, 'Body')[0] : null;
+      const fault = body ? body.getElementsByTagNameNS(soap, 'Fault')[0] : null;
+      const detail = fault ? fault.getElementsByTagName('detail')[0] : null;
+      const exception = detail ? detail.getElementsByTagName('Exception')[0] : null;
+      let node = null;
       if (fault === null) {
         return stringResponse;
       }
@@ -7313,9 +7387,9 @@ function PlayReady() {
         message = message ? message.substring(idStart, idEnd) : '';
       }
     }
-    var errorString = "code: ".concat(statusCode, ", name: ").concat(faultstring);
+    let errorString = `code: ${statusCode}, name: ${faultstring}`;
     if (message) {
-      errorString += ", message: ".concat(message);
+      errorString += `, message: ${message}`;
     }
     return errorString;
   }
@@ -7337,11 +7411,11 @@ function PlayReady() {
     return parseErrorResponse.call(this, serverResponse);
   }
   instance = {
-    getServerURLFromMessage: getServerURLFromMessage,
-    getHTTPMethod: getHTTPMethod,
-    getResponseType: getResponseType,
-    getLicenseMessage: getLicenseMessage,
-    getErrorResponse: getErrorResponse
+    getServerURLFromMessage,
+    getHTTPMethod,
+    getResponseType,
+    getLicenseMessage,
+    getErrorResponse
   };
   return instance;
 }
@@ -7399,7 +7473,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore
  */
 function Widevine() {
-  var instance;
+  let instance;
   function getServerURLFromMessage(url /*, message, messageType*/) {
     return url;
   }
@@ -7418,11 +7492,11 @@ function Widevine() {
     return String.fromCharCode.apply(null, new Uint8Array(serverResponse));
   }
   instance = {
-    getServerURLFromMessage: getServerURLFromMessage,
-    getHTTPMethod: getHTTPMethod,
-    getResponseType: getResponseType,
-    getLicenseMessage: getLicenseMessage,
-    getErrorResponse: getErrorResponse
+    getServerURLFromMessage,
+    getHTTPMethod,
+    getResponseType,
+    getLicenseMessage,
+    getErrorResponse
   };
   return instance;
 }
@@ -7442,12 +7516,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7478,12 +7546,13 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @classdesc A collection of ClearKey encryption keys with an (optional) associated
  *  type
  * @ignore
  */
-var ClearKeyKeySet = /*#__PURE__*/function () {
+class ClearKeyKeySet {
   /**
    * @param {Array.<KeyPair>} keyPairs
    * @param {string} type the type of keys in this set.  One of either 'persistent'
@@ -7491,8 +7560,7 @@ var ClearKeyKeySet = /*#__PURE__*/function () {
    * @class
    * @ignore
    */
-  function ClearKeyKeySet(keyPairs, type) {
-    _classCallCheck(this, ClearKeyKeySet);
+  constructor(keyPairs, type) {
     if (type && type !== 'persistent' && type !== 'temporary') {
       throw new Error('Invalid ClearKey key set type!  Must be one of \'persistent\' or \'temporary\'');
     }
@@ -7505,39 +7573,36 @@ var ClearKeyKeySet = /*#__PURE__*/function () {
    *
    * @return {ArrayBuffer} JWK object UTF-8 encoded as ArrayBuffer
    */
-  return _createClass(ClearKeyKeySet, [{
-    key: "toJWK",
-    value: function toJWK() {
-      var i;
-      var numKeys = this.keyPairs.length;
-      var jwk = {
-        keys: []
+  toJWK() {
+    let i;
+    let numKeys = this.keyPairs.length;
+    let jwk = {
+      keys: []
+    };
+    for (i = 0; i < numKeys; i++) {
+      let key = {
+        kty: 'oct',
+        alg: 'A128KW',
+        kid: this.keyPairs[i].keyID,
+        k: this.keyPairs[i].key
       };
-      for (i = 0; i < numKeys; i++) {
-        var key = {
-          kty: 'oct',
-          alg: 'A128KW',
-          kid: this.keyPairs[i].keyID,
-          k: this.keyPairs[i].key
-        };
-        jwk.keys.push(key);
-      }
-      if (this.type) {
-        jwk.type = this.type;
-      }
-      var jwkString = JSON.stringify(jwk);
-      var len = jwkString.length;
-
-      // Convert JSON string to ArrayBuffer
-      var buf = new ArrayBuffer(len);
-      var bView = new Uint8Array(buf);
-      for (i = 0; i < len; i++) {
-        bView[i] = jwkString.charCodeAt(i);
-      }
-      return buf;
+      jwk.keys.push(key);
     }
-  }]);
-}();
+    if (this.type) {
+      jwk.type = this.type;
+    }
+    let jwkString = JSON.stringify(jwk);
+    const len = jwkString.length;
+
+    // Convert JSON string to ArrayBuffer
+    let buf = new ArrayBuffer(len);
+    let bView = new Uint8Array(buf);
+    for (i = 0; i < len; i++) {
+      bView[i] = jwkString.charCodeAt(i);
+    }
+    return buf;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ClearKeyKeySet);
 
 /***/ }),
@@ -7554,12 +7619,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants/ProtectionConstants.js */ "./src/streaming/constants/ProtectionConstants.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7596,23 +7655,23 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @classdesc EME-independent KeyMessage
  * @ignore
  */
-var KeyMessage = /*#__PURE__*/_createClass(
-/**
- * @param {SessionToken} sessionToken the session
- * to which the key message is associated
- * @param {ArrayBuffer} message the key message
- * @param {string} defaultURL license acquisition URL provided by the CDM
- * @param {string} messageType Supported message types can be found
- * {@link https://w3c.github.io/encrypted-media/#idl-def-MediaKeyMessageType|here}.
- * @class
- */
-function KeyMessage(sessionToken, message, defaultURL, messageType) {
-  _classCallCheck(this, KeyMessage);
-  this.sessionToken = sessionToken;
-  this.message = message;
-  this.defaultURL = defaultURL;
-  this.messageType = messageType ? messageType : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MEDIA_KEY_MESSAGE_TYPES.LICENSE_REQUEST;
-});
+class KeyMessage {
+  /**
+   * @param {SessionToken} sessionToken the session
+   * to which the key message is associated
+   * @param {ArrayBuffer} message the key message
+   * @param {string} defaultURL license acquisition URL provided by the CDM
+   * @param {string} messageType Supported message types can be found
+   * {@link https://w3c.github.io/encrypted-media/#idl-def-MediaKeyMessageType|here}.
+   * @class
+   */
+  constructor(sessionToken, message, defaultURL, messageType) {
+    this.sessionToken = sessionToken;
+    this.message = message;
+    this.defaultURL = defaultURL;
+    this.messageType = messageType ? messageType : _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].MEDIA_KEY_MESSAGE_TYPES.LICENSE_REQUEST;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (KeyMessage);
 
 /***/ }),
@@ -7628,12 +7687,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7668,18 +7721,18 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @classdesc Represents a 128-bit keyID and 128-bit encryption key
  * @ignore
  */
-var KeyPair = /*#__PURE__*/_createClass(
-/**
- * @param {string} keyID 128-bit key ID, base64 encoded, with no padding
- * @param {string} key 128-bit encryption key, base64 encoded, with no padding
- * @class
- * @ignore
- */
-function KeyPair(keyID, key) {
-  _classCallCheck(this, KeyPair);
-  this.keyID = keyID;
-  this.key = key;
-});
+class KeyPair {
+  /**
+   * @param {string} keyID 128-bit key ID, base64 encoded, with no padding
+   * @param {string} key 128-bit encryption key, base64 encoded, with no padding
+   * @class
+   * @ignore
+   */
+  constructor(keyID, key) {
+    this.keyID = keyID;
+    this.key = key;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (KeyPair);
 
 /***/ }),
@@ -7695,12 +7748,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7737,22 +7784,22 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * acquisition operations.
  * @ignore
  */
-var KeySystemAccess = /*#__PURE__*/_createClass(
-/**
- * @param {MediaPlayer.dependencies.protection.KeySystem} keySystem the key system
- * @param {KeySystemConfiguration} ksConfiguration the
- * subset of configurations passed to the key system access request that are supported
- * by this user agent
- * @class
- * @ignore
- */
-function KeySystemAccess(keySystem, ksConfiguration) {
-  _classCallCheck(this, KeySystemAccess);
-  this.keySystem = keySystem;
-  this.ksConfiguration = ksConfiguration;
-  this.nativeMediaKeySystemAccessObject = null;
-  this.selectedSystemString = null;
-});
+class KeySystemAccess {
+  /**
+   * @param {MediaPlayer.dependencies.protection.KeySystem} keySystem the key system
+   * @param {KeySystemConfiguration} ksConfiguration the
+   * subset of configurations passed to the key system access request that are supported
+   * by this user agent
+   * @class
+   * @ignore
+   */
+  constructor(keySystem, ksConfiguration) {
+    this.keySystem = keySystem;
+    this.ksConfiguration = ksConfiguration;
+    this.nativeMediaKeySystemAccessObject = null;
+    this.selectedSystemString = null;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (KeySystemAccess);
 
 /***/ }),
@@ -7769,12 +7816,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants/ProtectionConstants.js */ "./src/streaming/constants/ProtectionConstants.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7813,35 +7854,35 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  *  support by a given CDM
  * @ignore
  */
-var KeySystemConfiguration = /*#__PURE__*/_createClass(
-/**
- * @param {Array.<MediaCapability>} audioCapabilities array of
- * desired audio capabilities.  Higher preference capabilities should be placed earlier
- * in the array.
- * @param {Array.<MediaCapability>} videoCapabilities array of
- * desired video capabilities.  Higher preference capabilities should be placed earlier
- * in the array.
- * @param {string} distinctiveIdentifier desired use of distinctive identifiers.
- * One of "required", "optional", or "not-allowed"
- * @param {string} persistentState desired support for persistent storage of
- * key systems.  One of "required", "optional", or "not-allowed"
- * @param {Array.<string>} sessionTypes List of session types that must
- * be supported by the key system
- * @class
- */
-function KeySystemConfiguration(audioCapabilities, videoCapabilities, distinctiveIdentifier, persistentState, sessionTypes, initDataTypes) {
-  _classCallCheck(this, KeySystemConfiguration);
-  this.initDataTypes = initDataTypes && initDataTypes.length > 0 ? initDataTypes : [_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].INITIALIZATION_DATA_TYPE_CENC];
-  if (audioCapabilities && audioCapabilities.length) {
-    this.audioCapabilities = audioCapabilities;
+class KeySystemConfiguration {
+  /**
+   * @param {Array.<MediaCapability>} audioCapabilities array of
+   * desired audio capabilities.  Higher preference capabilities should be placed earlier
+   * in the array.
+   * @param {Array.<MediaCapability>} videoCapabilities array of
+   * desired video capabilities.  Higher preference capabilities should be placed earlier
+   * in the array.
+   * @param {string} distinctiveIdentifier desired use of distinctive identifiers.
+   * One of "required", "optional", or "not-allowed"
+   * @param {string} persistentState desired support for persistent storage of
+   * key systems.  One of "required", "optional", or "not-allowed"
+   * @param {Array.<string>} sessionTypes List of session types that must
+   * be supported by the key system
+   * @class
+   */
+  constructor(audioCapabilities, videoCapabilities, distinctiveIdentifier, persistentState, sessionTypes, initDataTypes) {
+    this.initDataTypes = initDataTypes && initDataTypes.length > 0 ? initDataTypes : [_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_0__["default"].INITIALIZATION_DATA_TYPE_CENC];
+    if (audioCapabilities && audioCapabilities.length) {
+      this.audioCapabilities = audioCapabilities;
+    }
+    if (videoCapabilities && videoCapabilities.length) {
+      this.videoCapabilities = videoCapabilities;
+    }
+    this.distinctiveIdentifier = distinctiveIdentifier;
+    this.persistentState = persistentState;
+    this.sessionTypes = sessionTypes;
   }
-  if (videoCapabilities && videoCapabilities.length) {
-    this.videoCapabilities = videoCapabilities;
-  }
-  this.distinctiveIdentifier = distinctiveIdentifier;
-  this.persistentState = persistentState;
-  this.sessionTypes = sessionTypes;
-});
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (KeySystemConfiguration);
 
 /***/ }),
@@ -7857,12 +7898,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7897,16 +7932,18 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @classdesc A model class to save metadata about a key system
  * @ignore
  */
-var KeySystemMetadata = /*#__PURE__*/_createClass(function KeySystemMetadata(config) {
-  _classCallCheck(this, KeySystemMetadata);
-  this.ks = config.ks;
-  this.keyId = config.keyId;
-  this.initData = config.initData;
-  this.protData = config.protData;
-  this.cdmData = config.cdmData;
-  this.sessionId = config.sessionId;
-  this.sessionType = config.sessionType;
-});
+
+class KeySystemMetadata {
+  constructor(config) {
+    this.ks = config.ks;
+    this.keyId = config.keyId;
+    this.initData = config.initData;
+    this.protData = config.protData;
+    this.cdmData = config.cdmData;
+    this.sessionId = config.sessionId;
+    this.sessionType = config.sessionType;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (KeySystemMetadata);
 
 /***/ }),
@@ -7922,12 +7959,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7962,54 +7993,54 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @classdesc Defines a license request
  * @ignore
  */
-var LicenseRequest = /*#__PURE__*/_createClass(
-/**
- * Defines a license request
- *
- * @class
- */
-function LicenseRequest(url, method, responseType, headers, withCredentials, messageType, sessionId, data) {
-  _classCallCheck(this, LicenseRequest);
+class LicenseRequest {
   /**
-   * The license request url
+   * Defines a license request
+   *
+   * @class
    */
-  this.url = url;
+  constructor(url, method, responseType, headers, withCredentials, messageType, sessionId, data) {
+    /**
+     * The license request url
+     */
+    this.url = url;
 
-  /**
-   * The HTTP method
-   */
-  this.method = method;
+    /**
+     * The HTTP method
+     */
+    this.method = method;
 
-  /**
-   * The HTTP response type
-   */
-  this.responseType = responseType;
+    /**
+     * The HTTP response type
+     */
+    this.responseType = responseType;
 
-  /**
-   * The HTP request headers
-   */
-  this.headers = headers;
+    /**
+     * The HTP request headers
+     */
+    this.headers = headers;
 
-  /**
-   * Wether request is done using credentials (cross-site cookies)
-   */
-  this.withCredentials = withCredentials;
+    /**
+     * Wether request is done using credentials (cross-site cookies)
+     */
+    this.withCredentials = withCredentials;
 
-  /**
-   * The license request message type (see https://www.w3.org/TR/encrypted-media/#dom-mediakeymessagetype)
-   */
-  this.messageType = messageType;
+    /**
+     * The license request message type (see https://www.w3.org/TR/encrypted-media/#dom-mediakeymessagetype)
+     */
+    this.messageType = messageType;
 
-  /**
-   * The corresponding EME session ID
-   */
-  this.sessionId = sessionId;
+    /**
+     * The corresponding EME session ID
+     */
+    this.sessionId = sessionId;
 
-  /**
-   * The license request data
-   */
-  this.data = data;
-});
+    /**
+     * The license request data
+     */
+    this.data = data;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LicenseRequest);
 
 /***/ }),
@@ -8025,12 +8056,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8064,30 +8089,30 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
 /**
  * @classdesc Defines a license response
  */
-var LicenseResponse = /*#__PURE__*/_createClass(
-/**
- * Defines a license response
- *
- * @class
- * @ignore
- */
-function LicenseResponse(url, headers, data) {
-  _classCallCheck(this, LicenseResponse);
+class LicenseResponse {
   /**
-   * The url that was loaded, that can be redirected from original request url
+   * Defines a license response
+   *
+   * @class
+   * @ignore
    */
-  this.url = url;
+  constructor(url, headers, data) {
+    /**
+     * The url that was loaded, that can be redirected from original request url
+     */
+    this.url = url;
 
-  /**
-   * The HTP response headers
-   */
-  this.headers = headers;
+    /**
+     * The HTP response headers
+     */
+    this.headers = headers;
 
-  /**
-   * The license response data
-   */
-  this.data = data;
-});
+    /**
+     * The license response data
+     */
+    this.data = data;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LicenseResponse);
 
 /***/ }),
@@ -8103,12 +8128,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8143,18 +8162,18 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @classdesc A media capability
  * @ignore
  */
-var MediaCapability = /*#__PURE__*/_createClass(
-/**
- * @param {string} contentType MIME type and codecs (RFC6386)
- * @param {string} robustness
- * @class
- * @ignore
- */
-function MediaCapability(contentType, robustness) {
-  _classCallCheck(this, MediaCapability);
-  this.contentType = contentType;
-  this.robustness = robustness;
-});
+class MediaCapability {
+  /**
+   * @param {string} contentType MIME type and codecs (RFC6386)
+   * @param {string} robustness
+   * @class
+   * @ignore
+   */
+  constructor(contentType, robustness) {
+    this.contentType = contentType;
+    this.robustness = robustness;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MediaCapability);
 
 /***/ }),
@@ -8170,12 +8189,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8210,17 +8223,17 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @classdesc NeedKey
  * @ignore
  */
-var NeedKey = /*#__PURE__*/_createClass(
-/**
- * @param {ArrayBuffer} initData the initialization data
- * @param {string} initDataType initialization data type
- * @class
- */
-function NeedKey(initData, initDataType) {
-  _classCallCheck(this, NeedKey);
-  this.initData = initData;
-  this.initDataType = initDataType;
-});
+class NeedKey {
+  /**
+   * @param {ArrayBuffer} initData the initialization data
+   * @param {string} initDataType initialization data type
+   * @class
+   */
+  constructor(initData, initDataType) {
+    this.initData = initData;
+    this.initDataType = initDataType;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (NeedKey);
 
 /***/ }),
@@ -8236,12 +8249,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8276,12 +8283,13 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @class
  * @ignore
  */
-var DashJSError = /*#__PURE__*/_createClass(function DashJSError(code, message, data) {
-  _classCallCheck(this, DashJSError);
-  this.code = code || null;
-  this.message = message || null;
-  this.data = data || null;
-});
+class DashJSError {
+  constructor(code, message, data) {
+    this.code = code || null;
+    this.message = message || null;
+    this.data = data || null;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DashJSError);
 
 /***/ }),
@@ -8298,12 +8306,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   HTTPRequest: () => (/* binding */ HTTPRequest),
 /* harmony export */   HTTPRequestTrace: () => (/* binding */ HTTPRequestTrace)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -8340,141 +8342,142 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * by Metrics Reporting code.
  * @ignore
  */
-var HTTPRequest = /*#__PURE__*/_createClass(
-/**
- * @class
- */
-function HTTPRequest() {
-  _classCallCheck(this, HTTPRequest);
+class HTTPRequest {
   /**
-   * Identifier of the TCP connection on which the HTTP request was sent.
-   * @public
+   * @class
    */
-  this.tcpid = null;
-  /**
-   * This is an optional parameter and should not be included in HTTP request/response transactions for progressive download.
-   * The type of the request:
-   * - MPD
-   * - XLink expansion
-   * - Initialization Fragment
-   * - Index Fragment
-   * - Media Fragment
-   * - Bitstream Switching Fragment
-   * - other
-   * @public
-   */
-  this.type = null;
-  /**
-   * The original URL (before any redirects or failures)
-   * @public
-   */
-  this.url = null;
-  /**
-   * The actual URL requested, if different from above
-   * @public
-   */
-  this.actualurl = null;
-  /**
-   * The contents of the byte-range-spec part of the HTTP Range header.
-   * @public
-   */
-  this.range = null;
-  /**
-   * Real-Time | The real time at which the request was sent.
-   * @public
-   */
-  this.trequest = null;
-  /**
-   * Real-Time | The real time at which the first byte of the response was received.
-   * @public
-   */
-  this.tresponse = null;
-  /**
-   * The HTTP response code.
-   * @public
-   */
-  this.responsecode = null;
-  /**
-   * The duration of the throughput trace intervals (ms), for successful requests only.
-   * @public
-   */
-  this.interval = null;
-  /**
-   * Throughput traces, for successful requests only.
-   * @public
-   */
-  this.trace = [];
-  /**
-   * The CMSD static and dynamic values retrieved from CMSD response headers.
-   * @public
-   */
-  this.cmsd = null;
+  constructor() {
+    /**
+     * Identifier of the TCP connection on which the HTTP request was sent.
+     * @public
+     */
+    this.tcpid = null;
+    /**
+     * This is an optional parameter and should not be included in HTTP request/response transactions for progressive download.
+     * The type of the request:
+     * - MPD
+     * - XLink expansion
+     * - Initialization Fragment
+     * - Index Fragment
+     * - Media Fragment
+     * - Bitstream Switching Fragment
+     * - other
+     * @public
+     */
+    this.type = null;
+    /**
+     * The original URL (before any redirects or failures)
+     * @public
+     */
+    this.url = null;
+    /**
+     * The actual URL requested, if different from above
+     * @public
+     */
+    this.actualurl = null;
+    /**
+     * The contents of the byte-range-spec part of the HTTP Range header.
+     * @public
+     */
+    this.range = null;
+    /**
+     * Real-Time | The real time at which the request was sent.
+     * @public
+     */
+    this.trequest = null;
+    /**
+     * Real-Time | The real time at which the first byte of the response was received.
+     * @public
+     */
+    this.tresponse = null;
+    /**
+     * The HTTP response code.
+     * @public
+     */
+    this.responsecode = null;
+    /**
+     * The duration of the throughput trace intervals (ms), for successful requests only.
+     * @public
+     */
+    this.interval = null;
+    /**
+     * Throughput traces, for successful requests only.
+     * @public
+     */
+    this.trace = [];
+    /**
+     * The CMSD static and dynamic values retrieved from CMSD response headers.
+     * @public
+     */
+    this.cmsd = null;
 
-  /**
-   * Type of stream ("audio" | "video" etc..)
-   * @public
-   */
-  this._stream = null;
-  /**
-   * Real-Time | The real time at which the request finished.
-   * @public
-   */
-  this._tfinish = null;
-  /**
-   * The duration of the media requests, if available, in seconds.
-   * @public
-   */
-  this._mediaduration = null;
-  /**
-   * The media segment quality
-   * @public
-   */
-  this._quality = null;
-  /**
-   * all the response headers from request.
-   * @public
-   */
-  this._responseHeaders = null;
-  /**
-   * The selected service location for the request. string.
-   * @public
-   */
-  this._serviceLocation = null;
-  /**
-   * The type of the loader that was used. Distinguish between fetch loader and xhr loader
-   */
-  this._fileLoaderType = null;
-  /**
-   * The values derived from the ResourceTimingAPI.
-   */
-  this._resourceTimingValues = null;
-});
+    /**
+     * Type of stream ("audio" | "video" etc..)
+     * @public
+     */
+    this._stream = null;
+    /**
+     * Real-Time | The real time at which the request finished.
+     * @public
+     */
+    this._tfinish = null;
+    /**
+     * The duration of the media requests, if available, in seconds.
+     * @public
+     */
+    this._mediaduration = null;
+    /**
+     * The media segment quality
+     * @public
+     */
+    this._quality = null;
+    /**
+     * all the response headers from request.
+     * @public
+     */
+    this._responseHeaders = null;
+    /**
+     * The selected service location for the request. string.
+     * @public
+     */
+    this._serviceLocation = null;
+    /**
+     * The type of the loader that was used. Distinguish between fetch loader and xhr loader
+     */
+    this._fileLoaderType = null;
+    /**
+     * The values derived from the ResourceTimingAPI.
+     */
+    this._resourceTimingValues = null;
+  }
+}
+
 /**
  * @classdesc This Object holds reference to the progress of the HTTPRequest.
  * @ignore
  */
-var HTTPRequestTrace = /*#__PURE__*/_createClass(
-/**
- * @class
- */
-function HTTPRequestTrace() {
-  _classCallCheck(this, HTTPRequestTrace);
+class HTTPRequestTrace {
   /**
-   * Real-Time | Measurement stream start.
-   * @public
+   * @class
    */
-  this.s = null;
-  /**
-   * Measurement stream duration (ms).
-   * @public
-   */
-  this.d = null;
-  /**
-   * List of integers counting the bytes received in each trace interval within the measurement stream.
-   * @public
-   */
-  this.b = [];
-});
+  constructor() {
+    /**
+     * Real-Time | Measurement stream start.
+     * @public
+     */
+    this.s = null;
+    /**
+     * Measurement stream duration (ms).
+     * @public
+     */
+    this.d = null;
+    /**
+     * List of integers counting the bytes received in each trace interval within the measurement stream.
+     * @public
+     */
+    this.b = [];
+  }
+}
 HTTPRequest.GET = 'GET';
 HTTPRequest.HEAD = 'HEAD';
 HTTPRequest.MPD_TYPE = 'MPD';
@@ -8506,29 +8509,19 @@ HTTPRequest.OTHER_TYPE = 'other';
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/amd define */
-/******/ 	(() => {
-/******/ 		__webpack_require__.amdD = function () {
-/******/ 			throw new Error('define cannot be used indirect');
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/amd options */
 /******/ 	(() => {
 /******/ 		__webpack_require__.amdO = {};
@@ -8559,15 +8552,6 @@ HTTPRequest.OTHER_TYPE = 'other';
 /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/node module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.nmd = (module) => {
-/******/ 			module.paths = [];
-/******/ 			if (!module.children) module.children = [];
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -8627,7 +8611,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var APIS_ProtectionModel_01b = [
+const APIS_ProtectionModel_01b = [
 // Un-prefixed as per spec
 {
   // Video Element
@@ -8652,7 +8636,7 @@ var APIS_ProtectionModel_01b = [
   keyadded: 'webkitkeyadded',
   keymessage: 'webkitkeymessage'
 }];
-var APIS_ProtectionModel_3Feb2014 = [
+const APIS_ProtectionModel_3Feb2014 = [
 // Un-prefixed as per spec
 // Chrome 38-39 (and some earlier versions) with chrome://flags -- Enable Encrypted Media Extensions
 {
@@ -8685,8 +8669,8 @@ var APIS_ProtectionModel_3Feb2014 = [
   close: 'mskeyclose'
 }];
 function Protection() {
-  var instance;
-  var context = this.context;
+  let instance;
+  const context = this.context;
 
   /**
    * Create a ProtectionController and associated ProtectionModel for use with
@@ -8697,15 +8681,15 @@ function Protection() {
    *
    */
   function createProtectionSystem(config) {
-    var controller = null;
-    var protectionKeyController = (0,_controllers_ProtectionKeyController_js__WEBPACK_IMPORTED_MODULE_1__["default"])(context).getInstance();
+    let controller = null;
+    const protectionKeyController = (0,_controllers_ProtectionKeyController_js__WEBPACK_IMPORTED_MODULE_1__["default"])(context).getInstance();
     protectionKeyController.setConfig({
       debug: config.debug,
       BASE64: config.BASE64,
       settings: config.settings
     });
     protectionKeyController.initialize();
-    var protectionModel = _getProtectionModel(config);
+    let protectionModel = _getProtectionModel(config);
     if (protectionModel) {
       controller = (0,_controllers_ProtectionController_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create({
         BASE64: config.BASE64,
@@ -8724,11 +8708,11 @@ function Protection() {
     return controller;
   }
   function _getProtectionModel(config) {
-    var debug = config.debug;
-    var logger = debug.getLogger(instance);
-    var eventBus = config.eventBus;
-    var errHandler = config.errHandler;
-    var videoElement = config.videoModel ? config.videoModel.getElement() : null;
+    const debug = config.debug;
+    const logger = debug.getLogger(instance);
+    const eventBus = config.eventBus;
+    const errHandler = config.errHandler;
+    const videoElement = config.videoModel ? config.videoModel.getElement() : null;
     if ((!videoElement || videoElement.onencrypted !== undefined) && (!videoElement || videoElement.mediaKeys !== undefined)) {
       logger.info('EME detected on this user agent! (DefaultProtectionModel');
       return (0,_models_DefaultProtectionModel_js__WEBPACK_IMPORTED_MODULE_4__["default"])(context).create({
@@ -8759,8 +8743,8 @@ function Protection() {
     }
   }
   function _getAPI(videoElement, apis) {
-    for (var i = 0; i < apis.length; i++) {
-      var api = apis[i];
+    for (let i = 0; i < apis.length; i++) {
+      const api = apis[i];
       // detect if api is supported by browser
       // check only first function in api -> should be fine
       if (typeof videoElement[api[Object.keys(api)[0]]] !== 'function') {
@@ -8771,12 +8755,12 @@ function Protection() {
     return null;
   }
   instance = {
-    createProtectionSystem: createProtectionSystem
+    createProtectionSystem
   };
   return instance;
 }
 Protection.__dashjs_factory_name = 'Protection';
-var factory = dashjs.FactoryMaker.getClassFactory(Protection);
+const factory = dashjs.FactoryMaker.getClassFactory(Protection);
 factory.events = _ProtectionEvents_js__WEBPACK_IMPORTED_MODULE_2__["default"];
 factory.errors = _errors_ProtectionErrors_js__WEBPACK_IMPORTED_MODULE_3__["default"];
 dashjs.FactoryMaker.updateClassFactory(Protection.__dashjs_factory_name, factory);

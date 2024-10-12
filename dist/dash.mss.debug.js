@@ -1156,7 +1156,7 @@ var bigInt = function (undefined) {
     }
     return low.add(Integer.fromArray(result, BASE, false));
   }
-  var parseBase = function parseBase(text, base, alphabet, caseSensitive) {
+  var parseBase = function (text, base, alphabet, caseSensitive) {
     alphabet = alphabet || DEFAULT_ALPHABET;
     text = String(text);
     if (!caseSensitive) {
@@ -1462,11 +1462,11 @@ __webpack_require__.r(__webpack_exports__);
  * @module FactoryMaker
  * @ignore
  */
-var FactoryMaker = function () {
-  var instance;
-  var singletonContexts = [];
-  var singletonFactories = {};
-  var classFactories = {};
+const FactoryMaker = function () {
+  let instance;
+  let singletonContexts = [];
+  const singletonFactories = {};
+  const classFactories = {};
   function extend(name, childInstance, override, context) {
     if (!context[name] && childInstance) {
       context[name] = {
@@ -1489,8 +1489,8 @@ var FactoryMaker = function () {
    * @instance
    */
   function getSingletonInstance(context, className) {
-    for (var i in singletonContexts) {
-      var obj = singletonContexts[i];
+    for (const i in singletonContexts) {
+      const obj = singletonContexts[i];
       if (obj.context === context && obj.name === className) {
         return obj.instance;
       }
@@ -1508,8 +1508,8 @@ var FactoryMaker = function () {
    * @instance
    */
   function setSingletonInstance(context, className, instance) {
-    for (var i in singletonContexts) {
-      var obj = singletonContexts[i];
+    for (const i in singletonContexts) {
+      const obj = singletonContexts[i];
       if (obj.context === context && obj.name === className) {
         singletonContexts[i].instance = instance;
         return;
@@ -1530,9 +1530,7 @@ var FactoryMaker = function () {
    * @instance
    */
   function deleteSingletonInstances(context) {
-    singletonContexts = singletonContexts.filter(function (x) {
-      return x.context !== context;
-    });
+    singletonContexts = singletonContexts.filter(x => x.context !== context);
   }
 
   /*------------------------------------------------------------------------------------------*/
@@ -1563,14 +1561,14 @@ var FactoryMaker = function () {
     return getFactoryByName(name, classFactories);
   }
   function getClassFactory(classConstructor) {
-    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
+    let factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
     if (!factory) {
-      factory = function factory(context) {
+      factory = function (context) {
         if (context === undefined) {
           context = {};
         }
         return {
-          create: function create() {
+          create: function () {
             return merge(classConstructor, context, arguments);
           }
         };
@@ -1593,15 +1591,15 @@ var FactoryMaker = function () {
     return getFactoryByName(name, singletonFactories);
   }
   function getSingletonFactory(classConstructor) {
-    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
+    let factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
     if (!factory) {
-      factory = function factory(context) {
-        var instance;
+      factory = function (context) {
+        let instance;
         if (context === undefined) {
           context = {};
         }
         return {
-          getInstance: function getInstance() {
+          getInstance: function () {
             // If we don't have an instance yet check for one on the context
             if (!instance) {
               instance = getSingletonInstance(context, classConstructor.__dashjs_factory_name);
@@ -1624,23 +1622,23 @@ var FactoryMaker = function () {
     return factory;
   }
   function merge(classConstructor, context, args) {
-    var classInstance;
-    var className = classConstructor.__dashjs_factory_name;
-    var extensionObject = context[className];
+    let classInstance;
+    const className = classConstructor.__dashjs_factory_name;
+    const extensionObject = context[className];
     if (extensionObject) {
-      var extension = extensionObject.instance;
+      let extension = extensionObject.instance;
       if (extensionObject.override) {
         //Override public methods in parent but keep parent.
 
         classInstance = classConstructor.apply({
-          context: context
+          context
         }, args);
         extension = extension.apply({
-          context: context,
+          context,
           factory: instance,
           parent: classInstance
         }, args);
-        for (var prop in extension) {
+        for (const prop in extension) {
           if (classInstance.hasOwnProperty(prop)) {
             classInstance[prop] = extension[prop];
           }
@@ -1649,14 +1647,14 @@ var FactoryMaker = function () {
         //replace parent object completely with new object. Same as dijon.
 
         return extension.apply({
-          context: context,
+          context,
           factory: instance
         }, args);
       }
     } else {
       // Create new instance of the class
       classInstance = classConstructor.apply({
-        context: context
+        context
       }, args);
     }
 
@@ -1694,12 +1692,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -1734,30 +1726,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * @class
  * @ignore
  */
-var ErrorsBase = /*#__PURE__*/function () {
-  function ErrorsBase() {
-    _classCallCheck(this, ErrorsBase);
-  }
-  return _createClass(ErrorsBase, [{
-    key: "extend",
-    value: function extend(errors, config) {
-      if (!errors) {
-        return;
-      }
-      var override = config ? config.override : false;
-      var publicOnly = config ? config.publicOnly : false;
-      for (var err in errors) {
-        if (!errors.hasOwnProperty(err) || this[err] && !override) {
-          continue;
-        }
-        if (publicOnly && errors[err].indexOf('public_') === -1) {
-          continue;
-        }
-        this[err] = errors[err];
-      }
+class ErrorsBase {
+  extend(errors, config) {
+    if (!errors) {
+      return;
     }
-  }]);
-}();
+    let override = config ? config.override : false;
+    let publicOnly = config ? config.publicOnly : false;
+    for (const err in errors) {
+      if (!errors.hasOwnProperty(err) || this[err] && !override) {
+        continue;
+      }
+      if (publicOnly && errors[err].indexOf('public_') === -1) {
+        continue;
+      }
+      this[err] = errors[err];
+    }
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ErrorsBase);
 
 /***/ }),
@@ -1772,12 +1758,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -1812,30 +1792,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * @class
  * @ignore
  */
-var EventsBase = /*#__PURE__*/function () {
-  function EventsBase() {
-    _classCallCheck(this, EventsBase);
-  }
-  return _createClass(EventsBase, [{
-    key: "extend",
-    value: function extend(events, config) {
-      if (!events) {
-        return;
-      }
-      var override = config ? config.override : false;
-      var publicOnly = config ? config.publicOnly : false;
-      for (var evt in events) {
-        if (!events.hasOwnProperty(evt) || this[evt] && !override) {
-          continue;
-        }
-        if (publicOnly && events[evt].indexOf('public_') === -1) {
-          continue;
-        }
-        this[evt] = events[evt];
-      }
+class EventsBase {
+  extend(events, config) {
+    if (!events) {
+      return;
     }
-  }]);
-}();
+    let override = config ? config.override : false;
+    let publicOnly = config ? config.publicOnly : false;
+    for (const evt in events) {
+      if (!events.hasOwnProperty(evt) || this[evt] && !override) {
+        continue;
+      }
+      if (publicOnly && events[evt].indexOf('public_') === -1) {
+        continue;
+      }
+      this[evt] = events[evt];
+    }
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EventsBase);
 
 /***/ }),
@@ -1889,11 +1863,11 @@ __webpack_require__.r(__webpack_exports__);
 
 function MssFragmentInfoController(config) {
   config = config || {};
-  var instance, logger, fragmentModel, started, type, loadFragmentTimeout, startTime, startFragmentTime, index;
-  var streamProcessor = config.streamProcessor;
-  var baseURLController = config.baseURLController;
-  var debug = config.debug;
-  var controllerType = 'MssFragmentInfoController';
+  let instance, logger, fragmentModel, started, type, loadFragmentTimeout, startTime, startFragmentTime, index;
+  const streamProcessor = config.streamProcessor;
+  const baseURLController = config.baseURLController;
+  const debug = config.debug;
+  const controllerType = 'MssFragmentInfoController';
   function setup() {
     logger = debug.getLogger(instance);
   }
@@ -1932,23 +1906,23 @@ function MssFragmentInfoController(config) {
     }
 
     // Get last segment from SegmentTimeline
-    var representation = getCurrentRepresentation();
-    var manifest = representation.adaptation.period.mpd.manifest;
-    var adaptation = manifest.Period[representation.adaptation.period.index].AdaptationSet[representation.adaptation.index];
-    var segments = adaptation.SegmentTemplate.SegmentTimeline.S;
-    var segment = segments[segments.length - 1];
+    const representation = getCurrentRepresentation();
+    const manifest = representation.adaptation.period.mpd.manifest;
+    const adaptation = manifest.Period[representation.adaptation.period.index].AdaptationSet[representation.adaptation.index];
+    const segments = adaptation.SegmentTemplate.SegmentTimeline.S;
+    const segment = segments[segments.length - 1];
 
     // logger.debug('Last fragment time: ' + (segment.t / adaptation.SegmentTemplate.timescale));
 
     // Generate segment request
-    var request = getRequestForSegment(adaptation, representation, segment);
+    const request = getRequestForSegment(adaptation, representation, segment);
 
     // Send segment request
     requestFragment.call(this, request);
   }
   function getRequestForSegment(adaptation, representation, segment) {
-    var timescale = adaptation.SegmentTemplate.timescale;
-    var request = new _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    let timescale = adaptation.SegmentTemplate.timescale;
+    let request = new _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
     request.mediaType = type;
     request.type = _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_1__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE;
     // request.range = segment.mediaRange;
@@ -1969,8 +1943,8 @@ function MssFragmentInfoController(config) {
     return request;
   }
   function getCurrentRepresentation() {
-    var representationController = streamProcessor.getRepresentationController();
-    var representation = representationController.getCurrentRepresentation();
+    const representationController = streamProcessor.getRepresentationController();
+    const representation = representationController.getCurrentRepresentation();
     return representation;
   }
   function requestFragment(request) {
@@ -1987,12 +1961,12 @@ function MssFragmentInfoController(config) {
     if (!started) {
       return;
     }
-    var request = e.request;
+    const request = e.request;
     if (!e.response) {
       logger.error('Load error', request.url);
       return;
     }
-    var deltaFragmentTime, deltaTime, delay;
+    let deltaFragmentTime, deltaTime, delay;
 
     // logger.debug('FragmentInfo loaded: ', request.url);
 
@@ -2090,23 +2064,23 @@ __webpack_require__.r(__webpack_exports__);
  */
 function MssFragmentMoofProcessor(config) {
   config = config || {};
-  var instance, type, logger;
-  var dashMetrics = config.dashMetrics;
-  var playbackController = config.playbackController;
-  var errorHandler = config.errHandler;
-  var eventBus = config.eventBus;
-  var ISOBoxer = config.ISOBoxer;
-  var debug = config.debug;
+  let instance, type, logger;
+  const dashMetrics = config.dashMetrics;
+  const playbackController = config.playbackController;
+  const errorHandler = config.errHandler;
+  const eventBus = config.eventBus;
+  const ISOBoxer = config.ISOBoxer;
+  const debug = config.debug;
   function setup() {
     logger = debug.getLogger(instance);
     type = '';
   }
   function processTfrf(request, tfrf, tfdt, streamProcessor) {
-    var representationController = streamProcessor.getRepresentationController();
-    var representation = representationController.getCurrentRepresentation();
-    var manifest = representation.adaptation.period.mpd.manifest;
-    var adaptation = manifest.Period[representation.adaptation.period.index].AdaptationSet[representation.adaptation.index];
-    var timescale = adaptation.SegmentTemplate.timescale;
+    const representationController = streamProcessor.getRepresentationController();
+    const representation = representationController.getCurrentRepresentation();
+    const manifest = representation.adaptation.period.mpd.manifest;
+    const adaptation = manifest.Period[representation.adaptation.period.index].AdaptationSet[representation.adaptation.index];
+    const timescale = adaptation.SegmentTemplate.timescale;
     type = streamProcessor.getType();
 
     // Process tfrf only for live streams or start-over static streams (timeShiftBufferDepth > 0)
@@ -2119,13 +2093,13 @@ function MssFragmentMoofProcessor(config) {
     }
 
     // Get adaptation's segment timeline (always a SegmentTimeline in Smooth Streaming use case)
-    var segments = adaptation.SegmentTemplate.SegmentTimeline.S;
-    var entries = tfrf.entry;
-    var entry, segmentTime, range;
-    var segment = null;
-    var t = 0;
-    var endTime;
-    var availabilityStartTime = null;
+    const segments = adaptation.SegmentTemplate.SegmentTimeline.S;
+    const entries = tfrf.entry;
+    let entry, segmentTime, range;
+    let segment = null;
+    let t = 0;
+    let endTime;
+    let availabilityStartTime = null;
     if (entries.length === 0) {
       return;
     }
@@ -2171,7 +2145,7 @@ function MssFragmentMoofProcessor(config) {
     }
 
     // Patch previous segment duration
-    var lastSegment = segments[segments.length - 1];
+    let lastSegment = segments[segments.length - 1];
     if (lastSegment.t + lastSegment.d !== segment.t) {
       logger.debug('Patch segment duration - t = ', lastSegment.t + ', d = ' + lastSegment.d + ' => ' + (segment.t - lastSegment.t));
       lastSegment.d = segment.t - lastSegment.t;
@@ -2228,7 +2202,7 @@ function MssFragmentMoofProcessor(config) {
     if (type !== 'video' && type !== 'audio') {
       return;
     }
-    var dvrInfos = dashMetrics.getCurrentDVRInfo(type);
+    const dvrInfos = dashMetrics.getCurrentDVRInfo(type);
     if (!dvrInfos || range.end > dvrInfos.range.end) {
       logger.debug('Update DVR range: [' + range.start + ' - ' + range.end + ']');
       dashMetrics.addDVRInfo(type, playbackController.getTime(), manifestInfo, range);
@@ -2238,8 +2212,8 @@ function MssFragmentMoofProcessor(config) {
 
   // This function returns the offset of the 1st byte of a child box within a container box
   function getBoxOffset(parent, type) {
-    var offset = 8;
-    var i = 0;
+    let offset = 8;
+    let i = 0;
     for (i = 0; i < parent.boxes.length; i++) {
       if (parent.boxes[i].type === type) {
         return offset;
@@ -2249,34 +2223,34 @@ function MssFragmentMoofProcessor(config) {
     return offset;
   }
   function convertFragment(e, streamProcessor) {
-    var i;
+    let i;
 
     // e.request contains request description object
     // e.response contains fragment bytes
-    var isoFile = ISOBoxer.parseBuffer(e.response);
+    const isoFile = ISOBoxer.parseBuffer(e.response);
     // Update track_Id in tfhd box
-    var tfhd = isoFile.fetch('tfhd');
+    const tfhd = isoFile.fetch('tfhd');
     tfhd.track_ID = e.request.representation.mediaInfo.index + 1;
 
     // Add tfdt box
-    var tfdt = isoFile.fetch('tfdt');
-    var traf = isoFile.fetch('traf');
+    let tfdt = isoFile.fetch('tfdt');
+    const traf = isoFile.fetch('traf');
     if (tfdt === null) {
       tfdt = ISOBoxer.createFullBox('tfdt', traf, tfhd);
       tfdt.version = 1;
       tfdt.flags = 0;
       tfdt.baseMediaDecodeTime = Math.floor(e.request.startTime * e.request.timescale);
     }
-    var trun = isoFile.fetch('trun');
+    const trun = isoFile.fetch('trun');
 
     // Process tfxd boxes
     // This box provide absolute timestamp but we take the segment start time for tfdt
-    var tfxd = isoFile.fetch('tfxd');
+    let tfxd = isoFile.fetch('tfxd');
     if (tfxd) {
       tfxd._parent.boxes.splice(tfxd._parent.boxes.indexOf(tfxd), 1);
       tfxd = null;
     }
-    var tfrf = isoFile.fetch('tfrf');
+    let tfrf = isoFile.fetch('tfrf');
     processTfrf(e.request, tfrf, tfdt, streamProcessor);
     if (tfrf) {
       tfrf._parent.boxes.splice(tfrf._parent.boxes.indexOf(tfrf), 1);
@@ -2286,19 +2260,19 @@ function MssFragmentMoofProcessor(config) {
     // If protected content in PIFF1.1 format (sepiff box = Sample Encryption PIFF)
     // => convert sepiff box it into a senc box
     // => create saio and saiz boxes (if not already present)
-    var sepiff = isoFile.fetch('sepiff');
+    const sepiff = isoFile.fetch('sepiff');
     if (sepiff !== null) {
       sepiff.type = 'senc';
       sepiff.usertype = undefined;
-      var _saio = isoFile.fetch('saio');
-      if (_saio === null) {
+      let saio = isoFile.fetch('saio');
+      if (saio === null) {
         // Create Sample Auxiliary Information Offsets Box box (saio)
-        _saio = ISOBoxer.createFullBox('saio', traf);
-        _saio.version = 0;
-        _saio.flags = 0;
-        _saio.entry_count = 1;
-        _saio.offset = [0];
-        var saiz = ISOBoxer.createFullBox('saiz', traf);
+        saio = ISOBoxer.createFullBox('saio', traf);
+        saio.version = 0;
+        saio.flags = 0;
+        saio.entry_count = 1;
+        saio.offset = [0];
+        const saiz = ISOBoxer.createFullBox('saiz', traf);
         saiz.version = 0;
         saiz.flags = 0;
         saiz.sample_count = sepiff.sample_count;
@@ -2322,15 +2296,15 @@ function MssFragmentMoofProcessor(config) {
     trun.flags |= 0x000001; // set trun.data-offset-present to true
 
     // Update trun.data_offset field that corresponds to first data byte (inside mdat box)
-    var moof = isoFile.fetch('moof');
-    var length = moof.getLength();
+    const moof = isoFile.fetch('moof');
+    let length = moof.getLength();
     trun.data_offset = length + 8;
 
     // Update saio box offset field according to new senc box offset
-    var saio = isoFile.fetch('saio');
+    let saio = isoFile.fetch('saio');
     if (saio !== null) {
-      var trafPosInMoof = getBoxOffset(moof, 'traf');
-      var sencPosInTraf = getBoxOffset(traf, 'senc');
+      let trafPosInMoof = getBoxOffset(moof, 'traf');
+      let sencPosInTraf = getBoxOffset(traf, 'senc');
       // Set offset from begin fragment to the first IV field in senc box
       saio.offset[0] = trafPosInMoof + sencPosInTraf + 16; // 16 = box header (12) + sample_count field size (4)
     }
@@ -2344,21 +2318,21 @@ function MssFragmentMoofProcessor(config) {
     if (!e.response) {
       throw new Error('e.response parameter is missing');
     }
-    var isoFile = ISOBoxer.parseBuffer(e.response);
+    const isoFile = ISOBoxer.parseBuffer(e.response);
     // Update track_Id in tfhd box
-    var tfhd = isoFile.fetch('tfhd');
+    const tfhd = isoFile.fetch('tfhd');
     tfhd.track_ID = e.request.representation.mediaInfo.index + 1;
 
     // Add tfdt box
-    var tfdt = isoFile.fetch('tfdt');
-    var traf = isoFile.fetch('traf');
+    let tfdt = isoFile.fetch('tfdt');
+    let traf = isoFile.fetch('traf');
     if (tfdt === null) {
       tfdt = ISOBoxer.createFullBox('tfdt', traf, tfhd);
       tfdt.version = 1;
       tfdt.flags = 0;
       tfdt.baseMediaDecodeTime = Math.floor(e.request.startTime * e.request.timescale);
     }
-    var tfrf = isoFile.fetch('tfrf');
+    let tfrf = isoFile.fetch('tfrf');
     processTfrf(e.request, tfrf, tfdt, streamProcessor);
     if (tfrf) {
       tfrf._parent.boxes.splice(tfrf._parent.boxes.indexOf(tfrf), 1);
@@ -2369,9 +2343,9 @@ function MssFragmentMoofProcessor(config) {
     return type;
   }
   instance = {
-    convertFragment: convertFragment,
-    updateSegmentList: updateSegmentList,
-    getType: getType
+    convertFragment,
+    updateSegmentList,
+    getType
   };
   setup();
   return instance;
@@ -2433,14 +2407,14 @@ __webpack_require__.r(__webpack_exports__);
  */
 function MssFragmentMoovProcessor(config) {
   config = config || {};
-  var NALUTYPE_SPS = 7;
-  var NALUTYPE_PPS = 8;
-  var constants = config.constants;
-  var ISOBoxer = config.ISOBoxer;
-  var protectionController = config.protectionController;
-  var instance, period, adaptationSet, representation, contentProtection, timescale, trackId;
+  const NALUTYPE_SPS = 7;
+  const NALUTYPE_PPS = 8;
+  const constants = config.constants;
+  const ISOBoxer = config.ISOBoxer;
+  let protectionController = config.protectionController;
+  let instance, period, adaptationSet, representation, contentProtection, timescale, trackId;
   function createFtypBox(isoFile) {
-    var ftyp = ISOBoxer.createBox('ftyp', isoFile);
+    let ftyp = ISOBoxer.createBox('ftyp', isoFile);
     ftyp.major_brand = 'iso6';
     ftyp.minor_version = 1; // is an informative integer for the minor version of the major brand
     ftyp.compatible_brands = []; //is a list, to the end of the box, of brands isom, iso6 and msdh
@@ -2452,19 +2426,19 @@ function MssFragmentMoovProcessor(config) {
   }
   function createMoovBox(isoFile) {
     // moov box
-    var moov = ISOBoxer.createBox('moov', isoFile);
+    let moov = ISOBoxer.createBox('moov', isoFile);
 
     // moov/mvhd
     createMvhdBox(moov);
 
     // moov/trak
-    var trak = ISOBoxer.createBox('trak', moov);
+    let trak = ISOBoxer.createBox('trak', moov);
 
     // moov/trak/tkhd
     createTkhdBox(trak);
 
     // moov/trak/mdia
-    var mdia = ISOBoxer.createBox('mdia', trak);
+    let mdia = ISOBoxer.createBox('mdia', trak);
 
     // moov/trak/mdia/mdhd
     createMdhdBox(mdia);
@@ -2473,7 +2447,7 @@ function MssFragmentMoovProcessor(config) {
     createHdlrBox(mdia);
 
     // moov/trak/mdia/minf
-    var minf = ISOBoxer.createBox('minf', mdia);
+    let minf = ISOBoxer.createBox('minf', mdia);
     switch (adaptationSet.type) {
       case constants.VIDEO:
         // moov/trak/mdia/minf/vmhd
@@ -2488,48 +2462,48 @@ function MssFragmentMoovProcessor(config) {
     }
 
     // moov/trak/mdia/minf/dinf
-    var dinf = ISOBoxer.createBox('dinf', minf);
+    let dinf = ISOBoxer.createBox('dinf', minf);
 
     // moov/trak/mdia/minf/dinf/dref
     createDrefBox(dinf);
 
     // moov/trak/mdia/minf/stbl
-    var stbl = ISOBoxer.createBox('stbl', minf);
+    let stbl = ISOBoxer.createBox('stbl', minf);
 
     // Create empty stts, stsc, stco and stsz boxes
     // Use data field as for codem-isoboxer unknown boxes for setting fields value
 
     // moov/trak/mdia/minf/stbl/stts
-    var stts = ISOBoxer.createFullBox('stts', stbl);
+    let stts = ISOBoxer.createFullBox('stts', stbl);
     stts._data = [0, 0, 0, 0, 0, 0, 0, 0]; // version = 0, flags = 0, entry_count = 0
 
     // moov/trak/mdia/minf/stbl/stsc
-    var stsc = ISOBoxer.createFullBox('stsc', stbl);
+    let stsc = ISOBoxer.createFullBox('stsc', stbl);
     stsc._data = [0, 0, 0, 0, 0, 0, 0, 0]; // version = 0, flags = 0, entry_count = 0
 
     // moov/trak/mdia/minf/stbl/stco
-    var stco = ISOBoxer.createFullBox('stco', stbl);
+    let stco = ISOBoxer.createFullBox('stco', stbl);
     stco._data = [0, 0, 0, 0, 0, 0, 0, 0]; // version = 0, flags = 0, entry_count = 0
 
     // moov/trak/mdia/minf/stbl/stsz
-    var stsz = ISOBoxer.createFullBox('stsz', stbl);
+    let stsz = ISOBoxer.createFullBox('stsz', stbl);
     stsz._data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // version = 0, flags = 0, sample_size = 0, sample_count = 0
 
     // moov/trak/mdia/minf/stbl/stsd
     createStsdBox(stbl);
 
     // moov/mvex
-    var mvex = ISOBoxer.createBox('mvex', moov);
+    let mvex = ISOBoxer.createBox('mvex', moov);
 
     // moov/mvex/trex
     createTrexBox(mvex);
     if (contentProtection && protectionController) {
-      var supportedKS = protectionController.getSupportedKeySystemMetadataFromContentProtection(contentProtection);
+      let supportedKS = protectionController.getSupportedKeySystemMetadataFromContentProtection(contentProtection);
       createProtectionSystemSpecificHeaderBox(moov, supportedKS);
     }
   }
   function createMvhdBox(moov) {
-    var mvhd = ISOBoxer.createFullBox('mvhd', moov);
+    let mvhd = ISOBoxer.createFullBox('mvhd', moov);
     mvhd.version = 1; // version = 1  in order to have 64bits duration value
 
     mvhd.creation_time = 0; // the creation time of the presentation => ignore (set to 0)
@@ -2551,7 +2525,7 @@ function MssFragmentMoovProcessor(config) {
     return mvhd;
   }
   function createTkhdBox(trak) {
-    var tkhd = ISOBoxer.createFullBox('tkhd', trak);
+    let tkhd = ISOBoxer.createFullBox('tkhd', trak);
     tkhd.version = 1; // version = 1  in order to have 64bits duration value
     tkhd.flags = 0x1 |
     // Track_enabled (0x000001): Indicates that the track is enabled
@@ -2580,7 +2554,7 @@ function MssFragmentMoovProcessor(config) {
     return tkhd;
   }
   function createMdhdBox(mdia) {
-    var mdhd = ISOBoxer.createFullBox('mdhd', mdia);
+    let mdhd = ISOBoxer.createFullBox('mdhd', mdia);
     mdhd.version = 1; // version = 1  in order to have 64bits duration value
 
     mdhd.creation_time = 0; // the creation time of the presentation => ignore (set to 0)
@@ -2592,7 +2566,7 @@ function MssFragmentMoovProcessor(config) {
     return mdhd;
   }
   function createHdlrBox(mdia) {
-    var hdlr = ISOBoxer.createFullBox('hdlr', mdia);
+    let hdlr = ISOBoxer.createFullBox('hdlr', mdia);
     hdlr.pre_defined = 0;
     switch (adaptationSet.type) {
       case constants.VIDEO:
@@ -2610,7 +2584,7 @@ function MssFragmentMoovProcessor(config) {
     return hdlr;
   }
   function createVmhdBox(minf) {
-    var vmhd = ISOBoxer.createFullBox('vmhd', minf);
+    let vmhd = ISOBoxer.createFullBox('vmhd', minf);
     vmhd.flags = 1;
     vmhd.graphicsmode = 0; // specifies a composition mode for this video track, from the following enumerated set, which may be extended by derived specifications: copy = 0 copy over the existing image
     vmhd.opcolor = [0, 0, 0]; // is a set of 3 colour values (red, green, blue) available for use by graphics modes
@@ -2618,24 +2592,24 @@ function MssFragmentMoovProcessor(config) {
     return vmhd;
   }
   function createSmhdBox(minf) {
-    var smhd = ISOBoxer.createFullBox('smhd', minf);
+    let smhd = ISOBoxer.createFullBox('smhd', minf);
     smhd.flags = 1;
     smhd.balance = 0; // is a fixed-point 8.8 number that places mono audio tracks in a stereo space; 0 is centre (the normal value); full left is -1.0 and full right is 1.0.
     smhd.reserved = 0;
     return smhd;
   }
   function createDrefBox(dinf) {
-    var dref = ISOBoxer.createFullBox('dref', dinf);
+    let dref = ISOBoxer.createFullBox('dref', dinf);
     dref.entry_count = 1;
     dref.entries = [];
-    var url = ISOBoxer.createFullBox('url ', dref, false);
+    let url = ISOBoxer.createFullBox('url ', dref, false);
     url.location = '';
     url.flags = 1;
     dref.entries.push(url);
     return dref;
   }
   function createStsdBox(stbl) {
-    var stsd = ISOBoxer.createFullBox('stsd', stbl);
+    let stsd = ISOBoxer.createFullBox('stsd', stbl);
     stsd.entries = [];
     switch (adaptationSet.type) {
       case constants.VIDEO:
@@ -2649,7 +2623,7 @@ function MssFragmentMoovProcessor(config) {
     return stsd;
   }
   function createSampleEntry(stsd) {
-    var codec = representation.codecs.substring(0, representation.codecs.indexOf('.'));
+    let codec = representation.codecs.substring(0, representation.codecs.indexOf('.'));
     switch (codec) {
       case 'avc1':
         return createAVCVisualSampleEntry(stsd, codec);
@@ -2666,7 +2640,7 @@ function MssFragmentMoovProcessor(config) {
     }
   }
   function createAVCVisualSampleEntry(stsd, codec) {
-    var avc1;
+    let avc1;
     if (contentProtection) {
       avc1 = ISOBoxer.createBox('encv', stsd, false);
     } else {
@@ -2695,7 +2669,7 @@ function MssFragmentMoovProcessor(config) {
     avc1.config = createAVC1ConfigurationRecord();
     if (contentProtection) {
       // Create and add Protection Scheme Info Box
-      var sinf = ISOBoxer.createBox('sinf', avc1);
+      let sinf = ISOBoxer.createBox('sinf', avc1);
 
       // Create and add Original Format Box => indicate codec type of the encrypted content
       createOriginalFormatBox(sinf, codec);
@@ -2709,19 +2683,19 @@ function MssFragmentMoovProcessor(config) {
     return avc1;
   }
   function createAVC1ConfigurationRecord() {
-    var avcC = null;
-    var avcCLength = 15; // length = 15 by default (0 SPS and 0 PPS)
+    let avcC = null;
+    let avcCLength = 15; // length = 15 by default (0 SPS and 0 PPS)
 
     // First get all SPS and PPS from codecPrivateData
-    var sps = [];
-    var pps = [];
-    var AVCProfileIndication = 0;
-    var AVCLevelIndication = 0;
-    var profile_compatibility = 0;
-    var nalus = representation.codecPrivateData.split('00000001').slice(1);
-    var naluBytes, naluType;
-    for (var _i = 0; _i < nalus.length; _i++) {
-      naluBytes = hexStringtoBuffer(nalus[_i]);
+    let sps = [];
+    let pps = [];
+    let AVCProfileIndication = 0;
+    let AVCLevelIndication = 0;
+    let profile_compatibility = 0;
+    let nalus = representation.codecPrivateData.split('00000001').slice(1);
+    let naluBytes, naluType;
+    for (let i = 0; i < nalus.length; i++) {
+      naluBytes = hexStringtoBuffer(nalus[i]);
       naluType = naluBytes[0] & 0x1F;
       switch (naluType) {
         case NALUTYPE_SPS:
@@ -2746,7 +2720,7 @@ function MssFragmentMoovProcessor(config) {
 
     // Generate avcC buffer
     avcC = new Uint8Array(avcCLength);
-    var i = 0;
+    let i = 0;
     // length
     avcC[i++] = (avcCLength & 0xFF000000) >> 24;
     avcC[i++] = (avcCLength & 0x00FF0000) >> 16;
@@ -2760,23 +2734,23 @@ function MssFragmentMoovProcessor(config) {
     avcC[i++] = AVCLevelIndication;
     avcC[i++] = 0xFF; // '11111' + lengthSizeMinusOne = 3
     avcC[i++] = 0xE0 | sps.length; // '111' + numOfSequenceParameterSets
-    for (var n = 0; n < sps.length; n++) {
+    for (let n = 0; n < sps.length; n++) {
       avcC[i++] = (sps[n].length & 0xFF00) >> 8;
       avcC[i++] = sps[n].length & 0x00FF;
       avcC.set(sps[n], i);
       i += sps[n].length;
     }
     avcC[i++] = pps.length; // numOfPictureParameterSets
-    for (var _n = 0; _n < pps.length; _n++) {
-      avcC[i++] = (pps[_n].length & 0xFF00) >> 8;
-      avcC[i++] = pps[_n].length & 0x00FF;
-      avcC.set(pps[_n], i);
-      i += pps[_n].length;
+    for (let n = 0; n < pps.length; n++) {
+      avcC[i++] = (pps[n].length & 0xFF00) >> 8;
+      avcC[i++] = pps[n].length & 0x00FF;
+      avcC.set(pps[n], i);
+      i += pps[n].length;
     }
     return avcC;
   }
   function createMP4AudioSampleEntry(stsd, codec) {
-    var mp4a;
+    let mp4a;
     if (contentProtection) {
       mp4a = ISOBoxer.createBox('enca', stsd, false);
     } else {
@@ -2797,7 +2771,7 @@ function MssFragmentMoovProcessor(config) {
     mp4a.esds = createMPEG4AACESDescriptor();
     if (contentProtection) {
       // Create and add Protection Scheme Info Box
-      var sinf = ISOBoxer.createBox('sinf', mp4a);
+      let sinf = ISOBoxer.createBox('sinf', mp4a);
 
       // Create and add Original Format Box => indicate codec type of the encrypted content
       createOriginalFormatBox(sinf, codec);
@@ -2812,16 +2786,16 @@ function MssFragmentMoovProcessor(config) {
   }
   function createMPEG4AACESDescriptor() {
     // AudioSpecificConfig (see ISO/IEC 14496-3, subpart 1) => corresponds to hex bytes contained in 'codecPrivateData' field
-    var audioSpecificConfig = hexStringtoBuffer(representation.codecPrivateData);
+    let audioSpecificConfig = hexStringtoBuffer(representation.codecPrivateData);
 
     // ESDS length = esds box header length (= 12) +
     //               ES_Descriptor header length (= 5) +
     //               DecoderConfigDescriptor header length (= 15) +
     //               decoderSpecificInfo header length (= 2) +
     //               AudioSpecificConfig length (= codecPrivateData length)
-    var esdsLength = 34 + audioSpecificConfig.length;
-    var esds = new Uint8Array(esdsLength);
-    var i = 0;
+    let esdsLength = 34 + audioSpecificConfig.length;
+    let esds = new Uint8Array(esdsLength);
+    let i = 0;
     // esds box
     esds[i++] = (esdsLength & 0xFF000000) >> 24; // esds box length
     esds[i++] = (esdsLength & 0x00FF0000) >> 16; // ''
@@ -2865,24 +2839,24 @@ function MssFragmentMoovProcessor(config) {
     return esds;
   }
   function createOriginalFormatBox(sinf, codec) {
-    var frma = ISOBoxer.createBox('frma', sinf);
+    let frma = ISOBoxer.createBox('frma', sinf);
     frma.data_format = stringToCharCode(codec);
   }
   function createSchemeTypeBox(sinf) {
-    var schm = ISOBoxer.createFullBox('schm', sinf);
+    let schm = ISOBoxer.createFullBox('schm', sinf);
     schm.flags = 0;
     schm.version = 0;
     schm.scheme_type = 0x63656E63; // 'cenc' => common encryption
     schm.scheme_version = 0x00010000; // version set to 0x00010000 (Major version 1, Minor version 0)
   }
   function createSchemeInformationBox(sinf) {
-    var schi = ISOBoxer.createBox('schi', sinf);
+    let schi = ISOBoxer.createBox('schi', sinf);
 
     // Create and add Track Encryption Box
     createTrackEncryptionBox(schi);
   }
   function createProtectionSystemSpecificHeaderBox(moov, keySystems) {
-    var pssh_bytes, pssh, i, parsedBuffer;
+    let pssh_bytes, pssh, i, parsedBuffer;
     for (i = 0; i < keySystems.length; i += 1) {
       pssh_bytes = keySystems[i].initData;
       if (pssh_bytes) {
@@ -2895,7 +2869,7 @@ function MssFragmentMoovProcessor(config) {
     }
   }
   function createTrackEncryptionBox(schi) {
-    var tenc = ISOBoxer.createFullBox('tenc', schi);
+    let tenc = ISOBoxer.createFullBox('tenc', schi);
     tenc.flags = 0;
     tenc.version = 0;
     tenc.default_IsEncrypted = 0x1;
@@ -2903,7 +2877,7 @@ function MssFragmentMoovProcessor(config) {
     tenc.default_KID = contentProtection && contentProtection.length > 0 && contentProtection[0]['cenc:default_KID'] ? contentProtection[0]['cenc:default_KID'] : [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0];
   }
   function createTrexBox(moov) {
-    var trex = ISOBoxer.createFullBox('trex', moov);
+    let trex = ISOBoxer.createFullBox('trex', moov);
     trex.track_ID = trackId;
     trex.default_sample_description_index = 1;
     trex.default_sample_duration = 0;
@@ -2912,16 +2886,16 @@ function MssFragmentMoovProcessor(config) {
     return trex;
   }
   function hexStringtoBuffer(str) {
-    var buf = new Uint8Array(str.length / 2);
-    var i;
+    let buf = new Uint8Array(str.length / 2);
+    let i;
     for (i = 0; i < str.length / 2; i += 1) {
       buf[i] = parseInt('' + str[i * 2] + str[i * 2 + 1], 16);
     }
     return buf;
   }
   function stringToCharCode(str) {
-    var code = 0;
-    var i;
+    let code = 0;
+    let i;
     for (i = 0; i < str.length; i += 1) {
       code |= str.charCodeAt(i) << (str.length - i - 1) * 8;
     }
@@ -2931,7 +2905,7 @@ function MssFragmentMoovProcessor(config) {
     if (!rep || !rep.adaptation) {
       return;
     }
-    var isoFile, arrayBuffer;
+    let isoFile, arrayBuffer;
     representation = rep;
     adaptationSet = representation.adaptation;
     period = adaptationSet.period;
@@ -3050,9 +3024,9 @@ function sencProcessor() {
   });
 }
 function uuidProcessor() {
-  var tfxdUserType = [0x6D, 0x1D, 0x9B, 0x05, 0x42, 0xD5, 0x44, 0xE6, 0x80, 0xE2, 0x14, 0x1D, 0xAF, 0xF7, 0x57, 0xB2];
-  var tfrfUserType = [0xD4, 0x80, 0x7E, 0xF2, 0xCA, 0x39, 0x46, 0x95, 0x8E, 0x54, 0x26, 0xCB, 0x9E, 0x46, 0xA7, 0x9F];
-  var sepiffUserType = [0xA2, 0x39, 0x4F, 0x52, 0x5A, 0x9B, 0x4f, 0x14, 0xA2, 0x44, 0x6C, 0x42, 0x7C, 0x64, 0x8D, 0xF4];
+  let tfxdUserType = [0x6D, 0x1D, 0x9B, 0x05, 0x42, 0xD5, 0x44, 0xE6, 0x80, 0xE2, 0x14, 0x1D, 0xAF, 0xF7, 0x57, 0xB2];
+  let tfrfUserType = [0xD4, 0x80, 0x7E, 0xF2, 0xCA, 0x39, 0x46, 0x95, 0x8E, 0x54, 0x26, 0xCB, 0x9E, 0x46, 0xA7, 0x9F];
+  let sepiffUserType = [0xA2, 0x39, 0x4F, 0x52, 0x5A, 0x9B, 0x4f, 0x14, 0xA2, 0x44, 0x6C, 0x42, 0x7C, 0x64, 0x8D, 0xF4];
   if (arrayEqual(this.usertype, tfxdUserType)) {
     this._procFullBox();
     if (this._parsing) {
@@ -3081,14 +3055,14 @@ function uuidProcessor() {
 }
 function MssFragmentProcessor(config) {
   config = config || {};
-  var context = this.context;
-  var dashMetrics = config.dashMetrics;
-  var playbackController = config.playbackController;
-  var eventBus = config.eventBus;
-  var protectionController = config.protectionController;
-  var ISOBoxer = config.ISOBoxer;
-  var debug = config.debug;
-  var mssFragmentMoovProcessor, mssFragmentMoofProcessor, instance;
+  const context = this.context;
+  const dashMetrics = config.dashMetrics;
+  const playbackController = config.playbackController;
+  const eventBus = config.eventBus;
+  const protectionController = config.protectionController;
+  const ISOBoxer = config.ISOBoxer;
+  const debug = config.debug;
+  let mssFragmentMoovProcessor, mssFragmentMoofProcessor, instance;
   function setup() {
     ISOBoxer.addBoxProcessor('uuid', uuidProcessor);
     ISOBoxer.addBoxProcessor('saio', saioProcessor);
@@ -3127,8 +3101,8 @@ function MssFragmentProcessor(config) {
     }
   }
   instance = {
-    generateMoov: generateMoov,
-    processFragment: processFragment
+    generateMoov,
+    processFragment
   };
   setup();
   return instance;
@@ -3197,14 +3171,14 @@ __webpack_require__.r(__webpack_exports__);
 
 function MssHandler(config) {
   config = config || {};
-  var context = this.context;
-  var eventBus = config.eventBus;
-  var events = config.events;
-  var constants = config.constants;
-  var initSegmentType = config.initSegmentType;
-  var playbackController = config.playbackController;
-  var streamController = config.streamController;
-  var mssParser, mssFragmentProcessor, fragmentInfoControllers, instance;
+  const context = this.context;
+  const eventBus = config.eventBus;
+  const events = config.events;
+  const constants = config.constants;
+  const initSegmentType = config.initSegmentType;
+  const playbackController = config.playbackController;
+  const streamController = config.streamController;
+  let mssParser, mssFragmentProcessor, fragmentInfoControllers, instance;
   function setup() {
     fragmentInfoControllers = [];
   }
@@ -3212,17 +3186,17 @@ function MssHandler(config) {
     mssFragmentProcessor = (0,_MssFragmentProcessor_js__WEBPACK_IMPORTED_MODULE_3__["default"])(context).create(config);
   }
   function getStreamProcessor(type) {
-    return streamController.getActiveStreamProcessors().filter(function (processor) {
+    return streamController.getActiveStreamProcessors().filter(processor => {
       return processor.getType() === type;
     })[0];
   }
   function getFragmentInfoController(type) {
-    return fragmentInfoControllers.filter(function (controller) {
+    return fragmentInfoControllers.filter(controller => {
       return controller.getType() === type;
     })[0];
   }
   function createDataChunk(request, streamId, endFragment) {
-    var chunk = new _streaming_vo_DataChunk_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    const chunk = new _streaming_vo_DataChunk_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
     chunk.streamId = streamId;
     chunk.segmentType = request.type;
     chunk.start = request.startTime;
@@ -3236,10 +3210,10 @@ function MssHandler(config) {
   }
   function startFragmentInfoControllers() {
     // Create MssFragmentInfoControllers for each StreamProcessor of active stream (only for audio, video or text)
-    var processors = streamController.getActiveStreamProcessors();
+    let processors = streamController.getActiveStreamProcessors();
     processors.forEach(function (processor) {
       if (processor.getType() === constants.VIDEO || processor.getType() === constants.AUDIO || processor.getType() === constants.TEXT) {
-        var fragmentInfoController = getFragmentInfoController(processor.getType());
+        let fragmentInfoController = getFragmentInfoController(processor.getType());
         if (!fragmentInfoController) {
           fragmentInfoController = (0,_MssFragmentInfoController_js__WEBPACK_IMPORTED_MODULE_2__["default"])(context).create({
             streamProcessor: processor,
@@ -3254,28 +3228,28 @@ function MssHandler(config) {
     });
   }
   function stopFragmentInfoControllers() {
-    fragmentInfoControllers.forEach(function (c) {
+    fragmentInfoControllers.forEach(c => {
       c.reset();
     });
     fragmentInfoControllers = [];
   }
   function onInitFragmentNeeded(e) {
-    var streamProcessor = getStreamProcessor(e.mediaType);
+    let streamProcessor = getStreamProcessor(e.mediaType);
     if (!streamProcessor) {
       return;
     }
 
     // Create init segment request
-    var representationController = streamProcessor.getRepresentationController();
-    var representation = representationController.getCurrentRepresentation();
-    var mediaInfo = streamProcessor.getMediaInfo();
-    var request = new _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    let representationController = streamProcessor.getRepresentationController();
+    let representation = representationController.getCurrentRepresentation();
+    let mediaInfo = streamProcessor.getMediaInfo();
+    let request = new _streaming_vo_FragmentRequest_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
     request.mediaType = representation.adaptation.type;
     request.type = initSegmentType;
     request.range = representation.range;
     request.bandwidth = representation.bandwidth;
     request.representation = representation;
-    var chunk = createDataChunk(request, mediaInfo.streamInfo.id, e.type !== events.FRAGMENT_LOADING_PROGRESS);
+    const chunk = createDataChunk(request, mediaInfo.streamInfo.id, e.type !== events.FRAGMENT_LOADING_PROGRESS);
     try {
       // Generate init segment (moov)
       chunk.bytes = mssFragmentProcessor.generateMoov(representation);
@@ -3298,7 +3272,7 @@ function MssHandler(config) {
     if (e.error) {
       return;
     }
-    var streamProcessor = getStreamProcessor(e.request.mediaType);
+    let streamProcessor = getStreamProcessor(e.request.mediaType);
     if (!streamProcessor) {
       return;
     }
@@ -3307,14 +3281,14 @@ function MssHandler(config) {
     mssFragmentProcessor.processFragment(e, streamProcessor);
     if (e.request.type === _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_7__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE) {
       // If FragmentInfo loaded, then notify corresponding MssFragmentInfoController
-      var fragmentInfoController = getFragmentInfoController(e.request.mediaType);
+      let fragmentInfoController = getFragmentInfoController(e.request.mediaType);
       if (fragmentInfoController) {
         fragmentInfoController.fragmentInfoLoaded(e);
       }
     }
 
     // Start MssFragmentInfoControllers in case of start-over streams
-    var manifestInfo = e.request.representation.mediaInfo.streamInfo.manifestInfo;
+    let manifestInfo = e.request.representation.mediaInfo.streamInfo.manifestInfo;
     if (!manifestInfo.isDynamic && manifestInfo.dvrWindowSize !== Infinity) {
       startFragmentInfoControllers();
     }
@@ -3369,16 +3343,16 @@ function MssHandler(config) {
     return mssParser;
   }
   instance = {
-    reset: reset,
-    createMssParser: createMssParser,
-    createMssFragmentProcessor: createMssFragmentProcessor,
-    registerEvents: registerEvents
+    reset,
+    createMssParser,
+    createMssFragmentProcessor,
+    registerEvents
   };
   setup();
   return instance;
 }
 MssHandler.__dashjs_factory_name = 'MssHandler';
-var factory = dashjs.FactoryMaker.getClassFactory(MssHandler);
+const factory = dashjs.FactoryMaker.getClassFactory(MssHandler);
 factory.errors = _errors_MssErrors_js__WEBPACK_IMPORTED_MODULE_5__["default"];
 dashjs.FactoryMaker.updateClassFactory(MssHandler.__dashjs_factory_name, factory);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (factory);
@@ -3396,19 +3370,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/errors/ErrorsBase.js */ "./src/core/errors/ErrorsBase.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3445,28 +3406,23 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
  * @class
  *
  */
-var MssErrors = /*#__PURE__*/function (_ErrorsBase) {
-  function MssErrors() {
-    var _this;
-    _classCallCheck(this, MssErrors);
-    _this = _callSuper(this, MssErrors);
+class MssErrors extends _core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor() {
+    super();
     /**
      * Error code returned when no tfrf box is detected in MSS live stream
      */
-    _this.MSS_NO_TFRF_CODE = 200;
+    this.MSS_NO_TFRF_CODE = 200;
 
     /**
      * Error code returned when one of the codecs defined in the manifest is not supported
      */
-    _this.MSS_UNSUPPORTED_CODEC_CODE = 201;
-    _this.MSS_NO_TFRF_MESSAGE = 'Missing tfrf in live media segment';
-    _this.MSS_UNSUPPORTED_CODEC_MESSAGE = 'Unsupported codec';
-    return _this;
+    this.MSS_UNSUPPORTED_CODEC_CODE = 201;
+    this.MSS_NO_TFRF_MESSAGE = 'Missing tfrf in live media segment';
+    this.MSS_UNSUPPORTED_CODEC_MESSAGE = 'Unsupported codec';
   }
-  _inherits(MssErrors, _ErrorsBase);
-  return _createClass(MssErrors);
-}(_core_errors_ErrorsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var mssErrors = new MssErrors();
+}
+let mssErrors = new MssErrors();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (mssErrors);
 
 /***/ }),
@@ -3526,23 +3482,23 @@ __webpack_require__.r(__webpack_exports__);
 
 function MssParser(config) {
   config = config || {};
-  var BASE64 = config.BASE64;
-  var debug = config.debug;
-  var constants = config.constants;
-  var manifestModel = config.manifestModel;
-  var settings = config.settings;
-  var DEFAULT_TIME_SCALE = 10000000.0;
-  var SUPPORTED_CODECS = ['AAC', 'AACL', 'AACH', 'AACP', 'AVC1', 'H264', 'TTML', 'DFXP'];
+  const BASE64 = config.BASE64;
+  const debug = config.debug;
+  const constants = config.constants;
+  const manifestModel = config.manifestModel;
+  const settings = config.settings;
+  const DEFAULT_TIME_SCALE = 10000000.0;
+  const SUPPORTED_CODECS = ['AAC', 'AACL', 'AACH', 'AACP', 'AVC1', 'H264', 'TTML', 'DFXP'];
   // MPEG-DASH Role and accessibility mapping for text tracks according to ETSI TS 103 285 v1.1.1 (section 7.1.2)
-  var ROLE = {
+  const ROLE = {
     'CAPT': 'main',
     'SUBT': 'alternate',
     'DESC': 'main'
   };
-  var ACCESSIBILITY = {
+  const ACCESSIBILITY = {
     'DESC': '2'
   };
-  var samplingFrequencyIndex = {
+  const samplingFrequencyIndex = {
     96000: 0x0,
     88200: 0x1,
     64000: 0x2,
@@ -3557,30 +3513,30 @@ function MssParser(config) {
     8000: 0xB,
     7350: 0xC
   };
-  var mimeTypeMap = {
+  const mimeTypeMap = {
     'video': 'video/mp4',
     'audio': 'audio/mp4',
     'text': 'application/mp4'
   };
-  var instance, logger, initialBufferSettings;
+  let instance, logger, initialBufferSettings;
   function setup() {
     logger = debug.getLogger(instance);
   }
   function getAttributeAsBoolean(node, attrName) {
-    var value = node.getAttribute(attrName);
+    const value = node.getAttribute(attrName);
     if (!value) {
       return false;
     }
     return value.toLowerCase() === 'true';
   }
   function mapPeriod(smoothStreamingMedia, timescale) {
-    var period = {};
-    var streams, adaptation;
+    const period = {};
+    let streams, adaptation;
 
     // For each StreamIndex node, create an AdaptationSet element
     period.AdaptationSet = [];
     streams = smoothStreamingMedia.getElementsByTagName('StreamIndex');
-    for (var i = 0; i < streams.length; i++) {
+    for (let i = 0; i < streams.length; i++) {
       adaptation = mapAdaptationSet(streams[i], timescale);
       if (adaptation !== null) {
         period.AdaptationSet.push(adaptation);
@@ -3589,14 +3545,14 @@ function MssParser(config) {
     return period;
   }
   function mapAdaptationSet(streamIndex, timescale) {
-    var adaptationSet = {};
-    var representations = [];
-    var segmentTemplate;
-    var qualityLevels, representation, i, index;
-    var name = streamIndex.getAttribute('Name');
-    var type = streamIndex.getAttribute('Type');
-    var lang = streamIndex.getAttribute('Language');
-    var fallBackId = lang ? type + '_' + lang : type;
+    const adaptationSet = {};
+    const representations = [];
+    let segmentTemplate;
+    let qualityLevels, representation, i, index;
+    const name = streamIndex.getAttribute('Name');
+    const type = streamIndex.getAttribute('Type');
+    const lang = streamIndex.getAttribute('Language');
+    const fallBackId = lang ? type + '_' + lang : type;
     adaptationSet.id = name || fallBackId;
     adaptationSet.contentType = type;
     adaptationSet.lang = lang || 'und';
@@ -3652,11 +3608,11 @@ function MssParser(config) {
     return adaptationSet;
   }
   function mapRepresentation(qualityLevel, streamIndex) {
-    var representation = {};
-    var type = streamIndex.getAttribute('Type');
-    var fourCCValue = null;
-    var width = null;
-    var height = null;
+    const representation = {};
+    const type = streamIndex.getAttribute('Type');
+    let fourCCValue = null;
+    let width = null;
+    let height = null;
     representation.id = qualityLevel.Id;
     representation.bandwidth = parseInt(qualityLevel.getAttribute('Bitrate'), 10);
     representation.mimeType = qualityLevel.mimeType;
@@ -3708,8 +3664,8 @@ function MssParser(config) {
     return representation;
   }
   function getH264Codec(qualityLevel) {
-    var codecPrivateData = qualityLevel.getAttribute('CodecPrivateData').toString();
-    var nalHeader, avcoti;
+    let codecPrivateData = qualityLevel.getAttribute('CodecPrivateData').toString();
+    let nalHeader, avcoti;
 
     // Extract from the CodecPrivateData field the hexadecimal representation of the following
     // three bytes in the sequence parameter set NAL unit.
@@ -3720,10 +3676,10 @@ function MssParser(config) {
     return 'avc1.' + avcoti;
   }
   function getAACCodec(qualityLevel, fourCCValue) {
-    var samplingRate = parseInt(qualityLevel.getAttribute('SamplingRate'), 10);
-    var codecPrivateData = qualityLevel.getAttribute('CodecPrivateData').toString();
-    var objectType = 0;
-    var codecPrivateDataHex, arr16, indexFreq, extensionSamplingFrequencyIndex;
+    const samplingRate = parseInt(qualityLevel.getAttribute('SamplingRate'), 10);
+    let codecPrivateData = qualityLevel.getAttribute('CodecPrivateData').toString();
+    let objectType = 0;
+    let codecPrivateDataHex, arr16, indexFreq, extensionSamplingFrequencyIndex;
 
     //chrome problem, in implicit AAC HE definition, so when AACH is detected in FourCC
     //set objectType to 5 => strange, it should be 2
@@ -3775,8 +3731,8 @@ function MssParser(config) {
     return 'mp4a.40.' + objectType;
   }
   function mapSegmentTemplate(streamIndex, timescale) {
-    var segmentTemplate = {};
-    var mediaUrl, streamIndexTimeScale, url;
+    const segmentTemplate = {};
+    let mediaUrl, streamIndexTimeScale, url;
     url = streamIndex.getAttribute('Url');
     mediaUrl = url ? url.replace('{bitrate}', '$Bandwidth$') : null;
     mediaUrl = mediaUrl ? mediaUrl.replace('{start time}', '$Time$') : null;
@@ -3791,11 +3747,11 @@ function MssParser(config) {
     return segmentTemplate;
   }
   function mapSegmentTimeline(streamIndex, timescale) {
-    var segmentTimeline = {};
-    var chunks = streamIndex.getElementsByTagName('c');
-    var segments = [];
-    var segment, prevSegment, tManifest, i, j, r;
-    var duration = 0;
+    const segmentTimeline = {};
+    const chunks = streamIndex.getElementsByTagName('c');
+    const segments = [];
+    let segment, prevSegment, tManifest, i, j, r;
+    let duration = 0;
     for (i = 0; i < chunks.length; i++) {
       segment = {};
 
@@ -3865,7 +3821,7 @@ function MssParser(config) {
     return segmentTimeline;
   }
   function getKIDFromProtectionHeader(protectionHeader) {
-    var prHeader, wrmHeader, xmlReader, KID;
+    let prHeader, wrmHeader, xmlReader, KID;
 
     // Get PlayReady header as byte array (base64 decoded)
     prHeader = BASE64.decodeArray(protectionHeader.firstChild.data);
@@ -3892,8 +3848,8 @@ function MssParser(config) {
     return KID;
   }
   function getWRMHeaderFromPRHeader(prHeader) {
-    var length, recordCount, recordType, recordLength, recordValue;
-    var i = 0;
+    let length, recordCount, recordType, recordLength, recordValue;
+    let i = 0;
 
     // Parse PlayReady header
 
@@ -3932,12 +3888,12 @@ function MssParser(config) {
     swapBytes(uuid, 6, 7);
   }
   function swapBytes(bytes, pos1, pos2) {
-    var temp = bytes[pos1];
+    const temp = bytes[pos1];
     bytes[pos1] = bytes[pos2];
     bytes[pos2] = temp;
   }
   function createPRContentProtection(protectionHeader) {
-    var pro = {
+    let pro = {
       __text: protectionHeader.firstChild.data,
       __prefix: 'mspr'
     };
@@ -3948,7 +3904,7 @@ function MssParser(config) {
     };
   }
   function createWidevineContentProtection(KID) {
-    var widevineCP = {
+    let widevineCP = {
       schemeIdUri: 'urn:uuid:' + _streaming_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].WIDEVINE_UUID,
       value: _streaming_constants_ProtectionConstants_js__WEBPACK_IMPORTED_MODULE_2__["default"].WIDEVINE_KEYSTEM_STRING
     };
@@ -3956,15 +3912,15 @@ function MssParser(config) {
       return widevineCP;
     }
     // Create Widevine CENC header (Protocol Buffer) with KID value
-    var wvCencHeader = new Uint8Array(2 + KID.length);
+    const wvCencHeader = new Uint8Array(2 + KID.length);
     wvCencHeader[0] = 0x12;
     wvCencHeader[1] = 0x10;
     wvCencHeader.set(KID, 2);
 
     // Create a pssh box
-    var length = 12 /* box length, type, version and flags */ + 16 /* SystemID */ + 4 /* data length */ + wvCencHeader.length;
-    var pssh = new Uint8Array(length);
-    var i = 0;
+    const length = 12 /* box length, type, version and flags */ + 16 /* SystemID */ + 4 /* data length */ + wvCencHeader.length;
+    let pssh = new Uint8Array(length);
+    let i = 0;
 
     // Set box length value
     pssh[i++] = (length & 0xFF000000) >> 24;
@@ -3998,12 +3954,12 @@ function MssParser(config) {
     return widevineCP;
   }
   function processManifest(xmlDoc) {
-    var manifest = {};
-    var contentProtections = [];
-    var smoothStreamingMedia = xmlDoc.getElementsByTagName('SmoothStreamingMedia')[0];
-    var protection = xmlDoc.getElementsByTagName('Protection')[0];
-    var protectionHeader = null;
-    var period, adaptations, contentProtection, KID, timestampOffset, startTime, segments, timescale, segmentDuration, i, j;
+    const manifest = {};
+    const contentProtections = [];
+    const smoothStreamingMedia = xmlDoc.getElementsByTagName('SmoothStreamingMedia')[0];
+    const protection = xmlDoc.getElementsByTagName('Protection')[0];
+    let protectionHeader = null;
+    let period, adaptations, contentProtection, KID, timestampOffset, startTime, segments, timescale, segmentDuration, i, j;
 
     // Set manifest node properties
     manifest.protocol = 'MSS';
@@ -4011,7 +3967,7 @@ function MssParser(config) {
     manifest.type = getAttributeAsBoolean(smoothStreamingMedia, 'IsLive') ? 'dynamic' : 'static';
     timescale = smoothStreamingMedia.getAttribute('TimeScale');
     manifest.timescale = timescale ? parseFloat(timescale) : DEFAULT_TIME_SCALE;
-    var dvrWindowLength = parseFloat(smoothStreamingMedia.getAttribute('DVRWindowLength'));
+    let dvrWindowLength = parseFloat(smoothStreamingMedia.getAttribute('DVRWindowLength'));
     // If the DVRWindowLength field is omitted for a live presentation or set to 0, the DVR window is effectively infinite
     if (manifest.type === 'dynamic' && (dvrWindowLength === 0 || isNaN(dvrWindowLength))) {
       dvrWindowLength = Infinity;
@@ -4023,7 +3979,7 @@ function MssParser(config) {
     if (dvrWindowLength > 0) {
       manifest.timeShiftBufferDepth = dvrWindowLength / manifest.timescale;
     }
-    var duration = parseFloat(smoothStreamingMedia.getAttribute('Duration'));
+    let duration = parseFloat(smoothStreamingMedia.getAttribute('Duration'));
     manifest.mediaPresentationDuration = duration === 0 ? Infinity : duration / manifest.timescale;
     // By default, set minBufferTime to 2 sec. (but set below according to video segment duration)
     manifest.minBufferTime = 2;
@@ -4109,15 +4065,15 @@ function MssParser(config) {
     // 2- adapt live delay and then buffers length in case timeShiftBufferDepth is too small compared to target live delay (see PlaybackController.computeLiveDelay())
     // 3- Set retry attempts and intervals for FragmentInfo requests
     if (manifest.type === 'dynamic') {
-      var targetLiveDelay = settings.get().streaming.delay.liveDelay;
+      let targetLiveDelay = settings.get().streaming.delay.liveDelay;
       if (!targetLiveDelay) {
-        var liveDelayFragmentCount = settings.get().streaming.delay.liveDelayFragmentCount !== null && !isNaN(settings.get().streaming.delay.liveDelayFragmentCount) ? settings.get().streaming.delay.liveDelayFragmentCount : 4;
+        const liveDelayFragmentCount = settings.get().streaming.delay.liveDelayFragmentCount !== null && !isNaN(settings.get().streaming.delay.liveDelayFragmentCount) ? settings.get().streaming.delay.liveDelayFragmentCount : 4;
         targetLiveDelay = segmentDuration * liveDelayFragmentCount;
       }
-      var targetDelayCapping = Math.max(manifest.timeShiftBufferDepth - 10 /*END_OF_PLAYLIST_PADDING*/, manifest.timeShiftBufferDepth / 2);
-      var liveDelay = Math.min(targetDelayCapping, targetLiveDelay);
+      let targetDelayCapping = Math.max(manifest.timeShiftBufferDepth - 10 /*END_OF_PLAYLIST_PADDING*/, manifest.timeShiftBufferDepth / 2);
+      let liveDelay = Math.min(targetDelayCapping, targetLiveDelay);
       // Consider a margin of more than one segment in order to avoid Precondition Failed errors (412), for example if audio and video are not correctly synchronized
-      var bufferTime = liveDelay - segmentDuration * 1.5;
+      let bufferTime = liveDelay - segmentDuration * 1.5;
 
       // Store initial buffer settings
       initialBufferSettings = {
@@ -4206,9 +4162,9 @@ function MssParser(config) {
     return manifest;
   }
   function parseDOM(data) {
-    var xmlDoc = null;
+    let xmlDoc = null;
     if (window.DOMParser) {
-      var parser = new window.DOMParser();
+      const parser = new window.DOMParser();
       xmlDoc = parser.parseFromString(data, 'text/xml');
       if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
         throw new Error('parsing the manifest failed');
@@ -4220,20 +4176,20 @@ function MssParser(config) {
     return null;
   }
   function internalParse(data) {
-    var xmlDoc = null;
-    var manifest = null;
-    var startTime = window.performance.now();
+    let xmlDoc = null;
+    let manifest = null;
+    const startTime = window.performance.now();
 
     // Parse the MSS XML manifest
     xmlDoc = parseDOM(data);
-    var xmlParseTime = window.performance.now();
+    const xmlParseTime = window.performance.now();
     if (xmlDoc === null) {
       return null;
     }
 
     // Convert MSS manifest into DASH manifest
     manifest = processManifest(xmlDoc, new Date());
-    var mss2dashTime = window.performance.now();
+    const mss2dashTime = window.performance.now();
     logger.info('Parsing complete: (xmlParsing: ' + (xmlParseTime - startTime).toPrecision(3) + 'ms, mss2dash: ' + (mss2dashTime - xmlParseTime).toPrecision(3) + 'ms, total: ' + ((mss2dashTime - startTime) / 1000).toPrecision(3) + 's)');
     return manifest;
   }
@@ -4267,19 +4223,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/events/EventsBase.js */ "./src/core/events/EventsBase.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -4316,273 +4259,277 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
  * @class
  * @implements EventsBase
  */
-var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
+class MediaPlayerEvents extends _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
   /**
    * @description Public facing external events to be used when developing a player that implements dash.js.
    */
-  function MediaPlayerEvents() {
-    var _this;
-    _classCallCheck(this, MediaPlayerEvents);
-    _this = _callSuper(this, MediaPlayerEvents);
+  constructor() {
+    super();
     /**
      * Triggered when playback will not start yet
      * as the MPD's availabilityStartTime is in the future.
      * Check delay property in payload to determine time before playback will start.
      * @event MediaPlayerEvents#AST_IN_FUTURE
      */
-    _this.AST_IN_FUTURE = 'astInFuture';
+    this.AST_IN_FUTURE = 'astInFuture';
 
     /**
      * Triggered when the BaseURLs have been updated.
      * @event MediaPlayerEvents#BASE_URLS_UPDATED
      */
-    _this.BASE_URLS_UPDATED = 'baseUrlsUpdated';
+    this.BASE_URLS_UPDATED = 'baseUrlsUpdated';
 
     /**
      * Triggered when the video element's buffer state changes to stalled.
      * Check mediaType in payload to determine type (Video, Audio, FragmentedText).
      * @event MediaPlayerEvents#BUFFER_EMPTY
      */
-    _this.BUFFER_EMPTY = 'bufferStalled';
+    this.BUFFER_EMPTY = 'bufferStalled';
 
     /**
      * Triggered when the video element's buffer state changes to loaded.
      * Check mediaType in payload to determine type (Video, Audio, FragmentedText).
      * @event MediaPlayerEvents#BUFFER_LOADED
      */
-    _this.BUFFER_LOADED = 'bufferLoaded';
+    this.BUFFER_LOADED = 'bufferLoaded';
 
     /**
      * Triggered when the video element's buffer state changes, either stalled or loaded. Check payload for state.
      * @event MediaPlayerEvents#BUFFER_LEVEL_STATE_CHANGED
      */
-    _this.BUFFER_LEVEL_STATE_CHANGED = 'bufferStateChanged';
+    this.BUFFER_LEVEL_STATE_CHANGED = 'bufferStateChanged';
 
     /**
      * Triggered when the buffer level of a media type has been updated
      * @event MediaPlayerEvents#BUFFER_LEVEL_UPDATED
      */
-    _this.BUFFER_LEVEL_UPDATED = 'bufferLevelUpdated';
+    this.BUFFER_LEVEL_UPDATED = 'bufferLevelUpdated';
 
     /**
      * Triggered when a font signalled by a DVB Font Download has been added to the document FontFaceSet interface.
      * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_ADDED
      */
-    _this.DVB_FONT_DOWNLOAD_ADDED = 'dvbFontDownloadAdded';
+    this.DVB_FONT_DOWNLOAD_ADDED = 'dvbFontDownloadAdded';
 
     /**
      * Triggered when a font signalled by a DVB Font Download has successfully downloaded and the FontFace can be used.
      * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_COMPLETE
      */
-    _this.DVB_FONT_DOWNLOAD_COMPLETE = 'dvbFontDownloadComplete';
+    this.DVB_FONT_DOWNLOAD_COMPLETE = 'dvbFontDownloadComplete';
 
     /**
      * Triggered when a font signalled by a DVB Font Download could not be successfully downloaded, so the FontFace will not be used.
      * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_FAILED
      */
-    _this.DVB_FONT_DOWNLOAD_FAILED = 'dvbFontDownloadFailed';
+    this.DVB_FONT_DOWNLOAD_FAILED = 'dvbFontDownloadFailed';
 
     /**
      * Triggered when a dynamic stream changed to static (transition phase between Live and On-Demand).
      * @event MediaPlayerEvents#DYNAMIC_TO_STATIC
      */
-    _this.DYNAMIC_TO_STATIC = 'dynamicToStatic';
+    this.DYNAMIC_TO_STATIC = 'dynamicToStatic';
 
     /**
      * Triggered when there is an error from the element or MSE source buffer.
      * @event MediaPlayerEvents#ERROR
      */
-    _this.ERROR = 'error';
+    this.ERROR = 'error';
     /**
      * Triggered when a fragment download has completed.
      * @event MediaPlayerEvents#FRAGMENT_LOADING_COMPLETED
      */
-    _this.FRAGMENT_LOADING_COMPLETED = 'fragmentLoadingCompleted';
+    this.FRAGMENT_LOADING_COMPLETED = 'fragmentLoadingCompleted';
 
     /**
      * Triggered when a partial fragment download has completed.
      * @event MediaPlayerEvents#FRAGMENT_LOADING_PROGRESS
      */
-    _this.FRAGMENT_LOADING_PROGRESS = 'fragmentLoadingProgress';
+    this.FRAGMENT_LOADING_PROGRESS = 'fragmentLoadingProgress';
     /**
      * Triggered when a fragment download has started.
      * @event MediaPlayerEvents#FRAGMENT_LOADING_STARTED
      */
-    _this.FRAGMENT_LOADING_STARTED = 'fragmentLoadingStarted';
+    this.FRAGMENT_LOADING_STARTED = 'fragmentLoadingStarted';
 
     /**
      * Triggered when a fragment download is abandoned due to detection of slow download base on the ABR abandon rule..
      * @event MediaPlayerEvents#FRAGMENT_LOADING_ABANDONED
      */
-    _this.FRAGMENT_LOADING_ABANDONED = 'fragmentLoadingAbandoned';
+    this.FRAGMENT_LOADING_ABANDONED = 'fragmentLoadingAbandoned';
 
     /**
      * Triggered when {@link module:Debug} logger methods are called.
      * @event MediaPlayerEvents#LOG
      */
-    _this.LOG = 'log';
+    this.LOG = 'log';
 
     /**
      * Triggered when the manifest load is started
      * @event MediaPlayerEvents#MANIFEST_LOADING_STARTED
      */
-    _this.MANIFEST_LOADING_STARTED = 'manifestLoadingStarted';
+    this.MANIFEST_LOADING_STARTED = 'manifestLoadingStarted';
 
     /**
      * Triggered when the manifest loading is finished, providing the request object information
      * @event MediaPlayerEvents#MANIFEST_LOADING_FINISHED
      */
-    _this.MANIFEST_LOADING_FINISHED = 'manifestLoadingFinished';
+    this.MANIFEST_LOADING_FINISHED = 'manifestLoadingFinished';
 
     /**
      * Triggered when the manifest load is complete, providing the payload
      * @event MediaPlayerEvents#MANIFEST_LOADED
      */
-    _this.MANIFEST_LOADED = 'manifestLoaded';
+    this.MANIFEST_LOADED = 'manifestLoaded';
 
     /**
      * Triggered anytime there is a change to the overall metrics.
      * @event MediaPlayerEvents#METRICS_CHANGED
      */
-    _this.METRICS_CHANGED = 'metricsChanged';
+    this.METRICS_CHANGED = 'metricsChanged';
 
     /**
      * Triggered when an individual metric is added, updated or cleared.
      * @event MediaPlayerEvents#METRIC_CHANGED
      */
-    _this.METRIC_CHANGED = 'metricChanged';
+    this.METRIC_CHANGED = 'metricChanged';
 
     /**
      * Triggered every time a new metric is added.
      * @event MediaPlayerEvents#METRIC_ADDED
      */
-    _this.METRIC_ADDED = 'metricAdded';
+    this.METRIC_ADDED = 'metricAdded';
 
     /**
      * Triggered every time a metric is updated.
      * @event MediaPlayerEvents#METRIC_UPDATED
      */
-    _this.METRIC_UPDATED = 'metricUpdated';
+    this.METRIC_UPDATED = 'metricUpdated';
 
     /**
      * Triggered when a new stream (period) starts.
      * @event MediaPlayerEvents#PERIOD_SWITCH_STARTED
      */
-    _this.PERIOD_SWITCH_STARTED = 'periodSwitchStarted';
+    this.PERIOD_SWITCH_STARTED = 'periodSwitchStarted';
 
     /**
      * Triggered at the stream end of a period.
      * @event MediaPlayerEvents#PERIOD_SWITCH_COMPLETED
      */
-    _this.PERIOD_SWITCH_COMPLETED = 'periodSwitchCompleted';
+    this.PERIOD_SWITCH_COMPLETED = 'periodSwitchCompleted';
 
     /**
      * Triggered when an ABR up /down switch is initiated; either by user in manual mode or auto mode via ABR rules.
      * @event MediaPlayerEvents#QUALITY_CHANGE_REQUESTED
      */
-    _this.QUALITY_CHANGE_REQUESTED = 'qualityChangeRequested';
+    this.QUALITY_CHANGE_REQUESTED = 'qualityChangeRequested';
 
     /**
      * Triggered when the new ABR quality is being rendered on-screen.
      * @event MediaPlayerEvents#QUALITY_CHANGE_RENDERED
      */
-    _this.QUALITY_CHANGE_RENDERED = 'qualityChangeRendered';
+    this.QUALITY_CHANGE_RENDERED = 'qualityChangeRendered';
+
+    /**
+     * Triggered when the new track is being selected
+     * @event MediaPlayerEvents#NEW_TRACK_SELECTED
+     */
+    this.NEW_TRACK_SELECTED = 'newTrackSelected';
 
     /**
      * Triggered when the new track is being rendered.
      * @event MediaPlayerEvents#TRACK_CHANGE_RENDERED
      */
-    _this.TRACK_CHANGE_RENDERED = 'trackChangeRendered';
+    this.TRACK_CHANGE_RENDERED = 'trackChangeRendered';
 
     /**
      * Triggered when a stream (period) is being loaded
      * @event MediaPlayerEvents#STREAM_INITIALIZING
      */
-    _this.STREAM_INITIALIZING = 'streamInitializing';
+    this.STREAM_INITIALIZING = 'streamInitializing';
 
     /**
      * Triggered when a stream (period) is loaded
      * @event MediaPlayerEvents#STREAM_UPDATED
      */
-    _this.STREAM_UPDATED = 'streamUpdated';
+    this.STREAM_UPDATED = 'streamUpdated';
 
     /**
      * Triggered when a stream (period) is activated
      * @event MediaPlayerEvents#STREAM_ACTIVATED
      */
-    _this.STREAM_ACTIVATED = 'streamActivated';
+    this.STREAM_ACTIVATED = 'streamActivated';
 
     /**
      * Triggered when a stream (period) is deactivated
      * @event MediaPlayerEvents#STREAM_DEACTIVATED
      */
-    _this.STREAM_DEACTIVATED = 'streamDeactivated';
+    this.STREAM_DEACTIVATED = 'streamDeactivated';
 
     /**
      * Triggered when a stream (period) is activated
      * @event MediaPlayerEvents#STREAM_INITIALIZED
      */
-    _this.STREAM_INITIALIZED = 'streamInitialized';
+    this.STREAM_INITIALIZED = 'streamInitialized';
 
     /**
      * Triggered when the player has been reset.
      * @event MediaPlayerEvents#STREAM_TEARDOWN_COMPLETE
      */
-    _this.STREAM_TEARDOWN_COMPLETE = 'streamTeardownComplete';
+    this.STREAM_TEARDOWN_COMPLETE = 'streamTeardownComplete';
 
     /**
      * Triggered once all text tracks detected in the MPD are added to the video element.
      * @event MediaPlayerEvents#TEXT_TRACKS_ADDED
      */
-    _this.TEXT_TRACKS_ADDED = 'allTextTracksAdded';
+    this.TEXT_TRACKS_ADDED = 'allTextTracksAdded';
 
     /**
      * Triggered when a text track is added to the video element's TextTrackList
      * @event MediaPlayerEvents#TEXT_TRACK_ADDED
      */
-    _this.TEXT_TRACK_ADDED = 'textTrackAdded';
+    this.TEXT_TRACK_ADDED = 'textTrackAdded';
 
     /**
      * Triggered when a text track should be shown
      * @event MediaPlayerEvents#CUE_ENTER
      */
-    _this.CUE_ENTER = 'cueEnter';
+    this.CUE_ENTER = 'cueEnter';
 
     /**
      * Triggered when a text track should be hidden
      * @event MediaPlayerEvents#CUE_ENTER
      */
-    _this.CUE_EXIT = 'cueExit';
+    this.CUE_EXIT = 'cueExit';
 
     /**
      * Triggered when a throughput measurement based on the last segment request has been stored
      * @event MediaPlayerEvents#THROUGHPUT_MEASUREMENT_STORED
      */
-    _this.THROUGHPUT_MEASUREMENT_STORED = 'throughputMeasurementStored';
+    this.THROUGHPUT_MEASUREMENT_STORED = 'throughputMeasurementStored';
 
     /**
      * Triggered when a ttml chunk is parsed.
      * @event MediaPlayerEvents#TTML_PARSED
      */
-    _this.TTML_PARSED = 'ttmlParsed';
+    this.TTML_PARSED = 'ttmlParsed';
 
     /**
      * Triggered when a ttml chunk has to be parsed.
      * @event MediaPlayerEvents#TTML_TO_PARSE
      */
-    _this.TTML_TO_PARSE = 'ttmlToParse';
+    this.TTML_TO_PARSE = 'ttmlToParse';
 
     /**
      * Triggered when a caption is rendered.
      * @event MediaPlayerEvents#CAPTION_RENDERED
      */
-    _this.CAPTION_RENDERED = 'captionRendered';
+    this.CAPTION_RENDERED = 'captionRendered';
 
     /**
      * Triggered when the caption container is resized.
      * @event MediaPlayerEvents#CAPTION_CONTAINER_RESIZE
      */
-    _this.CAPTION_CONTAINER_RESIZE = 'captionContainerResize';
+    this.CAPTION_CONTAINER_RESIZE = 'captionContainerResize';
 
     /**
      * Sent when enough data is available that the media can be played,
@@ -4590,59 +4537,59 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      * HAVE_ENOUGH_DATA readyState.
      * @event MediaPlayerEvents#CAN_PLAY
      */
-    _this.CAN_PLAY = 'canPlay';
+    this.CAN_PLAY = 'canPlay';
 
     /**
      * This corresponds to the CAN_PLAY_THROUGH readyState.
      * @event MediaPlayerEvents#CAN_PLAY_THROUGH
      */
-    _this.CAN_PLAY_THROUGH = 'canPlayThrough';
+    this.CAN_PLAY_THROUGH = 'canPlayThrough';
 
     /**
      * Sent when playback completes.
      * @event MediaPlayerEvents#PLAYBACK_ENDED
      */
-    _this.PLAYBACK_ENDED = 'playbackEnded';
+    this.PLAYBACK_ENDED = 'playbackEnded';
 
     /**
      * Sent when an error occurs.  The element's error
      * attribute contains more information.
      * @event MediaPlayerEvents#PLAYBACK_ERROR
      */
-    _this.PLAYBACK_ERROR = 'playbackError';
+    this.PLAYBACK_ERROR = 'playbackError';
 
     /**
      * This event is fired once the playback has been initialized by MediaPlayer.js.
      * After that event methods such as setTextTrack() can be used.
      * @event MediaPlayerEvents#PLAYBACK_INITIALIZED
      */
-    _this.PLAYBACK_INITIALIZED = 'playbackInitialized';
+    this.PLAYBACK_INITIALIZED = 'playbackInitialized';
 
     /**
      * Sent when playback is not allowed (for example if user gesture is needed).
      * @event MediaPlayerEvents#PLAYBACK_NOT_ALLOWED
      */
-    _this.PLAYBACK_NOT_ALLOWED = 'playbackNotAllowed';
+    this.PLAYBACK_NOT_ALLOWED = 'playbackNotAllowed';
 
     /**
      * The media's metadata has finished loading; all attributes now
      * contain as much useful information as they're going to.
      * @event MediaPlayerEvents#PLAYBACK_METADATA_LOADED
      */
-    _this.PLAYBACK_METADATA_LOADED = 'playbackMetaDataLoaded';
+    this.PLAYBACK_METADATA_LOADED = 'playbackMetaDataLoaded';
 
     /**
      * The event is fired when the frame at the current playback position of the media has finished loading;
      * often the first frame
      * @event MediaPlayerEvents#PLAYBACK_LOADED_DATA
      */
-    _this.PLAYBACK_LOADED_DATA = 'playbackLoadedData';
+    this.PLAYBACK_LOADED_DATA = 'playbackLoadedData';
 
     /**
      * Sent when playback is paused.
      * @event MediaPlayerEvents#PLAYBACK_PAUSED
      */
-    _this.PLAYBACK_PAUSED = 'playbackPaused';
+    this.PLAYBACK_PAUSED = 'playbackPaused';
 
     /**
      * Sent when the media begins to play (either for the first time, after having been paused,
@@ -4650,7 +4597,7 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      *
      * @event MediaPlayerEvents#PLAYBACK_PLAYING
      */
-    _this.PLAYBACK_PLAYING = 'playbackPlaying';
+    this.PLAYBACK_PLAYING = 'playbackPlaying';
 
     /**
      * Sent periodically to inform interested parties of progress downloading
@@ -4658,31 +4605,31 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      * been downloaded is available in the media element's buffered attribute.
      * @event MediaPlayerEvents#PLAYBACK_PROGRESS
      */
-    _this.PLAYBACK_PROGRESS = 'playbackProgress';
+    this.PLAYBACK_PROGRESS = 'playbackProgress';
 
     /**
      * Sent when the playback speed changes.
      * @event MediaPlayerEvents#PLAYBACK_RATE_CHANGED
      */
-    _this.PLAYBACK_RATE_CHANGED = 'playbackRateChanged';
+    this.PLAYBACK_RATE_CHANGED = 'playbackRateChanged';
 
     /**
      * Sent when a seek operation completes.
      * @event MediaPlayerEvents#PLAYBACK_SEEKED
      */
-    _this.PLAYBACK_SEEKED = 'playbackSeeked';
+    this.PLAYBACK_SEEKED = 'playbackSeeked';
 
     /**
      * Sent when a seek operation begins.
      * @event MediaPlayerEvents#PLAYBACK_SEEKING
      */
-    _this.PLAYBACK_SEEKING = 'playbackSeeking';
+    this.PLAYBACK_SEEKING = 'playbackSeeking';
 
     /**
      * Sent when the video element reports stalled
      * @event MediaPlayerEvents#PLAYBACK_STALLED
      */
-    _this.PLAYBACK_STALLED = 'playbackStalled';
+    this.PLAYBACK_STALLED = 'playbackStalled';
 
     /**
      * Sent when playback of the media starts after having been paused;
@@ -4690,92 +4637,89 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      *
      * @event MediaPlayerEvents#PLAYBACK_STARTED
      */
-    _this.PLAYBACK_STARTED = 'playbackStarted';
+    this.PLAYBACK_STARTED = 'playbackStarted';
 
     /**
      * The time indicated by the element's currentTime attribute has changed.
      * @event MediaPlayerEvents#PLAYBACK_TIME_UPDATED
      */
-    _this.PLAYBACK_TIME_UPDATED = 'playbackTimeUpdated';
+    this.PLAYBACK_TIME_UPDATED = 'playbackTimeUpdated';
 
     /**
      * Sent when the video element reports that the volume has changed
      * @event MediaPlayerEvents#PLAYBACK_VOLUME_CHANGED
      */
-    _this.PLAYBACK_VOLUME_CHANGED = 'playbackVolumeChanged';
+    this.PLAYBACK_VOLUME_CHANGED = 'playbackVolumeChanged';
 
     /**
      * Sent when the media playback has stopped because of a temporary lack of data.
      *
      * @event MediaPlayerEvents#PLAYBACK_WAITING
      */
-    _this.PLAYBACK_WAITING = 'playbackWaiting';
+    this.PLAYBACK_WAITING = 'playbackWaiting';
 
     /**
      * Manifest validity changed - As a result of an MPD validity expiration event.
      * @event MediaPlayerEvents#MANIFEST_VALIDITY_CHANGED
      */
-    _this.MANIFEST_VALIDITY_CHANGED = 'manifestValidityChanged';
+    this.MANIFEST_VALIDITY_CHANGED = 'manifestValidityChanged';
 
     /**
      * Dash events are triggered at their respective start points on the timeline.
      * @event MediaPlayerEvents#EVENT_MODE_ON_START
      */
-    _this.EVENT_MODE_ON_START = 'eventModeOnStart';
+    this.EVENT_MODE_ON_START = 'eventModeOnStart';
 
     /**
      * Dash events are triggered as soon as they were parsed.
      * @event MediaPlayerEvents#EVENT_MODE_ON_RECEIVE
      */
-    _this.EVENT_MODE_ON_RECEIVE = 'eventModeOnReceive';
+    this.EVENT_MODE_ON_RECEIVE = 'eventModeOnReceive';
 
     /**
      * Event that is dispatched whenever the player encounters a potential conformance validation that might lead to unexpected/not optimal behavior
      * @event MediaPlayerEvents#CONFORMANCE_VIOLATION
      */
-    _this.CONFORMANCE_VIOLATION = 'conformanceViolation';
+    this.CONFORMANCE_VIOLATION = 'conformanceViolation';
 
     /**
      * Event that is dispatched whenever the player switches to a different representation
      * @event MediaPlayerEvents#REPRESENTATION_SWITCH
      */
-    _this.REPRESENTATION_SWITCH = 'representationSwitch';
+    this.REPRESENTATION_SWITCH = 'representationSwitch';
 
     /**
      * Event that is dispatched whenever an adaptation set is removed due to all representations not being supported.
      * @event MediaPlayerEvents#ADAPTATION_SET_REMOVED_NO_CAPABILITIES
      */
-    _this.ADAPTATION_SET_REMOVED_NO_CAPABILITIES = 'adaptationSetRemovedNoCapabilities';
+    this.ADAPTATION_SET_REMOVED_NO_CAPABILITIES = 'adaptationSetRemovedNoCapabilities';
 
     /**
      * Triggered when a content steering request has completed.
      * @event MediaPlayerEvents#CONTENT_STEERING_REQUEST_COMPLETED
      */
-    _this.CONTENT_STEERING_REQUEST_COMPLETED = 'contentSteeringRequestCompleted';
+    this.CONTENT_STEERING_REQUEST_COMPLETED = 'contentSteeringRequestCompleted';
 
     /**
      * Triggered when an inband prft (ProducerReferenceTime) boxes has been received.
      * @event MediaPlayerEvents#INBAND_PRFT
      */
-    _this.INBAND_PRFT = 'inbandPrft';
+    this.INBAND_PRFT = 'inbandPrft';
 
     /**
      * The streaming attribute of the Managed Media Source is true
      * @type {string}
      */
-    _this.MANAGED_MEDIA_SOURCE_START_STREAMING = 'managedMediaSourceStartStreaming';
+    this.MANAGED_MEDIA_SOURCE_START_STREAMING = 'managedMediaSourceStartStreaming';
 
     /**
      * The streaming attribute of the Managed Media Source is false
      * @type {string}
      */
-    _this.MANAGED_MEDIA_SOURCE_END_STREAMING = 'managedMediaSourceEndStreaming';
-    return _this;
+    this.MANAGED_MEDIA_SOURCE_END_STREAMING = 'managedMediaSourceEndStreaming';
   }
-  _inherits(MediaPlayerEvents, _EventsBase);
-  return _createClass(MediaPlayerEvents);
-}(_core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var mediaPlayerEvents = new MediaPlayerEvents();
+}
+let mediaPlayerEvents = new MediaPlayerEvents();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (mediaPlayerEvents);
 
 /***/ }),
@@ -4853,6 +4797,15 @@ __webpack_require__.r(__webpack_exports__);
       HW_SECURE_DECODE: 'HW_SECURE_DECODE',
       HW_SECURE_ALL: 'HW_SECURE_ALL'
     }
+  },
+  MEDIA_KEY_STATUSES: {
+    USABLE: 'usable',
+    EXPIRED: 'expired',
+    RELEASED: 'released',
+    OUTPUT_RESTRICTED: 'output-restricted',
+    OUTPUT_DOWNSCALED: 'output-downscaled',
+    STATUS_PENDING: 'status-pending',
+    INTERNAL_ERROR: 'internal-error'
   }
 });
 
@@ -4868,12 +4821,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -4908,12 +4855,13 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @class
  * @ignore
  */
-var DashJSError = /*#__PURE__*/_createClass(function DashJSError(code, message, data) {
-  _classCallCheck(this, DashJSError);
-  this.code = code || null;
-  this.message = message || null;
-  this.data = data || null;
-});
+class DashJSError {
+  constructor(code, message, data) {
+    this.code = code || null;
+    this.message = message || null;
+    this.data = data || null;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DashJSError);
 
 /***/ }),
@@ -4928,12 +4876,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -4964,25 +4906,26 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @class
  * @ignore
  */
-var DataChunk = /*#__PURE__*/_createClass(
-//Represents a data structure that keep all the necessary info about a single init/media segment
-function DataChunk() {
-  _classCallCheck(this, DataChunk);
-  this.streamId = null;
-  this.segmentType = null;
-  this.quality = NaN;
-  this.index = NaN;
-  this.bytes = null;
-  this.start = NaN;
-  this.end = NaN;
-  this.duration = NaN;
-  this.representation = null;
-  this.endFragment = null;
-});
+class DataChunk {
+  //Represents a data structure that keep all the necessary info about a single init/media segment
+  constructor() {
+    this.streamId = null;
+    this.segmentType = null;
+    this.quality = NaN;
+    this.index = NaN;
+    this.bytes = null;
+    this.start = NaN;
+    this.end = NaN;
+    this.duration = NaN;
+    this.representation = null;
+    this.endFragment = null;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DataChunk);
 
 /***/ }),
@@ -4998,12 +4941,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./metrics/HTTPRequest.js */ "./src/streaming/vo/metrics/HTTPRequest.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -5041,9 +4978,8 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * @class
  * @ignore
  */
-var FragmentRequest = /*#__PURE__*/function () {
-  function FragmentRequest(url) {
-    _classCallCheck(this, FragmentRequest);
+class FragmentRequest {
+  constructor(url) {
     this.action = FragmentRequest.ACTION_DOWNLOAD;
     this.availabilityEndTime = null;
     this.availabilityStartTime = null;
@@ -5069,21 +5005,16 @@ var FragmentRequest = /*#__PURE__*/function () {
     this.url = url || null;
     this.wallStartTime = null;
   }
-  return _createClass(FragmentRequest, [{
-    key: "isInitializationRequest",
-    value: function isInitializationRequest() {
-      return this.type && this.type === _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE;
-    }
-  }, {
-    key: "setInfo",
-    value: function setInfo(info) {
-      this.type = info && info.init ? _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE : _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.MEDIA_SEGMENT_TYPE;
-      this.url = info && info.url ? info.url : null;
-      this.range = info && info.range ? info.range.start + '-' + info.range.end : null;
-      this.mediaType = info && info.mediaType ? info.mediaType : null;
-    }
-  }]);
-}();
+  isInitializationRequest() {
+    return this.type && this.type === _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE;
+  }
+  setInfo(info) {
+    this.type = info && info.init ? _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.INIT_SEGMENT_TYPE : _metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_0__.HTTPRequest.MEDIA_SEGMENT_TYPE;
+    this.url = info && info.url ? info.url : null;
+    this.range = info && info.range ? info.range.start + '-' + info.range.end : null;
+    this.mediaType = info && info.mediaType ? info.mediaType : null;
+  }
+}
 FragmentRequest.ACTION_DOWNLOAD = 'download';
 FragmentRequest.ACTION_COMPLETE = 'complete';
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FragmentRequest);
@@ -5101,12 +5032,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   HTTPRequest: () => (/* binding */ HTTPRequest),
 /* harmony export */   HTTPRequestTrace: () => (/* binding */ HTTPRequestTrace)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -5143,141 +5068,142 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * by Metrics Reporting code.
  * @ignore
  */
-var HTTPRequest = /*#__PURE__*/_createClass(
-/**
- * @class
- */
-function HTTPRequest() {
-  _classCallCheck(this, HTTPRequest);
+class HTTPRequest {
   /**
-   * Identifier of the TCP connection on which the HTTP request was sent.
-   * @public
+   * @class
    */
-  this.tcpid = null;
-  /**
-   * This is an optional parameter and should not be included in HTTP request/response transactions for progressive download.
-   * The type of the request:
-   * - MPD
-   * - XLink expansion
-   * - Initialization Fragment
-   * - Index Fragment
-   * - Media Fragment
-   * - Bitstream Switching Fragment
-   * - other
-   * @public
-   */
-  this.type = null;
-  /**
-   * The original URL (before any redirects or failures)
-   * @public
-   */
-  this.url = null;
-  /**
-   * The actual URL requested, if different from above
-   * @public
-   */
-  this.actualurl = null;
-  /**
-   * The contents of the byte-range-spec part of the HTTP Range header.
-   * @public
-   */
-  this.range = null;
-  /**
-   * Real-Time | The real time at which the request was sent.
-   * @public
-   */
-  this.trequest = null;
-  /**
-   * Real-Time | The real time at which the first byte of the response was received.
-   * @public
-   */
-  this.tresponse = null;
-  /**
-   * The HTTP response code.
-   * @public
-   */
-  this.responsecode = null;
-  /**
-   * The duration of the throughput trace intervals (ms), for successful requests only.
-   * @public
-   */
-  this.interval = null;
-  /**
-   * Throughput traces, for successful requests only.
-   * @public
-   */
-  this.trace = [];
-  /**
-   * The CMSD static and dynamic values retrieved from CMSD response headers.
-   * @public
-   */
-  this.cmsd = null;
+  constructor() {
+    /**
+     * Identifier of the TCP connection on which the HTTP request was sent.
+     * @public
+     */
+    this.tcpid = null;
+    /**
+     * This is an optional parameter and should not be included in HTTP request/response transactions for progressive download.
+     * The type of the request:
+     * - MPD
+     * - XLink expansion
+     * - Initialization Fragment
+     * - Index Fragment
+     * - Media Fragment
+     * - Bitstream Switching Fragment
+     * - other
+     * @public
+     */
+    this.type = null;
+    /**
+     * The original URL (before any redirects or failures)
+     * @public
+     */
+    this.url = null;
+    /**
+     * The actual URL requested, if different from above
+     * @public
+     */
+    this.actualurl = null;
+    /**
+     * The contents of the byte-range-spec part of the HTTP Range header.
+     * @public
+     */
+    this.range = null;
+    /**
+     * Real-Time | The real time at which the request was sent.
+     * @public
+     */
+    this.trequest = null;
+    /**
+     * Real-Time | The real time at which the first byte of the response was received.
+     * @public
+     */
+    this.tresponse = null;
+    /**
+     * The HTTP response code.
+     * @public
+     */
+    this.responsecode = null;
+    /**
+     * The duration of the throughput trace intervals (ms), for successful requests only.
+     * @public
+     */
+    this.interval = null;
+    /**
+     * Throughput traces, for successful requests only.
+     * @public
+     */
+    this.trace = [];
+    /**
+     * The CMSD static and dynamic values retrieved from CMSD response headers.
+     * @public
+     */
+    this.cmsd = null;
 
-  /**
-   * Type of stream ("audio" | "video" etc..)
-   * @public
-   */
-  this._stream = null;
-  /**
-   * Real-Time | The real time at which the request finished.
-   * @public
-   */
-  this._tfinish = null;
-  /**
-   * The duration of the media requests, if available, in seconds.
-   * @public
-   */
-  this._mediaduration = null;
-  /**
-   * The media segment quality
-   * @public
-   */
-  this._quality = null;
-  /**
-   * all the response headers from request.
-   * @public
-   */
-  this._responseHeaders = null;
-  /**
-   * The selected service location for the request. string.
-   * @public
-   */
-  this._serviceLocation = null;
-  /**
-   * The type of the loader that was used. Distinguish between fetch loader and xhr loader
-   */
-  this._fileLoaderType = null;
-  /**
-   * The values derived from the ResourceTimingAPI.
-   */
-  this._resourceTimingValues = null;
-});
+    /**
+     * Type of stream ("audio" | "video" etc..)
+     * @public
+     */
+    this._stream = null;
+    /**
+     * Real-Time | The real time at which the request finished.
+     * @public
+     */
+    this._tfinish = null;
+    /**
+     * The duration of the media requests, if available, in seconds.
+     * @public
+     */
+    this._mediaduration = null;
+    /**
+     * The media segment quality
+     * @public
+     */
+    this._quality = null;
+    /**
+     * all the response headers from request.
+     * @public
+     */
+    this._responseHeaders = null;
+    /**
+     * The selected service location for the request. string.
+     * @public
+     */
+    this._serviceLocation = null;
+    /**
+     * The type of the loader that was used. Distinguish between fetch loader and xhr loader
+     */
+    this._fileLoaderType = null;
+    /**
+     * The values derived from the ResourceTimingAPI.
+     */
+    this._resourceTimingValues = null;
+  }
+}
+
 /**
  * @classdesc This Object holds reference to the progress of the HTTPRequest.
  * @ignore
  */
-var HTTPRequestTrace = /*#__PURE__*/_createClass(
-/**
- * @class
- */
-function HTTPRequestTrace() {
-  _classCallCheck(this, HTTPRequestTrace);
+class HTTPRequestTrace {
   /**
-   * Real-Time | Measurement stream start.
-   * @public
+   * @class
    */
-  this.s = null;
-  /**
-   * Measurement stream duration (ms).
-   * @public
-   */
-  this.d = null;
-  /**
-   * List of integers counting the bytes received in each trace interval within the measurement stream.
-   * @public
-   */
-  this.b = [];
-});
+  constructor() {
+    /**
+     * Real-Time | Measurement stream start.
+     * @public
+     */
+    this.s = null;
+    /**
+     * Measurement stream duration (ms).
+     * @public
+     */
+    this.d = null;
+    /**
+     * List of integers counting the bytes received in each trace interval within the measurement stream.
+     * @public
+     */
+    this.b = [];
+  }
+}
 HTTPRequest.GET = 'GET';
 HTTPRequest.HEAD = 'HEAD';
 HTTPRequest.MPD_TYPE = 'MPD';

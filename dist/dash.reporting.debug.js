@@ -45,7 +45,6 @@ return /******/ (() => { // webpackBootstrap
 
 
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function assertPath(path) {
   if (typeof path !== 'string') {
     throw new TypeError('Path must be a string. Received ' + JSON.stringify(path));
@@ -393,8 +392,8 @@ var posix = {
     return path.slice(startDot, end);
   },
   format: function format(pathObject) {
-    if (pathObject === null || _typeof(pathObject) !== 'object') {
-      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + _typeof(pathObject));
+    if (pathObject === null || typeof pathObject !== 'object') {
+      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof pathObject);
     }
     return _format('/', pathObject);
   },
@@ -675,9 +674,7 @@ process.umask = function () {
   \*******************************************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-/* module decorator */ module = __webpack_require__.nmd(module);
-var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-/////////////////////////////////////////////////////////////////////////////////
+var __WEBPACK_AMD_DEFINE_RESULT__;/////////////////////////////////////////////////////////////////////////////////
 /* UAParser.js v1.0.38
    Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
    MIT License */ /*
@@ -741,7 +738,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   // Helper
   //////////
 
-  var extend = function extend(regexes, extensions) {
+  var extend = function (regexes, extensions) {
       var mergedRegexes = {};
       for (var i in regexes) {
         if (extensions[i] && extensions[i].length % 2 === 0) {
@@ -752,26 +749,26 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       }
       return mergedRegexes;
     },
-    enumerize = function enumerize(arr) {
+    enumerize = function (arr) {
       var enums = {};
       for (var i = 0; i < arr.length; i++) {
         enums[arr[i].toUpperCase()] = arr[i];
       }
       return enums;
     },
-    has = function has(str1, str2) {
-      return _typeof(str1) === STR_TYPE ? lowerize(str2).indexOf(lowerize(str1)) !== -1 : false;
+    has = function (str1, str2) {
+      return typeof str1 === STR_TYPE ? lowerize(str2).indexOf(lowerize(str1)) !== -1 : false;
     },
-    lowerize = function lowerize(str) {
+    lowerize = function (str) {
       return str.toLowerCase();
     },
-    majorize = function majorize(version) {
-      return _typeof(version) === STR_TYPE ? version.replace(/[^\d\.]/g, EMPTY).split('.')[0] : undefined;
+    majorize = function (version) {
+      return typeof version === STR_TYPE ? version.replace(/[^\d\.]/g, EMPTY).split('.')[0] : undefined;
     },
-    trim = function trim(str, len) {
-      if (_typeof(str) === STR_TYPE) {
+    trim = function (str, len) {
+      if (typeof str === STR_TYPE) {
         str = str.replace(/^\s\s*/, EMPTY);
-        return _typeof(len) === UNDEF_TYPE ? str : str.substring(0, UA_MAX_LENGTH);
+        return typeof len === UNDEF_TYPE ? str : str.substring(0, UA_MAX_LENGTH);
       }
     };
 
@@ -779,7 +776,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   // Map helper
   //////////////
 
-  var rgxMapper = function rgxMapper(ua, arrays) {
+  var rgxMapper = function (ua, arrays) {
       var i = 0,
         j,
         k,
@@ -806,9 +803,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
               match = matches[++k];
               q = props[p];
               // check if given property is actually array
-              if (_typeof(q) === OBJ_TYPE && q.length > 0) {
+              if (typeof q === OBJ_TYPE && q.length > 0) {
                 if (q.length === 2) {
-                  if (_typeof(q[1]) == FUNC_TYPE) {
+                  if (typeof q[1] == FUNC_TYPE) {
                     // assign modified match
                     this[q[0]] = q[1].call(this, match);
                   } else {
@@ -817,7 +814,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
                   }
                 } else if (q.length === 3) {
                   // check whether function or regex
-                  if (_typeof(q[1]) === FUNC_TYPE && !(q[1].exec && q[1].test)) {
+                  if (typeof q[1] === FUNC_TYPE && !(q[1].exec && q[1].test)) {
                     // call function (usually string mapper)
                     this[q[0]] = match ? q[1].call(this, match, q[2]) : undefined;
                   } else {
@@ -836,10 +833,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
         i += 2;
       }
     },
-    strMapper = function strMapper(str, map) {
+    strMapper = function (str, map) {
       for (var i in map) {
         // check if current value is array
-        if (_typeof(map[i]) === OBJ_TYPE && map[i].length > 0) {
+        if (typeof map[i] === OBJ_TYPE && map[i].length > 0) {
           for (var j = 0; j < map[i].length; j++) {
             if (has(map[i][j], str)) {
               return i === UNKNOWN ? undefined : i;
@@ -1298,15 +1295,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   // Constructor
   ////////////////
 
-  var _UAParser = function UAParser(ua, extensions) {
-    if (_typeof(ua) === OBJ_TYPE) {
+  var UAParser = function (ua, extensions) {
+    if (typeof ua === OBJ_TYPE) {
       extensions = ua;
       ua = undefined;
     }
-    if (!(this instanceof _UAParser)) {
-      return new _UAParser(ua, extensions).getResult();
+    if (!(this instanceof UAParser)) {
+      return new UAParser(ua, extensions).getResult();
     }
-    var _navigator = _typeof(window) !== UNDEF_TYPE && window.navigator ? window.navigator : undefined;
+    var _navigator = typeof window !== UNDEF_TYPE && window.navigator ? window.navigator : undefined;
     var _ua = ua || (_navigator && _navigator.userAgent ? _navigator.userAgent : EMPTY);
     var _uach = _navigator && _navigator.userAgentData ? _navigator.userAgentData : undefined;
     var _rgxmap = extensions ? extend(regexes, extensions) : regexes;
@@ -1318,7 +1315,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       rgxMapper.call(_browser, _ua, _rgxmap.browser);
       _browser[MAJOR] = majorize(_browser[VERSION]);
       // Brave-specific detection
-      if (_isSelfNav && _navigator && _navigator.brave && _typeof(_navigator.brave.isBrave) == FUNC_TYPE) {
+      if (_isSelfNav && _navigator && _navigator.brave && typeof _navigator.brave.isBrave == FUNC_TYPE) {
         _browser[NAME] = 'Brave';
       }
       return _browser;
@@ -1339,7 +1336,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
         _device[TYPE] = MOBILE;
       }
       // iPadOS-specific detection: identified as Mac, but has some iOS-only properties
-      if (_isSelfNav && _device[MODEL] == 'Macintosh' && _navigator && _typeof(_navigator.standalone) !== UNDEF_TYPE && _navigator.maxTouchPoints && _navigator.maxTouchPoints > 2) {
+      if (_isSelfNav && _device[MODEL] == 'Macintosh' && _navigator && typeof _navigator.standalone !== UNDEF_TYPE && _navigator.maxTouchPoints && _navigator.maxTouchPoints > 2) {
         _device[MODEL] = 'iPad';
         _device[TYPE] = TABLET;
       }
@@ -1376,39 +1373,39 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       return _ua;
     };
     this.setUA = function (ua) {
-      _ua = _typeof(ua) === STR_TYPE && ua.length > UA_MAX_LENGTH ? trim(ua, UA_MAX_LENGTH) : ua;
+      _ua = typeof ua === STR_TYPE && ua.length > UA_MAX_LENGTH ? trim(ua, UA_MAX_LENGTH) : ua;
       return this;
     };
     this.setUA(_ua);
     return this;
   };
-  _UAParser.VERSION = LIBVERSION;
-  _UAParser.BROWSER = enumerize([NAME, VERSION, MAJOR]);
-  _UAParser.CPU = enumerize([ARCHITECTURE]);
-  _UAParser.DEVICE = enumerize([MODEL, VENDOR, TYPE, CONSOLE, MOBILE, SMARTTV, TABLET, WEARABLE, EMBEDDED]);
-  _UAParser.ENGINE = _UAParser.OS = enumerize([NAME, VERSION]);
+  UAParser.VERSION = LIBVERSION;
+  UAParser.BROWSER = enumerize([NAME, VERSION, MAJOR]);
+  UAParser.CPU = enumerize([ARCHITECTURE]);
+  UAParser.DEVICE = enumerize([MODEL, VENDOR, TYPE, CONSOLE, MOBILE, SMARTTV, TABLET, WEARABLE, EMBEDDED]);
+  UAParser.ENGINE = UAParser.OS = enumerize([NAME, VERSION]);
 
   ///////////
   // Export
   //////////
 
   // check js environment
-  if (( false ? 0 : _typeof(exports)) !== UNDEF_TYPE) {
+  if (typeof exports !== UNDEF_TYPE) {
     // nodejs env
-    if (( false ? 0 : _typeof(module)) !== UNDEF_TYPE && module.exports) {
-      exports = module.exports = _UAParser;
+    if ("object" !== UNDEF_TYPE && module.exports) {
+      exports = module.exports = UAParser;
     }
-    exports.UAParser = _UAParser;
+    exports.UAParser = UAParser;
   } else {
     // requirejs env (optional)
-    if (( false ? 0 : _typeof(__webpack_require__.amdD)) === FUNC_TYPE && __webpack_require__.amdO) {
+    if ("function" === FUNC_TYPE && __webpack_require__.amdO) {
       !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
-        return _UAParser;
+        return UAParser;
       }).call(exports, __webpack_require__, exports, module),
 		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-    } else if (_typeof(window) !== UNDEF_TYPE) {
+    } else if (typeof window !== UNDEF_TYPE) {
       // browser env
-      window.UAParser = _UAParser;
+      window.UAParser = UAParser;
     }
   }
 
@@ -1417,9 +1414,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
   //   In AMD env the global scope should be kept clean, but jQuery is an exception.
   //   jQuery always exports to global scope, unless jQuery.noConflict(true) is used,
   //   and we should catch that.
-  var $ = _typeof(window) !== UNDEF_TYPE && (window.jQuery || window.Zepto);
+  var $ = typeof window !== UNDEF_TYPE && (window.jQuery || window.Zepto);
   if ($ && !$.ua) {
-    var parser = new _UAParser();
+    var parser = new UAParser();
     $.ua = parser.getResult();
     $.ua.get = function () {
       return parser.getUA();
@@ -1432,7 +1429,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(o) { "@babel/helpers - typeof
       }
     };
   }
-})((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' ? window : this);
+})(typeof window === 'object' ? window : this);
 
 /***/ }),
 
@@ -1483,12 +1480,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var LOG_LEVEL_NONE = 0;
-var LOG_LEVEL_FATAL = 1;
-var LOG_LEVEL_ERROR = 2;
-var LOG_LEVEL_WARNING = 3;
-var LOG_LEVEL_INFO = 4;
-var LOG_LEVEL_DEBUG = 5;
+const LOG_LEVEL_NONE = 0;
+const LOG_LEVEL_FATAL = 1;
+const LOG_LEVEL_ERROR = 2;
+const LOG_LEVEL_WARNING = 3;
+const LOG_LEVEL_INFO = 4;
+const LOG_LEVEL_DEBUG = 5;
 
 /**
  * @module Debug
@@ -1497,11 +1494,11 @@ var LOG_LEVEL_DEBUG = 5;
  */
 function Debug(config) {
   config = config || {};
-  var context = this.context;
-  var eventBus = (0,_EventBus_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
-  var settings = config.settings;
-  var logFn = [];
-  var instance, showLogTimestamp, showCalleeName, startTime;
+  const context = this.context;
+  const eventBus = (0,_EventBus_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
+  const settings = config.settings;
+  const logFn = [];
+  let instance, showLogTimestamp, showCalleeName, startTime;
   function setup() {
     showLogTimestamp = true;
     showCalleeName = true;
@@ -1565,35 +1562,35 @@ function Debug(config) {
     for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
       params[_key] = arguments[_key];
     }
-    doLog.apply(void 0, [LOG_LEVEL_FATAL, this].concat(params));
+    doLog(LOG_LEVEL_FATAL, this, ...params);
   }
   function error() {
     for (var _len2 = arguments.length, params = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
       params[_key2] = arguments[_key2];
     }
-    doLog.apply(void 0, [LOG_LEVEL_ERROR, this].concat(params));
+    doLog(LOG_LEVEL_ERROR, this, ...params);
   }
   function warn() {
     for (var _len3 = arguments.length, params = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
       params[_key3] = arguments[_key3];
     }
-    doLog.apply(void 0, [LOG_LEVEL_WARNING, this].concat(params));
+    doLog(LOG_LEVEL_WARNING, this, ...params);
   }
   function info() {
     for (var _len4 = arguments.length, params = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
       params[_key4] = arguments[_key4];
     }
-    doLog.apply(void 0, [LOG_LEVEL_INFO, this].concat(params));
+    doLog(LOG_LEVEL_INFO, this, ...params);
   }
   function debug() {
     for (var _len5 = arguments.length, params = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
       params[_key5] = arguments[_key5];
     }
-    doLog.apply(void 0, [LOG_LEVEL_DEBUG, this].concat(params));
+    doLog(LOG_LEVEL_DEBUG, this, ...params);
   }
   function doLog(level, _this) {
-    var message = '';
-    var logTime = null;
+    let message = '';
+    let logTime = null;
     if (showLogTimestamp) {
       logTime = new Date().getTime();
       message += '[' + (logTime - startTime) + ']';
@@ -1636,7 +1633,7 @@ function Debug(config) {
   return instance;
 }
 Debug.__dashjs_factory_name = 'Debug';
-var factory = _FactoryMaker_js__WEBPACK_IMPORTED_MODULE_2__["default"].getSingletonFactory(Debug);
+const factory = _FactoryMaker_js__WEBPACK_IMPORTED_MODULE_2__["default"].getSingletonFactory(Debug);
 factory.LOG_LEVEL_NONE = LOG_LEVEL_NONE;
 factory.LOG_LEVEL_FATAL = LOG_LEVEL_FATAL;
 factory.LOG_LEVEL_ERROR = LOG_LEVEL_ERROR;
@@ -1693,27 +1690,29 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-var EVENT_PRIORITY_LOW = 0;
-var EVENT_PRIORITY_HIGH = 5000;
+const EVENT_PRIORITY_LOW = 0;
+const EVENT_PRIORITY_HIGH = 5000;
 function EventBus() {
-  var handlers = {};
-  function on(type, listener, scope) {
-    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  let handlers = {};
+  function _commonOn(type, listener, scope) {
+    let options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    let executeOnlyOnce = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
     if (!type) {
       throw new Error('event type cannot be null or undefined');
     }
     if (!listener || typeof listener !== 'function') {
       throw new Error('listener must be a function: ' + listener);
     }
-    var priority = options.priority || EVENT_PRIORITY_LOW;
+    let priority = options.priority || EVENT_PRIORITY_LOW;
     if (getHandlerIdx(type, listener, scope) >= 0) {
       return;
     }
     handlers[type] = handlers[type] || [];
-    var handler = {
+    const handler = {
       callback: listener,
-      scope: scope,
-      priority: priority
+      scope,
+      priority,
+      executeOnlyOnce
     };
     if (scope && scope.getStreamId) {
       handler.streamId = scope.getStreamId();
@@ -1724,7 +1723,7 @@ function EventBus() {
     if (options && options.mode) {
       handler.mode = options.mode;
     }
-    var inserted = handlers[type].some(function (item, idx) {
+    const inserted = handlers[type].some((item, idx) => {
       if (item && priority > item.priority) {
         handlers[type].splice(idx, 0, handler);
         return true;
@@ -1734,19 +1733,27 @@ function EventBus() {
       handlers[type].push(handler);
     }
   }
+  function on(type, listener, scope) {
+    let options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    _commonOn(type, listener, scope, options);
+  }
+  function once(type, listener, scope) {
+    let options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    _commonOn(type, listener, scope, options, true);
+  }
   function off(type, listener, scope) {
     if (!type || !listener || !handlers[type]) {
       return;
     }
-    var idx = getHandlerIdx(type, listener, scope);
+    const idx = getHandlerIdx(type, listener, scope);
     if (idx < 0) {
       return;
     }
     handlers[type][idx] = null;
   }
   function trigger(type) {
-    var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var filters = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    let payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    let filters = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     if (!type || !handlers[type]) {
       return;
     }
@@ -1761,7 +1768,8 @@ function EventBus() {
     if (filters.mediaType) {
       payload.mediaType = filters.mediaType;
     }
-    handlers[type].filter(function (handler) {
+    const handlersToRemove = [];
+    handlers[type].filter(handler => {
       if (!handler) {
         return false;
       }
@@ -1776,16 +1784,22 @@ function EventBus() {
         return false;
       }
       return true;
-    }).forEach(function (handler) {
-      return handler && handler.callback.call(handler.scope, payload);
+    }).forEach(handler => {
+      handler && handler.callback.call(handler.scope, payload);
+      if (handler.executeOnlyOnce) {
+        handlersToRemove.push(handler);
+      }
+    });
+    handlersToRemove.forEach(handler => {
+      off(type, handler.callback, handler.scope);
     });
   }
   function getHandlerIdx(type, listener, scope) {
-    var idx = -1;
+    let idx = -1;
     if (!handlers[type]) {
       return idx;
     }
-    handlers[type].some(function (item, index) {
+    handlers[type].some((item, index) => {
       if (item && item.callback === listener && (!scope || scope === item.scope)) {
         idx = index;
         return true;
@@ -1796,16 +1810,17 @@ function EventBus() {
   function reset() {
     handlers = {};
   }
-  var instance = {
-    on: on,
-    off: off,
-    trigger: trigger,
-    reset: reset
+  const instance = {
+    on,
+    once,
+    off,
+    trigger,
+    reset
   };
   return instance;
 }
 EventBus.__dashjs_factory_name = 'EventBus';
-var factory = _FactoryMaker_js__WEBPACK_IMPORTED_MODULE_0__["default"].getSingletonFactory(EventBus);
+const factory = _FactoryMaker_js__WEBPACK_IMPORTED_MODULE_0__["default"].getSingletonFactory(EventBus);
 factory.EVENT_PRIORITY_LOW = EVENT_PRIORITY_LOW;
 factory.EVENT_PRIORITY_HIGH = EVENT_PRIORITY_HIGH;
 _FactoryMaker_js__WEBPACK_IMPORTED_MODULE_0__["default"].updateSingletonFactory(EventBus.__dashjs_factory_name, factory);
@@ -1858,11 +1873,11 @@ __webpack_require__.r(__webpack_exports__);
  * @module FactoryMaker
  * @ignore
  */
-var FactoryMaker = function () {
-  var instance;
-  var singletonContexts = [];
-  var singletonFactories = {};
-  var classFactories = {};
+const FactoryMaker = function () {
+  let instance;
+  let singletonContexts = [];
+  const singletonFactories = {};
+  const classFactories = {};
   function extend(name, childInstance, override, context) {
     if (!context[name] && childInstance) {
       context[name] = {
@@ -1885,8 +1900,8 @@ var FactoryMaker = function () {
    * @instance
    */
   function getSingletonInstance(context, className) {
-    for (var i in singletonContexts) {
-      var obj = singletonContexts[i];
+    for (const i in singletonContexts) {
+      const obj = singletonContexts[i];
       if (obj.context === context && obj.name === className) {
         return obj.instance;
       }
@@ -1904,8 +1919,8 @@ var FactoryMaker = function () {
    * @instance
    */
   function setSingletonInstance(context, className, instance) {
-    for (var i in singletonContexts) {
-      var obj = singletonContexts[i];
+    for (const i in singletonContexts) {
+      const obj = singletonContexts[i];
       if (obj.context === context && obj.name === className) {
         singletonContexts[i].instance = instance;
         return;
@@ -1926,9 +1941,7 @@ var FactoryMaker = function () {
    * @instance
    */
   function deleteSingletonInstances(context) {
-    singletonContexts = singletonContexts.filter(function (x) {
-      return x.context !== context;
-    });
+    singletonContexts = singletonContexts.filter(x => x.context !== context);
   }
 
   /*------------------------------------------------------------------------------------------*/
@@ -1959,14 +1972,14 @@ var FactoryMaker = function () {
     return getFactoryByName(name, classFactories);
   }
   function getClassFactory(classConstructor) {
-    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
+    let factory = getFactoryByName(classConstructor.__dashjs_factory_name, classFactories);
     if (!factory) {
-      factory = function factory(context) {
+      factory = function (context) {
         if (context === undefined) {
           context = {};
         }
         return {
-          create: function create() {
+          create: function () {
             return merge(classConstructor, context, arguments);
           }
         };
@@ -1989,15 +2002,15 @@ var FactoryMaker = function () {
     return getFactoryByName(name, singletonFactories);
   }
   function getSingletonFactory(classConstructor) {
-    var factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
+    let factory = getFactoryByName(classConstructor.__dashjs_factory_name, singletonFactories);
     if (!factory) {
-      factory = function factory(context) {
-        var instance;
+      factory = function (context) {
+        let instance;
         if (context === undefined) {
           context = {};
         }
         return {
-          getInstance: function getInstance() {
+          getInstance: function () {
             // If we don't have an instance yet check for one on the context
             if (!instance) {
               instance = getSingletonInstance(context, classConstructor.__dashjs_factory_name);
@@ -2020,23 +2033,23 @@ var FactoryMaker = function () {
     return factory;
   }
   function merge(classConstructor, context, args) {
-    var classInstance;
-    var className = classConstructor.__dashjs_factory_name;
-    var extensionObject = context[className];
+    let classInstance;
+    const className = classConstructor.__dashjs_factory_name;
+    const extensionObject = context[className];
     if (extensionObject) {
-      var extension = extensionObject.instance;
+      let extension = extensionObject.instance;
       if (extensionObject.override) {
         //Override public methods in parent but keep parent.
 
         classInstance = classConstructor.apply({
-          context: context
+          context
         }, args);
         extension = extension.apply({
-          context: context,
+          context,
           factory: instance,
           parent: classInstance
         }, args);
-        for (var prop in extension) {
+        for (const prop in extension) {
           if (classInstance.hasOwnProperty(prop)) {
             classInstance[prop] = extension[prop];
           }
@@ -2045,14 +2058,14 @@ var FactoryMaker = function () {
         //replace parent object completely with new object. Same as dijon.
 
         return extension.apply({
-          context: context,
+          context,
           factory: instance
         }, args);
       }
     } else {
       // Create new instance of the class
       classInstance = classConstructor.apply({
-        context: context
+        context
       }, args);
     }
 
@@ -2098,16 +2111,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../streaming/vo/metrics/HTTPRequest.js */ "./src/streaming/vo/metrics/HTTPRequest.js");
 /* harmony import */ var _EventBus_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./EventBus.js */ "./src/core/EventBus.js");
 /* harmony import */ var _events_Events_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./events/Events.js */ "./src/core/events/Events.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -2226,7 +2229,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  *                useAppendWindow: true,
  *                setStallState: true,
  *                avoidCurrentTimeRangePruning: false,
- *                useChangeTypeForTrackSwitch: true,
+ *                useChangeType: true,
  *                mediaSourceDurationInfinity: true,
  *                resetSourceBuffersForTrackSwitch: false
  *            },
@@ -2412,6 +2415,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  *                rtpSafetyFactor: 5,
  *                mode: Constants.CMCD_MODE_QUERY,
  *                enabledKeys: ['br', 'd', 'ot', 'tb' , 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su' , 'bs', 'rtp' , 'cid', 'pr', 'sf', 'sid', 'st', 'v']
+ *                includeInRequests: ['segment', 'mpd']
  *            },
  *            cmsd: {
  *                enabled: false,
@@ -2524,8 +2528,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  * Avoids pruning of the buffered range that contains the current playback time.
  *
  * That buffered range is likely to have been enqueued for playback. Pruning it causes a flush and reenqueue in WPE and WebKitGTK based browsers. This stresses the video decoder and can cause stuttering on embedded platforms.
- * @property {boolean} [useChangeTypeForTrackSwitch=true]
- * If this flag is set to true then dash.js will use the MSE v.2 API call "changeType()" before switching to a different track.
+ * @property {boolean} [useChangeType=true]
+ * If this flag is set to true then dash.js will use the MSE v.2 API call "changeType()" before switching to a different codec family.
  * Note that some platforms might not implement the changeType function. dash.js is checking for the availability before trying to call it.
  * @property {boolean} [mediaSourceDurationInfinity=true]
  * If this flag is set to true then dash.js will allow `Infinity` to be set as the MediaSource duration otherwise the duration will be set to `Math.pow(2,32)` instead of `Infinity` to allow appending segments indefinitely.
@@ -3116,10 +3120,10 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
  * @ignore
  */
 function Settings() {
-  var instance;
-  var context = this.context;
-  var eventBus = (0,_EventBus_js__WEBPACK_IMPORTED_MODULE_5__["default"])(context).getInstance();
-  var DISPATCH_KEY_MAP = {
+  let instance;
+  const context = this.context;
+  const eventBus = (0,_EventBus_js__WEBPACK_IMPORTED_MODULE_5__["default"])(context).getInstance();
+  const DISPATCH_KEY_MAP = {
     'streaming.delay.liveDelay': _events_Events_js__WEBPACK_IMPORTED_MODULE_6__["default"].SETTING_UPDATED_LIVE_DELAY,
     'streaming.delay.liveDelayFragmentCount': _events_Events_js__WEBPACK_IMPORTED_MODULE_6__["default"].SETTING_UPDATED_LIVE_DELAY_FRAGMENT_COUNT,
     'streaming.liveCatchup.enabled': _events_Events_js__WEBPACK_IMPORTED_MODULE_6__["default"].SETTING_UPDATED_CATCHUP_ENABLED,
@@ -3143,7 +3147,7 @@ function Settings() {
    * @const {PlayerSettings} defaultSettings
    * @ignore
    */
-  var defaultSettings = {
+  const defaultSettings = {
     debug: {
       logLevel: _core_Debug_js__WEBPACK_IMPORTED_MODULE_2__["default"].LOG_LEVEL_WARNING,
       dispatchEvent: false
@@ -3174,11 +3178,11 @@ function Settings() {
         }, {
           schemeIdUri: _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_3__["default"].TRANSFER_CHARACTERISTICS_SCHEME_ID_URI,
           value: /1|6|13|14|15/
-        }].concat(_toConsumableArray(_streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_3__["default"].THUMBNAILS_SCHEME_ID_URIS.map(function (ep) {
+        }, ..._streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_3__["default"].THUMBNAILS_SCHEME_ID_URIS.map(ep => {
           return {
             'schemeIdUri': ep
           };
-        }))),
+        })],
         useMediaCapabilitiesApi: true,
         filterVideoColorimetryEssentialProperties: false,
         filterHDRMetadataFormatEssentialProperties: false
@@ -3216,7 +3220,7 @@ function Settings() {
         useAppendWindow: true,
         setStallState: true,
         avoidCurrentTimeRangePruning: false,
-        useChangeTypeForTrackSwitch: true,
+        useChangeType: true,
         mediaSourceDurationInfinity: true,
         resetSourceBuffersForTrackSwitch: false
       },
@@ -3293,8 +3297,30 @@ function Settings() {
       fragmentRequestTimeout: 20000,
       fragmentRequestProgressTimeout: -1,
       manifestRequestTimeout: 10000,
-      retryIntervals: _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty({}, _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MPD_TYPE, 500), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.XLINK_EXPANSION_TYPE, 500), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MEDIA_SEGMENT_TYPE, 1000), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INIT_SEGMENT_TYPE, 1000), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.BITSTREAM_SWITCHING_SEGMENT_TYPE, 1000), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INDEX_SEGMENT_TYPE, 1000), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE, 1000), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.LICENSE, 1000), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.OTHER_TYPE, 1000), "lowLatencyReductionFactor", 10),
-      retryAttempts: _defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty({}, _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MPD_TYPE, 3), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.XLINK_EXPANSION_TYPE, 1), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MEDIA_SEGMENT_TYPE, 3), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INIT_SEGMENT_TYPE, 3), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.BITSTREAM_SWITCHING_SEGMENT_TYPE, 3), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INDEX_SEGMENT_TYPE, 3), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE, 3), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.LICENSE, 3), _streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.OTHER_TYPE, 3), "lowLatencyMultiplyFactor", 5),
+      retryIntervals: {
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MPD_TYPE]: 500,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.XLINK_EXPANSION_TYPE]: 500,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MEDIA_SEGMENT_TYPE]: 1000,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INIT_SEGMENT_TYPE]: 1000,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.BITSTREAM_SWITCHING_SEGMENT_TYPE]: 1000,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INDEX_SEGMENT_TYPE]: 1000,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE]: 1000,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.LICENSE]: 1000,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.OTHER_TYPE]: 1000,
+        lowLatencyReductionFactor: 10
+      },
+      retryAttempts: {
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MPD_TYPE]: 3,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.XLINK_EXPANSION_TYPE]: 1,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MEDIA_SEGMENT_TYPE]: 3,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INIT_SEGMENT_TYPE]: 3,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.BITSTREAM_SWITCHING_SEGMENT_TYPE]: 3,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.INDEX_SEGMENT_TYPE]: 3,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.MSS_FRAGMENT_INFO_SEGMENT_TYPE]: 3,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.LICENSE]: 3,
+        [_streaming_vo_metrics_HTTPRequest_js__WEBPACK_IMPORTED_MODULE_4__.HTTPRequest.OTHER_TYPE]: 3,
+        lowLatencyMultiplyFactor: 5
+      },
       abr: {
         limitBitrateByPortal: false,
         usePixelRatioInLimitBitrateByPortal: false,
@@ -3399,7 +3425,7 @@ function Settings() {
         rtpSafetyFactor: 5,
         mode: _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CMCD_MODE_QUERY,
         enabledKeys: _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_3__["default"].CMCD_AVAILABLE_KEYS,
-        includeInRequests: ['segment']
+        includeInRequests: ['segment', 'mpd']
       },
       cmsd: {
         enabled: false,
@@ -3421,15 +3447,15 @@ function Settings() {
       }
     }
   };
-  var settings = _Utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].clone(defaultSettings);
+  let settings = _Utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].clone(defaultSettings);
 
   //Merge in the settings. If something exists in the new config that doesn't match the schema of the default config,
   //regard it as an error and log it.
   function mixinSettings(source, dest, path) {
-    for (var n in source) {
+    for (let n in source) {
       if (source.hasOwnProperty(n)) {
         if (dest.hasOwnProperty(n)) {
-          if (_typeof(source[n]) === 'object' && !(source[n] instanceof RegExp) && !(source[n] instanceof Array) && source[n] !== null) {
+          if (typeof source[n] === 'object' && !(source[n] instanceof RegExp) && !(source[n] instanceof Array) && source[n] !== null) {
             mixinSettings(source[n], dest[n], path.slice() + n + '.');
           } else {
             dest[n] = _Utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].clone(source[n]);
@@ -3465,7 +3491,7 @@ function Settings() {
    *
    */
   function update(settingsObj) {
-    if (_typeof(settingsObj) === 'object') {
+    if (typeof settingsObj === 'object') {
       mixinSettings(settingsObj, settings, '');
     }
   }
@@ -3480,14 +3506,14 @@ function Settings() {
     settings = _Utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].clone(defaultSettings);
   }
   instance = {
-    get: get,
-    update: update,
-    reset: reset
+    get,
+    update,
+    reset
   };
   return instance;
 }
 Settings.__dashjs_factory_name = 'Settings';
-var factory = _FactoryMaker_js__WEBPACK_IMPORTED_MODULE_0__["default"].getSingletonFactory(Settings);
+let factory = _FactoryMaker_js__WEBPACK_IMPORTED_MODULE_0__["default"].getSingletonFactory(Settings);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (factory);
 
 /***/ }),
@@ -3505,12 +3531,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var path_browserify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path-browserify */ "./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js");
 /* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/.pnpm/ua-parser-js@1.0.38/node_modules/ua-parser-js/src/ua-parser.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+/* harmony import */ var _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../streaming/constants/Constants.js */ "./src/streaming/constants/Constants.js");
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3549,187 +3570,255 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 
 
-var Utils = /*#__PURE__*/function () {
-  function Utils() {
-    _classCallCheck(this, Utils);
-  }
-  return _createClass(Utils, null, [{
-    key: "mixin",
-    value: function mixin(dest, source, copy) {
-      var s;
-      var empty = {};
-      if (dest) {
-        for (var name in source) {
-          if (source.hasOwnProperty(name)) {
-            s = source[name];
-            if (!(name in dest) || dest[name] !== s && (!(name in empty) || empty[name] !== s)) {
-              if (_typeof(dest[name]) === 'object' && dest[name] !== null) {
-                dest[name] = Utils.mixin(dest[name], s, copy);
-              } else {
-                dest[name] = copy(s);
-              }
+
+class Utils {
+  static mixin(dest, source, copy) {
+    let s;
+    let empty = {};
+    if (dest) {
+      for (let name in source) {
+        if (source.hasOwnProperty(name)) {
+          s = source[name];
+          if (!(name in dest) || dest[name] !== s && (!(name in empty) || empty[name] !== s)) {
+            if (typeof dest[name] === 'object' && dest[name] !== null) {
+              dest[name] = Utils.mixin(dest[name], s, copy);
+            } else {
+              dest[name] = copy(s);
             }
           }
         }
       }
-      return dest;
     }
-  }, {
-    key: "clone",
-    value: function clone(src) {
-      if (!src || _typeof(src) !== 'object') {
-        return src; // anything
-      }
-      if (src instanceof RegExp) {
-        return new RegExp(src);
-      }
-      var r;
-      if (src instanceof Array) {
-        // array
-        r = [];
-        for (var i = 0, l = src.length; i < l; ++i) {
-          if (i in src) {
-            r.push(Utils.clone(src[i]));
-          }
-        }
-      } else {
-        r = {};
-      }
-      return Utils.mixin(r, src, Utils.clone);
+    return dest;
+  }
+  static clone(src) {
+    if (!src || typeof src !== 'object') {
+      return src; // anything
     }
-  }, {
-    key: "addAditionalQueryParameterToUrl",
-    value: function addAditionalQueryParameterToUrl(url, params) {
-      try {
-        if (!params || params.length === 0) {
-          return url;
+    if (src instanceof RegExp) {
+      return new RegExp(src);
+    }
+    let r;
+    if (src instanceof Array) {
+      // array
+      r = [];
+      for (let i = 0, l = src.length; i < l; ++i) {
+        if (i in src) {
+          r.push(Utils.clone(src[i]));
         }
-        var modifiedUrl = new URL(url);
-        params.forEach(function (param) {
-          if (param.key && param.value) {
-            modifiedUrl.searchParams.set(param.key, param.value);
-          }
-        });
-        return modifiedUrl.href;
-      } catch (e) {
+      }
+    } else {
+      r = {};
+    }
+    return Utils.mixin(r, src, Utils.clone);
+  }
+  static addAdditionalQueryParameterToUrl(url, params) {
+    try {
+      if (!params || params.length === 0) {
         return url;
       }
+      let updatedUrl = url;
+      params.forEach(_ref => {
+        let {
+          key,
+          value
+        } = _ref;
+        const separator = updatedUrl.includes('?') ? '&' : '?';
+        updatedUrl += `${separator}${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      });
+      return updatedUrl;
+    } catch (e) {
+      return url;
     }
-  }, {
-    key: "parseHttpHeaders",
-    value: function parseHttpHeaders(headerStr) {
-      var headers = {};
-      if (!headerStr) {
-        return headers;
-      }
-
-      // Trim headerStr to fix a MS Edge bug with xhr.getAllResponseHeaders method
-      // which send a string starting with a "\n" character
-      var headerPairs = headerStr.trim().split("\r\n");
-      for (var i = 0, ilen = headerPairs.length; i < ilen; i++) {
-        var headerPair = headerPairs[i];
-        var index = headerPair.indexOf(": ");
-        if (index > 0) {
-          headers[headerPair.substring(0, index)] = headerPair.substring(index + 2);
-        }
-      }
+  }
+  static parseHttpHeaders(headerStr) {
+    let headers = {};
+    if (!headerStr) {
       return headers;
     }
-  }, {
-    key: "generateUuid",
-    value: function generateUuid() {
-      var dt = new Date().getTime();
-      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (dt + Math.random() * 16) % 16 | 0;
-        dt = Math.floor(dt / 16);
-        return (c == 'x' ? r : r & 0x3 | 0x8).toString(16);
-      });
-      return uuid;
+
+    // Trim headerStr to fix a MS Edge bug with xhr.getAllResponseHeaders method
+    // which send a string starting with a "\n" character
+    let headerPairs = headerStr.trim().split('\u000d\u000a');
+    for (let i = 0, ilen = headerPairs.length; i < ilen; i++) {
+      let headerPair = headerPairs[i];
+      let index = headerPair.indexOf('\u003a\u0020');
+      if (index > 0) {
+        headers[headerPair.substring(0, index)] = headerPair.substring(index + 2);
+      }
     }
-  }, {
-    key: "generateHashCode",
-    value: function generateHashCode(string) {
-      var hash = 0;
-      if (string.length === 0) {
-        return hash;
-      }
-      for (var i = 0; i < string.length; i++) {
-        var chr = string.charCodeAt(i);
-        hash = (hash << 5) - hash + chr;
-        hash |= 0;
-      }
+    return headers;
+  }
+  static generateUuid() {
+    let dt = new Date().getTime();
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == 'x' ? r : r & 0x3 | 0x8).toString(16);
+    });
+    return uuid;
+  }
+  static generateHashCode(string) {
+    let hash = 0;
+    if (string.length === 0) {
       return hash;
     }
+    for (let i = 0; i < string.length; i++) {
+      const chr = string.charCodeAt(i);
+      hash = (hash << 5) - hash + chr;
+      hash |= 0;
+    }
+    return hash;
+  }
 
-    /**
-     * Compares both urls and returns a relative url (target relative to original)
-     * @param {string} originalUrl
-     * @param {string} targetUrl
-     * @return {string|*}
-     */
-  }, {
-    key: "getRelativeUrl",
-    value: function getRelativeUrl(originalUrl, targetUrl) {
-      try {
-        var original = new URL(originalUrl);
-        var target = new URL(targetUrl);
+  /**
+   * Compares both urls and returns a relative url (target relative to original)
+   * @param {string} originalUrl
+   * @param {string} targetUrl
+   * @return {string|*}
+   */
+  static getRelativeUrl(originalUrl, targetUrl) {
+    try {
+      const original = new URL(originalUrl);
+      const target = new URL(targetUrl);
 
-        // Unify the protocol to compare the origins
-        original.protocol = target.protocol;
-        if (original.origin !== target.origin) {
-          return targetUrl;
-        }
-
-        // Use the relative path implementation of the path library. We need to cut off the actual filename in the end to get the relative path
-        var relativePath = path_browserify__WEBPACK_IMPORTED_MODULE_0__.relative(original.pathname.substr(0, original.pathname.lastIndexOf('/')), target.pathname.substr(0, target.pathname.lastIndexOf('/')));
-
-        // In case the relative path is empty (both path are equal) return the filename only. Otherwise add a slash in front of the filename
-        var startIndexOffset = relativePath.length === 0 ? 1 : 0;
-        relativePath += target.pathname.substr(target.pathname.lastIndexOf('/') + startIndexOffset, target.pathname.length - 1);
-
-        // Build the other candidate, e.g. the 'host relative' path that starts with "/", and return the shortest of the two candidates.
-        if (target.pathname.length < relativePath.length) {
-          return target.pathname;
-        }
-        return relativePath;
-      } catch (e) {
+      // Unify the protocol to compare the origins
+      original.protocol = target.protocol;
+      if (original.origin !== target.origin) {
         return targetUrl;
       }
-    }
-  }, {
-    key: "getHostFromUrl",
-    value: function getHostFromUrl(urlString) {
-      try {
-        var url = new URL(urlString);
-        return url.host;
-      } catch (e) {
-        return null;
-      }
-    }
-  }, {
-    key: "parseUserAgent",
-    value: function parseUserAgent() {
-      var ua = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      try {
-        var uaString = ua === null ? typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '' : '';
-        return (0,ua_parser_js__WEBPACK_IMPORTED_MODULE_1__.UAParser)(uaString);
-      } catch (e) {
-        return {};
-      }
-    }
 
-    /**
-     * Checks for existence of "http" or "https" in a string
-     * @param string
-     * @returns {boolean}
-     */
-  }, {
-    key: "stringHasProtocol",
-    value: function stringHasProtocol(string) {
-      return /(http(s?)):\/\//i.test(string);
+      // Use the relative path implementation of the path library. We need to cut off the actual filename in the end to get the relative path
+      let relativePath = path_browserify__WEBPACK_IMPORTED_MODULE_0__.relative(original.pathname.substr(0, original.pathname.lastIndexOf('/')), target.pathname.substr(0, target.pathname.lastIndexOf('/')));
+
+      // In case the relative path is empty (both path are equal) return the filename only. Otherwise add a slash in front of the filename
+      const startIndexOffset = relativePath.length === 0 ? 1 : 0;
+      relativePath += target.pathname.substr(target.pathname.lastIndexOf('/') + startIndexOffset, target.pathname.length - 1);
+
+      // Build the other candidate, e.g. the 'host relative' path that starts with "/", and return the shortest of the two candidates.
+      if (target.pathname.length < relativePath.length) {
+        return target.pathname;
+      }
+      return relativePath;
+    } catch (e) {
+      return targetUrl;
     }
-  }]);
-}();
+  }
+  static getHostFromUrl(urlString) {
+    try {
+      const url = new URL(urlString);
+      return url.host;
+    } catch (e) {
+      return null;
+    }
+  }
+  static parseUserAgent() {
+    let ua = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    try {
+      const uaString = ua === null ? typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '' : '';
+      return (0,ua_parser_js__WEBPACK_IMPORTED_MODULE_1__.UAParser)(uaString);
+    } catch (e) {
+      return {};
+    }
+  }
+
+  /**
+   * Checks for existence of "http" or "https" in a string
+   * @param string
+   * @returns {boolean}
+   */
+  static stringHasProtocol(string) {
+    return /(http(s?)):\/\//i.test(string);
+  }
+  static bufferSourceToDataView(bufferSource) {
+    return Utils.toDataView(bufferSource, DataView);
+  }
+  static bufferSourceToInt8(bufferSource) {
+    return Utils.toDataView(bufferSource, Uint8Array);
+  }
+  static bufferSourceToHex(data) {
+    const arr = Utils.bufferSourceToInt8(data);
+    let hex = '';
+    for (let value of arr) {
+      value = value.toString(16);
+      if (value.length === 1) {
+        value = '0' + value;
+      }
+      hex += value;
+    }
+    return hex;
+  }
+  static toDataView(bufferSource, Type) {
+    const buffer = Utils.getArrayBuffer(bufferSource);
+    let bytesPerElement = 1;
+    if ('BYTES_PER_ELEMENT' in DataView) {
+      bytesPerElement = DataView.BYTES_PER_ELEMENT;
+    }
+    const dataEnd = ((bufferSource.byteOffset || 0) + bufferSource.byteLength) / bytesPerElement;
+    const rawStart = (bufferSource.byteOffset || 0) / bytesPerElement;
+    const start = Math.floor(Math.max(0, Math.min(rawStart, dataEnd)));
+    const end = Math.floor(Math.min(start + Math.max(Infinity, 0), dataEnd));
+    return new Type(buffer, start, end - start);
+  }
+  static getArrayBuffer(view) {
+    if (view instanceof ArrayBuffer) {
+      return view;
+    } else {
+      return view.buffer;
+    }
+  }
+  static getCodecFamily(codecString) {
+    const {
+      base,
+      profile
+    } = Utils._getCodecParts(codecString);
+    switch (base) {
+      case 'mp4a':
+        switch (profile) {
+          case '69':
+          case '6b':
+          case '40.34':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.MP3;
+          case '66':
+          case '67':
+          case '68':
+          case '40.2':
+          case '40.02':
+          case '40.5':
+          case '40.05':
+          case '40.29':
+          case '40.42':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.AAC;
+          case 'a5':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.AC3;
+          case 'e6':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.EC3;
+          case 'b2':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.DTSX;
+          case 'a9':
+            return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.DTSC;
+        }
+        break;
+      case 'avc1':
+      case 'avc3':
+        return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.AVC;
+      case 'hvc1':
+      case 'hvc3':
+        return _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__["default"].CODEC_FAMILIES.HEVC;
+      default:
+        return base;
+    }
+    return base;
+  }
+  static _getCodecParts(codecString) {
+    const [base, ...rest] = codecString.split('.');
+    const profile = rest.join('.');
+    return {
+      base,
+      profile
+    };
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Utils);
 
 /***/ }),
@@ -3746,19 +3835,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _EventsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EventsBase.js */ "./src/core/events/EventsBase.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3798,69 +3874,64 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
  * @class
  * @ignore
  */
-var CoreEvents = /*#__PURE__*/function (_EventsBase) {
-  function CoreEvents() {
-    var _this;
-    _classCallCheck(this, CoreEvents);
-    _this = _callSuper(this, CoreEvents);
-    _this.ATTEMPT_BACKGROUND_SYNC = 'attemptBackgroundSync';
-    _this.BUFFERING_COMPLETED = 'bufferingCompleted';
-    _this.BUFFER_CLEARED = 'bufferCleared';
-    _this.BYTES_APPENDED_END_FRAGMENT = 'bytesAppendedEndFragment';
-    _this.BUFFER_REPLACEMENT_STARTED = 'bufferReplacementStarted';
-    _this.CHECK_FOR_EXISTENCE_COMPLETED = 'checkForExistenceCompleted';
-    _this.CMSD_STATIC_HEADER = 'cmsdStaticHeader';
-    _this.CURRENT_TRACK_CHANGED = 'currentTrackChanged';
-    _this.DATA_UPDATE_COMPLETED = 'dataUpdateCompleted';
-    _this.INBAND_EVENTS = 'inbandEvents';
-    _this.INITIAL_STREAM_SWITCH = 'initialStreamSwitch';
-    _this.INIT_FRAGMENT_LOADED = 'initFragmentLoaded';
-    _this.INIT_FRAGMENT_NEEDED = 'initFragmentNeeded';
-    _this.INTERNAL_MANIFEST_LOADED = 'internalManifestLoaded';
-    _this.ORIGINAL_MANIFEST_LOADED = 'originalManifestLoaded';
-    _this.LOADING_COMPLETED = 'loadingCompleted';
-    _this.LOADING_PROGRESS = 'loadingProgress';
-    _this.LOADING_DATA_PROGRESS = 'loadingDataProgress';
-    _this.LOADING_ABANDONED = 'loadingAborted';
-    _this.MANIFEST_UPDATED = 'manifestUpdated';
-    _this.MEDIA_FRAGMENT_LOADED = 'mediaFragmentLoaded';
-    _this.MEDIA_FRAGMENT_NEEDED = 'mediaFragmentNeeded';
-    _this.MEDIAINFO_UPDATED = 'mediaInfoUpdated';
-    _this.QUOTA_EXCEEDED = 'quotaExceeded';
-    _this.SEGMENT_LOCATION_BLACKLIST_ADD = 'segmentLocationBlacklistAdd';
-    _this.SEGMENT_LOCATION_BLACKLIST_CHANGED = 'segmentLocationBlacklistChanged';
-    _this.SERVICE_LOCATION_BASE_URL_BLACKLIST_ADD = 'serviceLocationBlacklistAdd';
-    _this.SERVICE_LOCATION_BASE_URL_BLACKLIST_CHANGED = 'serviceLocationBlacklistChanged';
-    _this.SERVICE_LOCATION_LOCATION_BLACKLIST_ADD = 'serviceLocationLocationBlacklistAdd';
-    _this.SERVICE_LOCATION_LOCATION_BLACKLIST_CHANGED = 'serviceLocationLocationBlacklistChanged';
-    _this.SET_FRAGMENTED_TEXT_AFTER_DISABLED = 'setFragmentedTextAfterDisabled';
-    _this.SET_NON_FRAGMENTED_TEXT = 'setNonFragmentedText';
-    _this.SOURCE_BUFFER_ERROR = 'sourceBufferError';
-    _this.STREAMS_COMPOSED = 'streamsComposed';
-    _this.STREAM_BUFFERING_COMPLETED = 'streamBufferingCompleted';
-    _this.STREAM_REQUESTING_COMPLETED = 'streamRequestingCompleted';
-    _this.TEXT_TRACKS_QUEUE_INITIALIZED = 'textTracksQueueInitialized';
-    _this.TIME_SYNCHRONIZATION_COMPLETED = 'timeSynchronizationComplete';
-    _this.UPDATE_TIME_SYNC_OFFSET = 'updateTimeSyncOffset';
-    _this.URL_RESOLUTION_FAILED = 'urlResolutionFailed';
-    _this.VIDEO_CHUNK_RECEIVED = 'videoChunkReceived';
-    _this.WALLCLOCK_TIME_UPDATED = 'wallclockTimeUpdated';
-    _this.XLINK_ELEMENT_LOADED = 'xlinkElementLoaded';
-    _this.XLINK_READY = 'xlinkReady';
-    _this.SEEK_TARGET = 'seekTarget';
-    _this.SETTING_UPDATED_LIVE_DELAY = 'settingUpdatedLiveDelay';
-    _this.SETTING_UPDATED_LIVE_DELAY_FRAGMENT_COUNT = 'settingUpdatedLiveDelayFragmentCount';
-    _this.SETTING_UPDATED_CATCHUP_ENABLED = 'settingUpdatedCatchupEnabled';
-    _this.SETTING_UPDATED_PLAYBACK_RATE_MIN = 'settingUpdatedPlaybackRateMin';
-    _this.SETTING_UPDATED_PLAYBACK_RATE_MAX = 'settingUpdatedPlaybackRateMax';
-    _this.SETTING_UPDATED_ABR_ACTIVE_RULES = 'settingUpdatedAbrActiveRules';
-    _this.SETTING_UPDATED_MAX_BITRATE = 'settingUpdatedMaxBitrate';
-    _this.SETTING_UPDATED_MIN_BITRATE = 'settingUpdatedMinBitrate';
-    return _this;
+class CoreEvents extends _EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor() {
+    super();
+    this.ATTEMPT_BACKGROUND_SYNC = 'attemptBackgroundSync';
+    this.BUFFERING_COMPLETED = 'bufferingCompleted';
+    this.BUFFER_CLEARED = 'bufferCleared';
+    this.BYTES_APPENDED_END_FRAGMENT = 'bytesAppendedEndFragment';
+    this.BUFFER_REPLACEMENT_STARTED = 'bufferReplacementStarted';
+    this.CHECK_FOR_EXISTENCE_COMPLETED = 'checkForExistenceCompleted';
+    this.CMSD_STATIC_HEADER = 'cmsdStaticHeader';
+    this.CURRENT_TRACK_CHANGED = 'currentTrackChanged';
+    this.DATA_UPDATE_COMPLETED = 'dataUpdateCompleted';
+    this.INBAND_EVENTS = 'inbandEvents';
+    this.INITIAL_STREAM_SWITCH = 'initialStreamSwitch';
+    this.INIT_FRAGMENT_LOADED = 'initFragmentLoaded';
+    this.INIT_FRAGMENT_NEEDED = 'initFragmentNeeded';
+    this.INTERNAL_MANIFEST_LOADED = 'internalManifestLoaded';
+    this.ORIGINAL_MANIFEST_LOADED = 'originalManifestLoaded';
+    this.LOADING_COMPLETED = 'loadingCompleted';
+    this.LOADING_PROGRESS = 'loadingProgress';
+    this.LOADING_DATA_PROGRESS = 'loadingDataProgress';
+    this.LOADING_ABANDONED = 'loadingAborted';
+    this.MANIFEST_UPDATED = 'manifestUpdated';
+    this.MEDIA_FRAGMENT_LOADED = 'mediaFragmentLoaded';
+    this.MEDIA_FRAGMENT_NEEDED = 'mediaFragmentNeeded';
+    this.MEDIAINFO_UPDATED = 'mediaInfoUpdated';
+    this.QUOTA_EXCEEDED = 'quotaExceeded';
+    this.SEGMENT_LOCATION_BLACKLIST_ADD = 'segmentLocationBlacklistAdd';
+    this.SEGMENT_LOCATION_BLACKLIST_CHANGED = 'segmentLocationBlacklistChanged';
+    this.SERVICE_LOCATION_BASE_URL_BLACKLIST_ADD = 'serviceLocationBlacklistAdd';
+    this.SERVICE_LOCATION_BASE_URL_BLACKLIST_CHANGED = 'serviceLocationBlacklistChanged';
+    this.SERVICE_LOCATION_LOCATION_BLACKLIST_ADD = 'serviceLocationLocationBlacklistAdd';
+    this.SERVICE_LOCATION_LOCATION_BLACKLIST_CHANGED = 'serviceLocationLocationBlacklistChanged';
+    this.SET_FRAGMENTED_TEXT_AFTER_DISABLED = 'setFragmentedTextAfterDisabled';
+    this.SET_NON_FRAGMENTED_TEXT = 'setNonFragmentedText';
+    this.SOURCE_BUFFER_ERROR = 'sourceBufferError';
+    this.STREAMS_COMPOSED = 'streamsComposed';
+    this.STREAM_BUFFERING_COMPLETED = 'streamBufferingCompleted';
+    this.STREAM_REQUESTING_COMPLETED = 'streamRequestingCompleted';
+    this.TEXT_TRACKS_QUEUE_INITIALIZED = 'textTracksQueueInitialized';
+    this.TIME_SYNCHRONIZATION_COMPLETED = 'timeSynchronizationComplete';
+    this.UPDATE_TIME_SYNC_OFFSET = 'updateTimeSyncOffset';
+    this.URL_RESOLUTION_FAILED = 'urlResolutionFailed';
+    this.VIDEO_CHUNK_RECEIVED = 'videoChunkReceived';
+    this.WALLCLOCK_TIME_UPDATED = 'wallclockTimeUpdated';
+    this.XLINK_ELEMENT_LOADED = 'xlinkElementLoaded';
+    this.XLINK_READY = 'xlinkReady';
+    this.SEEK_TARGET = 'seekTarget';
+    this.SETTING_UPDATED_LIVE_DELAY = 'settingUpdatedLiveDelay';
+    this.SETTING_UPDATED_LIVE_DELAY_FRAGMENT_COUNT = 'settingUpdatedLiveDelayFragmentCount';
+    this.SETTING_UPDATED_CATCHUP_ENABLED = 'settingUpdatedCatchupEnabled';
+    this.SETTING_UPDATED_PLAYBACK_RATE_MIN = 'settingUpdatedPlaybackRateMin';
+    this.SETTING_UPDATED_PLAYBACK_RATE_MAX = 'settingUpdatedPlaybackRateMax';
+    this.SETTING_UPDATED_ABR_ACTIVE_RULES = 'settingUpdatedAbrActiveRules';
+    this.SETTING_UPDATED_MAX_BITRATE = 'settingUpdatedMaxBitrate';
+    this.SETTING_UPDATED_MIN_BITRATE = 'settingUpdatedMinBitrate';
   }
-  _inherits(CoreEvents, _EventsBase);
-  return _createClass(CoreEvents);
-}(_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CoreEvents);
 
 /***/ }),
@@ -3877,19 +3948,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _CoreEvents_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CoreEvents.js */ "./src/core/events/CoreEvents.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3925,15 +3983,8 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
  * @ignore
  */
 
-var Events = /*#__PURE__*/function (_CoreEvents) {
-  function Events() {
-    _classCallCheck(this, Events);
-    return _callSuper(this, Events, arguments);
-  }
-  _inherits(Events, _CoreEvents);
-  return _createClass(Events);
-}(_CoreEvents_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var events = new Events();
+class Events extends _CoreEvents_js__WEBPACK_IMPORTED_MODULE_0__["default"] {}
+let events = new Events();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (events);
 
 /***/ }),
@@ -3949,12 +4000,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -3989,30 +4034,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * @class
  * @ignore
  */
-var EventsBase = /*#__PURE__*/function () {
-  function EventsBase() {
-    _classCallCheck(this, EventsBase);
-  }
-  return _createClass(EventsBase, [{
-    key: "extend",
-    value: function extend(events, config) {
-      if (!events) {
-        return;
-      }
-      var override = config ? config.override : false;
-      var publicOnly = config ? config.publicOnly : false;
-      for (var evt in events) {
-        if (!events.hasOwnProperty(evt) || this[evt] && !override) {
-          continue;
-        }
-        if (publicOnly && events[evt].indexOf('public_') === -1) {
-          continue;
-        }
-        this[evt] = events[evt];
-      }
+class EventsBase {
+  extend(events, config) {
+    if (!events) {
+      return;
     }
-  }]);
-}();
+    let override = config ? config.override : false;
+    let publicOnly = config ? config.publicOnly : false;
+    for (const evt in events) {
+      if (!events.hasOwnProperty(evt) || this[evt] && !override) {
+        continue;
+      }
+      if (publicOnly && events[evt].indexOf('public_') === -1) {
+        continue;
+      }
+      this[evt] = events[evt];
+    }
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EventsBase);
 
 /***/ }),
@@ -4028,12 +4067,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -4068,12 +4101,13 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @class
  * @ignore
  */
-var UTCTiming = /*#__PURE__*/_createClass(function UTCTiming() {
-  _classCallCheck(this, UTCTiming);
-  // UTCTiming is a DescriptorType and doesn't have any additional fields
-  this.schemeIdUri = '';
-  this.value = '';
-});
+class UTCTiming {
+  constructor() {
+    // UTCTiming is a DescriptorType and doesn't have any additional fields
+    this.schemeIdUri = '';
+    this.value = '';
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UTCTiming);
 
 /***/ }),
@@ -4090,19 +4124,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/events/EventsBase.js */ "./src/core/events/EventsBase.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -4139,273 +4160,277 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
  * @class
  * @implements EventsBase
  */
-var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
+class MediaPlayerEvents extends _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
   /**
    * @description Public facing external events to be used when developing a player that implements dash.js.
    */
-  function MediaPlayerEvents() {
-    var _this;
-    _classCallCheck(this, MediaPlayerEvents);
-    _this = _callSuper(this, MediaPlayerEvents);
+  constructor() {
+    super();
     /**
      * Triggered when playback will not start yet
      * as the MPD's availabilityStartTime is in the future.
      * Check delay property in payload to determine time before playback will start.
      * @event MediaPlayerEvents#AST_IN_FUTURE
      */
-    _this.AST_IN_FUTURE = 'astInFuture';
+    this.AST_IN_FUTURE = 'astInFuture';
 
     /**
      * Triggered when the BaseURLs have been updated.
      * @event MediaPlayerEvents#BASE_URLS_UPDATED
      */
-    _this.BASE_URLS_UPDATED = 'baseUrlsUpdated';
+    this.BASE_URLS_UPDATED = 'baseUrlsUpdated';
 
     /**
      * Triggered when the video element's buffer state changes to stalled.
      * Check mediaType in payload to determine type (Video, Audio, FragmentedText).
      * @event MediaPlayerEvents#BUFFER_EMPTY
      */
-    _this.BUFFER_EMPTY = 'bufferStalled';
+    this.BUFFER_EMPTY = 'bufferStalled';
 
     /**
      * Triggered when the video element's buffer state changes to loaded.
      * Check mediaType in payload to determine type (Video, Audio, FragmentedText).
      * @event MediaPlayerEvents#BUFFER_LOADED
      */
-    _this.BUFFER_LOADED = 'bufferLoaded';
+    this.BUFFER_LOADED = 'bufferLoaded';
 
     /**
      * Triggered when the video element's buffer state changes, either stalled or loaded. Check payload for state.
      * @event MediaPlayerEvents#BUFFER_LEVEL_STATE_CHANGED
      */
-    _this.BUFFER_LEVEL_STATE_CHANGED = 'bufferStateChanged';
+    this.BUFFER_LEVEL_STATE_CHANGED = 'bufferStateChanged';
 
     /**
      * Triggered when the buffer level of a media type has been updated
      * @event MediaPlayerEvents#BUFFER_LEVEL_UPDATED
      */
-    _this.BUFFER_LEVEL_UPDATED = 'bufferLevelUpdated';
+    this.BUFFER_LEVEL_UPDATED = 'bufferLevelUpdated';
 
     /**
      * Triggered when a font signalled by a DVB Font Download has been added to the document FontFaceSet interface.
      * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_ADDED
      */
-    _this.DVB_FONT_DOWNLOAD_ADDED = 'dvbFontDownloadAdded';
+    this.DVB_FONT_DOWNLOAD_ADDED = 'dvbFontDownloadAdded';
 
     /**
      * Triggered when a font signalled by a DVB Font Download has successfully downloaded and the FontFace can be used.
      * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_COMPLETE
      */
-    _this.DVB_FONT_DOWNLOAD_COMPLETE = 'dvbFontDownloadComplete';
+    this.DVB_FONT_DOWNLOAD_COMPLETE = 'dvbFontDownloadComplete';
 
     /**
      * Triggered when a font signalled by a DVB Font Download could not be successfully downloaded, so the FontFace will not be used.
      * @event MediaPlayerEvents#DVB_FONT_DOWNLOAD_FAILED
      */
-    _this.DVB_FONT_DOWNLOAD_FAILED = 'dvbFontDownloadFailed';
+    this.DVB_FONT_DOWNLOAD_FAILED = 'dvbFontDownloadFailed';
 
     /**
      * Triggered when a dynamic stream changed to static (transition phase between Live and On-Demand).
      * @event MediaPlayerEvents#DYNAMIC_TO_STATIC
      */
-    _this.DYNAMIC_TO_STATIC = 'dynamicToStatic';
+    this.DYNAMIC_TO_STATIC = 'dynamicToStatic';
 
     /**
      * Triggered when there is an error from the element or MSE source buffer.
      * @event MediaPlayerEvents#ERROR
      */
-    _this.ERROR = 'error';
+    this.ERROR = 'error';
     /**
      * Triggered when a fragment download has completed.
      * @event MediaPlayerEvents#FRAGMENT_LOADING_COMPLETED
      */
-    _this.FRAGMENT_LOADING_COMPLETED = 'fragmentLoadingCompleted';
+    this.FRAGMENT_LOADING_COMPLETED = 'fragmentLoadingCompleted';
 
     /**
      * Triggered when a partial fragment download has completed.
      * @event MediaPlayerEvents#FRAGMENT_LOADING_PROGRESS
      */
-    _this.FRAGMENT_LOADING_PROGRESS = 'fragmentLoadingProgress';
+    this.FRAGMENT_LOADING_PROGRESS = 'fragmentLoadingProgress';
     /**
      * Triggered when a fragment download has started.
      * @event MediaPlayerEvents#FRAGMENT_LOADING_STARTED
      */
-    _this.FRAGMENT_LOADING_STARTED = 'fragmentLoadingStarted';
+    this.FRAGMENT_LOADING_STARTED = 'fragmentLoadingStarted';
 
     /**
      * Triggered when a fragment download is abandoned due to detection of slow download base on the ABR abandon rule..
      * @event MediaPlayerEvents#FRAGMENT_LOADING_ABANDONED
      */
-    _this.FRAGMENT_LOADING_ABANDONED = 'fragmentLoadingAbandoned';
+    this.FRAGMENT_LOADING_ABANDONED = 'fragmentLoadingAbandoned';
 
     /**
      * Triggered when {@link module:Debug} logger methods are called.
      * @event MediaPlayerEvents#LOG
      */
-    _this.LOG = 'log';
+    this.LOG = 'log';
 
     /**
      * Triggered when the manifest load is started
      * @event MediaPlayerEvents#MANIFEST_LOADING_STARTED
      */
-    _this.MANIFEST_LOADING_STARTED = 'manifestLoadingStarted';
+    this.MANIFEST_LOADING_STARTED = 'manifestLoadingStarted';
 
     /**
      * Triggered when the manifest loading is finished, providing the request object information
      * @event MediaPlayerEvents#MANIFEST_LOADING_FINISHED
      */
-    _this.MANIFEST_LOADING_FINISHED = 'manifestLoadingFinished';
+    this.MANIFEST_LOADING_FINISHED = 'manifestLoadingFinished';
 
     /**
      * Triggered when the manifest load is complete, providing the payload
      * @event MediaPlayerEvents#MANIFEST_LOADED
      */
-    _this.MANIFEST_LOADED = 'manifestLoaded';
+    this.MANIFEST_LOADED = 'manifestLoaded';
 
     /**
      * Triggered anytime there is a change to the overall metrics.
      * @event MediaPlayerEvents#METRICS_CHANGED
      */
-    _this.METRICS_CHANGED = 'metricsChanged';
+    this.METRICS_CHANGED = 'metricsChanged';
 
     /**
      * Triggered when an individual metric is added, updated or cleared.
      * @event MediaPlayerEvents#METRIC_CHANGED
      */
-    _this.METRIC_CHANGED = 'metricChanged';
+    this.METRIC_CHANGED = 'metricChanged';
 
     /**
      * Triggered every time a new metric is added.
      * @event MediaPlayerEvents#METRIC_ADDED
      */
-    _this.METRIC_ADDED = 'metricAdded';
+    this.METRIC_ADDED = 'metricAdded';
 
     /**
      * Triggered every time a metric is updated.
      * @event MediaPlayerEvents#METRIC_UPDATED
      */
-    _this.METRIC_UPDATED = 'metricUpdated';
+    this.METRIC_UPDATED = 'metricUpdated';
 
     /**
      * Triggered when a new stream (period) starts.
      * @event MediaPlayerEvents#PERIOD_SWITCH_STARTED
      */
-    _this.PERIOD_SWITCH_STARTED = 'periodSwitchStarted';
+    this.PERIOD_SWITCH_STARTED = 'periodSwitchStarted';
 
     /**
      * Triggered at the stream end of a period.
      * @event MediaPlayerEvents#PERIOD_SWITCH_COMPLETED
      */
-    _this.PERIOD_SWITCH_COMPLETED = 'periodSwitchCompleted';
+    this.PERIOD_SWITCH_COMPLETED = 'periodSwitchCompleted';
 
     /**
      * Triggered when an ABR up /down switch is initiated; either by user in manual mode or auto mode via ABR rules.
      * @event MediaPlayerEvents#QUALITY_CHANGE_REQUESTED
      */
-    _this.QUALITY_CHANGE_REQUESTED = 'qualityChangeRequested';
+    this.QUALITY_CHANGE_REQUESTED = 'qualityChangeRequested';
 
     /**
      * Triggered when the new ABR quality is being rendered on-screen.
      * @event MediaPlayerEvents#QUALITY_CHANGE_RENDERED
      */
-    _this.QUALITY_CHANGE_RENDERED = 'qualityChangeRendered';
+    this.QUALITY_CHANGE_RENDERED = 'qualityChangeRendered';
+
+    /**
+     * Triggered when the new track is being selected
+     * @event MediaPlayerEvents#NEW_TRACK_SELECTED
+     */
+    this.NEW_TRACK_SELECTED = 'newTrackSelected';
 
     /**
      * Triggered when the new track is being rendered.
      * @event MediaPlayerEvents#TRACK_CHANGE_RENDERED
      */
-    _this.TRACK_CHANGE_RENDERED = 'trackChangeRendered';
+    this.TRACK_CHANGE_RENDERED = 'trackChangeRendered';
 
     /**
      * Triggered when a stream (period) is being loaded
      * @event MediaPlayerEvents#STREAM_INITIALIZING
      */
-    _this.STREAM_INITIALIZING = 'streamInitializing';
+    this.STREAM_INITIALIZING = 'streamInitializing';
 
     /**
      * Triggered when a stream (period) is loaded
      * @event MediaPlayerEvents#STREAM_UPDATED
      */
-    _this.STREAM_UPDATED = 'streamUpdated';
+    this.STREAM_UPDATED = 'streamUpdated';
 
     /**
      * Triggered when a stream (period) is activated
      * @event MediaPlayerEvents#STREAM_ACTIVATED
      */
-    _this.STREAM_ACTIVATED = 'streamActivated';
+    this.STREAM_ACTIVATED = 'streamActivated';
 
     /**
      * Triggered when a stream (period) is deactivated
      * @event MediaPlayerEvents#STREAM_DEACTIVATED
      */
-    _this.STREAM_DEACTIVATED = 'streamDeactivated';
+    this.STREAM_DEACTIVATED = 'streamDeactivated';
 
     /**
      * Triggered when a stream (period) is activated
      * @event MediaPlayerEvents#STREAM_INITIALIZED
      */
-    _this.STREAM_INITIALIZED = 'streamInitialized';
+    this.STREAM_INITIALIZED = 'streamInitialized';
 
     /**
      * Triggered when the player has been reset.
      * @event MediaPlayerEvents#STREAM_TEARDOWN_COMPLETE
      */
-    _this.STREAM_TEARDOWN_COMPLETE = 'streamTeardownComplete';
+    this.STREAM_TEARDOWN_COMPLETE = 'streamTeardownComplete';
 
     /**
      * Triggered once all text tracks detected in the MPD are added to the video element.
      * @event MediaPlayerEvents#TEXT_TRACKS_ADDED
      */
-    _this.TEXT_TRACKS_ADDED = 'allTextTracksAdded';
+    this.TEXT_TRACKS_ADDED = 'allTextTracksAdded';
 
     /**
      * Triggered when a text track is added to the video element's TextTrackList
      * @event MediaPlayerEvents#TEXT_TRACK_ADDED
      */
-    _this.TEXT_TRACK_ADDED = 'textTrackAdded';
+    this.TEXT_TRACK_ADDED = 'textTrackAdded';
 
     /**
      * Triggered when a text track should be shown
      * @event MediaPlayerEvents#CUE_ENTER
      */
-    _this.CUE_ENTER = 'cueEnter';
+    this.CUE_ENTER = 'cueEnter';
 
     /**
      * Triggered when a text track should be hidden
      * @event MediaPlayerEvents#CUE_ENTER
      */
-    _this.CUE_EXIT = 'cueExit';
+    this.CUE_EXIT = 'cueExit';
 
     /**
      * Triggered when a throughput measurement based on the last segment request has been stored
      * @event MediaPlayerEvents#THROUGHPUT_MEASUREMENT_STORED
      */
-    _this.THROUGHPUT_MEASUREMENT_STORED = 'throughputMeasurementStored';
+    this.THROUGHPUT_MEASUREMENT_STORED = 'throughputMeasurementStored';
 
     /**
      * Triggered when a ttml chunk is parsed.
      * @event MediaPlayerEvents#TTML_PARSED
      */
-    _this.TTML_PARSED = 'ttmlParsed';
+    this.TTML_PARSED = 'ttmlParsed';
 
     /**
      * Triggered when a ttml chunk has to be parsed.
      * @event MediaPlayerEvents#TTML_TO_PARSE
      */
-    _this.TTML_TO_PARSE = 'ttmlToParse';
+    this.TTML_TO_PARSE = 'ttmlToParse';
 
     /**
      * Triggered when a caption is rendered.
      * @event MediaPlayerEvents#CAPTION_RENDERED
      */
-    _this.CAPTION_RENDERED = 'captionRendered';
+    this.CAPTION_RENDERED = 'captionRendered';
 
     /**
      * Triggered when the caption container is resized.
      * @event MediaPlayerEvents#CAPTION_CONTAINER_RESIZE
      */
-    _this.CAPTION_CONTAINER_RESIZE = 'captionContainerResize';
+    this.CAPTION_CONTAINER_RESIZE = 'captionContainerResize';
 
     /**
      * Sent when enough data is available that the media can be played,
@@ -4413,59 +4438,59 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      * HAVE_ENOUGH_DATA readyState.
      * @event MediaPlayerEvents#CAN_PLAY
      */
-    _this.CAN_PLAY = 'canPlay';
+    this.CAN_PLAY = 'canPlay';
 
     /**
      * This corresponds to the CAN_PLAY_THROUGH readyState.
      * @event MediaPlayerEvents#CAN_PLAY_THROUGH
      */
-    _this.CAN_PLAY_THROUGH = 'canPlayThrough';
+    this.CAN_PLAY_THROUGH = 'canPlayThrough';
 
     /**
      * Sent when playback completes.
      * @event MediaPlayerEvents#PLAYBACK_ENDED
      */
-    _this.PLAYBACK_ENDED = 'playbackEnded';
+    this.PLAYBACK_ENDED = 'playbackEnded';
 
     /**
      * Sent when an error occurs.  The element's error
      * attribute contains more information.
      * @event MediaPlayerEvents#PLAYBACK_ERROR
      */
-    _this.PLAYBACK_ERROR = 'playbackError';
+    this.PLAYBACK_ERROR = 'playbackError';
 
     /**
      * This event is fired once the playback has been initialized by MediaPlayer.js.
      * After that event methods such as setTextTrack() can be used.
      * @event MediaPlayerEvents#PLAYBACK_INITIALIZED
      */
-    _this.PLAYBACK_INITIALIZED = 'playbackInitialized';
+    this.PLAYBACK_INITIALIZED = 'playbackInitialized';
 
     /**
      * Sent when playback is not allowed (for example if user gesture is needed).
      * @event MediaPlayerEvents#PLAYBACK_NOT_ALLOWED
      */
-    _this.PLAYBACK_NOT_ALLOWED = 'playbackNotAllowed';
+    this.PLAYBACK_NOT_ALLOWED = 'playbackNotAllowed';
 
     /**
      * The media's metadata has finished loading; all attributes now
      * contain as much useful information as they're going to.
      * @event MediaPlayerEvents#PLAYBACK_METADATA_LOADED
      */
-    _this.PLAYBACK_METADATA_LOADED = 'playbackMetaDataLoaded';
+    this.PLAYBACK_METADATA_LOADED = 'playbackMetaDataLoaded';
 
     /**
      * The event is fired when the frame at the current playback position of the media has finished loading;
      * often the first frame
      * @event MediaPlayerEvents#PLAYBACK_LOADED_DATA
      */
-    _this.PLAYBACK_LOADED_DATA = 'playbackLoadedData';
+    this.PLAYBACK_LOADED_DATA = 'playbackLoadedData';
 
     /**
      * Sent when playback is paused.
      * @event MediaPlayerEvents#PLAYBACK_PAUSED
      */
-    _this.PLAYBACK_PAUSED = 'playbackPaused';
+    this.PLAYBACK_PAUSED = 'playbackPaused';
 
     /**
      * Sent when the media begins to play (either for the first time, after having been paused,
@@ -4473,7 +4498,7 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      *
      * @event MediaPlayerEvents#PLAYBACK_PLAYING
      */
-    _this.PLAYBACK_PLAYING = 'playbackPlaying';
+    this.PLAYBACK_PLAYING = 'playbackPlaying';
 
     /**
      * Sent periodically to inform interested parties of progress downloading
@@ -4481,31 +4506,31 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      * been downloaded is available in the media element's buffered attribute.
      * @event MediaPlayerEvents#PLAYBACK_PROGRESS
      */
-    _this.PLAYBACK_PROGRESS = 'playbackProgress';
+    this.PLAYBACK_PROGRESS = 'playbackProgress';
 
     /**
      * Sent when the playback speed changes.
      * @event MediaPlayerEvents#PLAYBACK_RATE_CHANGED
      */
-    _this.PLAYBACK_RATE_CHANGED = 'playbackRateChanged';
+    this.PLAYBACK_RATE_CHANGED = 'playbackRateChanged';
 
     /**
      * Sent when a seek operation completes.
      * @event MediaPlayerEvents#PLAYBACK_SEEKED
      */
-    _this.PLAYBACK_SEEKED = 'playbackSeeked';
+    this.PLAYBACK_SEEKED = 'playbackSeeked';
 
     /**
      * Sent when a seek operation begins.
      * @event MediaPlayerEvents#PLAYBACK_SEEKING
      */
-    _this.PLAYBACK_SEEKING = 'playbackSeeking';
+    this.PLAYBACK_SEEKING = 'playbackSeeking';
 
     /**
      * Sent when the video element reports stalled
      * @event MediaPlayerEvents#PLAYBACK_STALLED
      */
-    _this.PLAYBACK_STALLED = 'playbackStalled';
+    this.PLAYBACK_STALLED = 'playbackStalled';
 
     /**
      * Sent when playback of the media starts after having been paused;
@@ -4513,92 +4538,89 @@ var MediaPlayerEvents = /*#__PURE__*/function (_EventsBase) {
      *
      * @event MediaPlayerEvents#PLAYBACK_STARTED
      */
-    _this.PLAYBACK_STARTED = 'playbackStarted';
+    this.PLAYBACK_STARTED = 'playbackStarted';
 
     /**
      * The time indicated by the element's currentTime attribute has changed.
      * @event MediaPlayerEvents#PLAYBACK_TIME_UPDATED
      */
-    _this.PLAYBACK_TIME_UPDATED = 'playbackTimeUpdated';
+    this.PLAYBACK_TIME_UPDATED = 'playbackTimeUpdated';
 
     /**
      * Sent when the video element reports that the volume has changed
      * @event MediaPlayerEvents#PLAYBACK_VOLUME_CHANGED
      */
-    _this.PLAYBACK_VOLUME_CHANGED = 'playbackVolumeChanged';
+    this.PLAYBACK_VOLUME_CHANGED = 'playbackVolumeChanged';
 
     /**
      * Sent when the media playback has stopped because of a temporary lack of data.
      *
      * @event MediaPlayerEvents#PLAYBACK_WAITING
      */
-    _this.PLAYBACK_WAITING = 'playbackWaiting';
+    this.PLAYBACK_WAITING = 'playbackWaiting';
 
     /**
      * Manifest validity changed - As a result of an MPD validity expiration event.
      * @event MediaPlayerEvents#MANIFEST_VALIDITY_CHANGED
      */
-    _this.MANIFEST_VALIDITY_CHANGED = 'manifestValidityChanged';
+    this.MANIFEST_VALIDITY_CHANGED = 'manifestValidityChanged';
 
     /**
      * Dash events are triggered at their respective start points on the timeline.
      * @event MediaPlayerEvents#EVENT_MODE_ON_START
      */
-    _this.EVENT_MODE_ON_START = 'eventModeOnStart';
+    this.EVENT_MODE_ON_START = 'eventModeOnStart';
 
     /**
      * Dash events are triggered as soon as they were parsed.
      * @event MediaPlayerEvents#EVENT_MODE_ON_RECEIVE
      */
-    _this.EVENT_MODE_ON_RECEIVE = 'eventModeOnReceive';
+    this.EVENT_MODE_ON_RECEIVE = 'eventModeOnReceive';
 
     /**
      * Event that is dispatched whenever the player encounters a potential conformance validation that might lead to unexpected/not optimal behavior
      * @event MediaPlayerEvents#CONFORMANCE_VIOLATION
      */
-    _this.CONFORMANCE_VIOLATION = 'conformanceViolation';
+    this.CONFORMANCE_VIOLATION = 'conformanceViolation';
 
     /**
      * Event that is dispatched whenever the player switches to a different representation
      * @event MediaPlayerEvents#REPRESENTATION_SWITCH
      */
-    _this.REPRESENTATION_SWITCH = 'representationSwitch';
+    this.REPRESENTATION_SWITCH = 'representationSwitch';
 
     /**
      * Event that is dispatched whenever an adaptation set is removed due to all representations not being supported.
      * @event MediaPlayerEvents#ADAPTATION_SET_REMOVED_NO_CAPABILITIES
      */
-    _this.ADAPTATION_SET_REMOVED_NO_CAPABILITIES = 'adaptationSetRemovedNoCapabilities';
+    this.ADAPTATION_SET_REMOVED_NO_CAPABILITIES = 'adaptationSetRemovedNoCapabilities';
 
     /**
      * Triggered when a content steering request has completed.
      * @event MediaPlayerEvents#CONTENT_STEERING_REQUEST_COMPLETED
      */
-    _this.CONTENT_STEERING_REQUEST_COMPLETED = 'contentSteeringRequestCompleted';
+    this.CONTENT_STEERING_REQUEST_COMPLETED = 'contentSteeringRequestCompleted';
 
     /**
      * Triggered when an inband prft (ProducerReferenceTime) boxes has been received.
      * @event MediaPlayerEvents#INBAND_PRFT
      */
-    _this.INBAND_PRFT = 'inbandPrft';
+    this.INBAND_PRFT = 'inbandPrft';
 
     /**
      * The streaming attribute of the Managed Media Source is true
      * @type {string}
      */
-    _this.MANAGED_MEDIA_SOURCE_START_STREAMING = 'managedMediaSourceStartStreaming';
+    this.MANAGED_MEDIA_SOURCE_START_STREAMING = 'managedMediaSourceStartStreaming';
 
     /**
      * The streaming attribute of the Managed Media Source is false
      * @type {string}
      */
-    _this.MANAGED_MEDIA_SOURCE_END_STREAMING = 'managedMediaSourceEndStreaming';
-    return _this;
+    this.MANAGED_MEDIA_SOURCE_END_STREAMING = 'managedMediaSourceEndStreaming';
   }
-  _inherits(MediaPlayerEvents, _EventsBase);
-  return _createClass(MediaPlayerEvents);
-}(_core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var mediaPlayerEvents = new MediaPlayerEvents();
+}
+let mediaPlayerEvents = new MediaPlayerEvents();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (mediaPlayerEvents);
 
 /***/ }),
@@ -4923,7 +4945,17 @@ __webpack_require__.r(__webpack_exports__);
    */
   ID3_SCHEME_ID_URI: 'https://aomedia.org/emsg/ID3',
   COMMON_ACCESS_TOKEN_HEADER: 'common-access-token',
-  DASH_ROLE_SCHEME_ID: 'urn:mpeg:dash:role:2011'
+  DASH_ROLE_SCHEME_ID: 'urn:mpeg:dash:role:2011',
+  CODEC_FAMILIES: {
+    MP3: 'mp3',
+    AAC: 'aac',
+    AC3: 'ac3',
+    EC3: 'ec3',
+    DTSX: 'dtsx',
+    DTSC: 'dtsc',
+    AVC: 'avc',
+    HEVC: 'hevc'
+  }
 });
 
 /***/ }),
@@ -4940,19 +4972,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/events/EventsBase.js */ "./src/core/events/EventsBase.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -4989,25 +5008,20 @@ function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf 
  * @class
  * @implements EventsBase
  */
-var MetricsReportingEvents = /*#__PURE__*/function (_EventsBase) {
-  function MetricsReportingEvents() {
-    var _this;
-    _classCallCheck(this, MetricsReportingEvents);
-    _this = _callSuper(this, MetricsReportingEvents);
-    _this.METRICS_INITIALISATION_COMPLETE = 'internal_metricsReportingInitialized';
-    _this.BECAME_REPORTING_PLAYER = 'internal_becameReportingPlayer';
+class MetricsReportingEvents extends _core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor() {
+    super();
+    this.METRICS_INITIALISATION_COMPLETE = 'internal_metricsReportingInitialized';
+    this.BECAME_REPORTING_PLAYER = 'internal_becameReportingPlayer';
 
     /**
      * Triggered when CMCD data was generated for a HTTP request
      * @event MetricsReportingEvents#CMCD_DATA_GENERATED
      */
-    _this.CMCD_DATA_GENERATED = 'cmcdDataGenerated';
-    return _this;
+    this.CMCD_DATA_GENERATED = 'cmcdDataGenerated';
   }
-  _inherits(MetricsReportingEvents, _EventsBase);
-  return _createClass(MetricsReportingEvents);
-}(_core_events_EventsBase_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-var metricsReportingEvents = new MetricsReportingEvents();
+}
+let metricsReportingEvents = new MetricsReportingEvents();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (metricsReportingEvents);
 
 /***/ }),
@@ -5064,27 +5078,27 @@ __webpack_require__.r(__webpack_exports__);
 
 function MetricsCollectionController(config) {
   config = config || {};
-  var instance;
-  var metricsControllers = {};
-  var context = this.context;
-  var eventBus = config.eventBus;
-  var events = config.events;
+  let instance;
+  let metricsControllers = {};
+  let context = this.context;
+  let eventBus = config.eventBus;
+  const events = config.events;
   function update(e) {
     if (e.error) {
       return;
     }
 
     // start by assuming all existing controllers need removing
-    var controllersToRemove = Object.keys(metricsControllers);
-    var metrics = (0,_utils_ManifestParsing_js__WEBPACK_IMPORTED_MODULE_1__["default"])(context).getInstance({
+    let controllersToRemove = Object.keys(metricsControllers);
+    const metrics = (0,_utils_ManifestParsing_js__WEBPACK_IMPORTED_MODULE_1__["default"])(context).getInstance({
       adapter: config.adapter,
       constants: config.constants
     }).getMetrics(e.manifest);
-    metrics.forEach(function (m) {
-      var key = JSON.stringify(m);
+    metrics.forEach(m => {
+      const key = JSON.stringify(m);
       if (!metricsControllers.hasOwnProperty(key)) {
         try {
-          var controller = (0,_MetricsController_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create(config);
+          let controller = (0,_MetricsController_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create(config);
           controller.initialize(m);
           metricsControllers[key] = controller;
         } catch (e) {
@@ -5097,14 +5111,14 @@ function MetricsCollectionController(config) {
     });
 
     // now remove the unwanted controllers
-    controllersToRemove.forEach(function (c) {
+    controllersToRemove.forEach(c => {
       metricsControllers[c].reset();
       delete metricsControllers[c];
     });
     eventBus.trigger(_MetricsReportingEvents_js__WEBPACK_IMPORTED_MODULE_2__["default"].METRICS_INITIALISATION_COMPLETE);
   }
   function resetMetricsControllers() {
-    Object.keys(metricsControllers).forEach(function (key) {
+    Object.keys(metricsControllers).forEach(key => {
       metricsControllers[key].reset();
     });
     metricsControllers = {};
@@ -5180,8 +5194,8 @@ __webpack_require__.r(__webpack_exports__);
 
 function MetricsController(config) {
   config = config || {};
-  var metricsHandlersController, reportingController, rangeController, instance;
-  var context = this.context;
+  let metricsHandlersController, reportingController, rangeController, instance;
+  let context = this.context;
   function initialize(metricsEntry) {
     try {
       rangeController = (0,_RangeController_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create({
@@ -5276,30 +5290,30 @@ __webpack_require__.r(__webpack_exports__);
 
 function MetricsHandlersController(config) {
   config = config || {};
-  var handlers = [];
-  var instance;
-  var context = this.context;
-  var eventBus = config.eventBus;
-  var Events = config.events;
-  var metricsHandlerFactory = (0,_metrics_MetricsHandlerFactory_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance({
+  let handlers = [];
+  let instance;
+  const context = this.context;
+  const eventBus = config.eventBus;
+  const Events = config.events;
+  let metricsHandlerFactory = (0,_metrics_MetricsHandlerFactory_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance({
     debug: config.debug,
     eventBus: config.eventBus,
     metricsConstants: config.metricsConstants
   });
   function handle(e) {
-    handlers.forEach(function (handler) {
+    handlers.forEach(handler => {
       handler.handleNewMetric(e.metric, e.value, e.mediaType);
     });
   }
   function initialize(metrics, reportingController) {
-    metrics.split(',').forEach(function (m, midx, ms) {
-      var handler;
+    metrics.split(',').forEach((m, midx, ms) => {
+      let handler;
 
       // there is a bug in ISO23009-1 where the metrics attribute
       // is a comma-separated list but HttpList key can contain a
       // comma enclosed by ().
       if (m.indexOf('(') !== -1 && m.indexOf(')') === -1) {
-        var nextm = ms[midx + 1];
+        let nextm = ms[midx + 1];
         if (nextm && nextm.indexOf('(') === -1 && nextm.indexOf(')') !== -1) {
           m += ',' + nextm;
 
@@ -5318,9 +5332,7 @@ function MetricsHandlersController(config) {
   function reset() {
     eventBus.off(Events.METRIC_ADDED, handle, instance);
     eventBus.off(Events.METRIC_UPDATED, handle, instance);
-    handlers.forEach(function (handler) {
-      return handler.reset();
-    });
+    handlers.forEach(handler => handler.reset());
     handlers = [];
   }
   instance = {
@@ -5382,15 +5394,15 @@ __webpack_require__.r(__webpack_exports__);
 
 function RangeController(config) {
   config = config || {};
-  var useWallClockTime = false;
-  var context = this.context;
-  var instance, ranges;
-  var mediaElement = config.mediaElement;
+  let useWallClockTime = false;
+  let context = this.context;
+  let instance, ranges;
+  let mediaElement = config.mediaElement;
   function initialize(rs) {
     if (rs && rs.length) {
-      rs.forEach(function (r) {
-        var start = r.starttime;
-        var end = start + r.duration;
+      rs.forEach(r => {
+        let start = r.starttime;
+        let end = start + r.duration;
         ranges.add(start, end);
       });
       useWallClockTime = !!rs[0]._useWallClockTime;
@@ -5403,8 +5415,8 @@ function RangeController(config) {
     ranges = (0,_utils_CustomTimeRanges_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).create();
   }
   function isEnabled() {
-    var numRanges = ranges.length;
-    var time;
+    let numRanges = ranges.length;
+    let time;
     if (!numRanges) {
       return true;
     }
@@ -5412,9 +5424,9 @@ function RangeController(config) {
     // When not present, DASH Metrics reporting is requested
     // for the whole duration of the content.
     time = useWallClockTime ? new Date().getTime() / 1000 : mediaElement.currentTime;
-    for (var i = 0; i < numRanges; i += 1) {
-      var start = ranges.start(i);
-      var end = ranges.end(i);
+    for (let i = 0; i < numRanges; i += 1) {
+      let start = ranges.start(i);
+      let end = ranges.end(i);
       if (start <= time && time < end) {
         return true;
       }
@@ -5481,16 +5493,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function ReportingController(config) {
-  var reporters = [];
-  var instance;
-  var reportingFactory = (0,_reporting_ReportingFactory_js__WEBPACK_IMPORTED_MODULE_0__["default"])(this.context).getInstance(config);
+  let reporters = [];
+  let instance;
+  const reportingFactory = (0,_reporting_ReportingFactory_js__WEBPACK_IMPORTED_MODULE_0__["default"])(this.context).getInstance(config);
   function initialize(reporting, rangeController) {
     // "if multiple Reporting elements are present, it is expected that
     // the client processes one of the recognized reporting schemes."
     // to ignore this, and support multiple Reporting per Metric,
     // simply change the 'some' below to 'forEach'
-    reporting.some(function (r) {
-      var reporter = reportingFactory.create(r, rangeController);
+    reporting.some(r => {
+      let reporter = reportingFactory.create(r, rangeController);
       if (reporter) {
         reporters.push(reporter);
         return true;
@@ -5498,15 +5510,11 @@ function ReportingController(config) {
     });
   }
   function reset() {
-    reporters.forEach(function (r) {
-      return r.reset();
-    });
+    reporters.forEach(r => r.reset());
     reporters = [];
   }
   function report(type, vos) {
-    reporters.forEach(function (r) {
-      return r.report(type, vos);
-    });
+    reporters.forEach(r => r.report(type, vos));
   }
   instance = {
     initialize: initialize,
@@ -5574,13 +5582,13 @@ __webpack_require__.r(__webpack_exports__);
 
 function MetricsHandlerFactory(config) {
   config = config || {};
-  var instance;
-  var logger = config.debug ? config.debug.getLogger(instance) : {};
+  let instance;
+  const logger = config.debug ? config.debug.getLogger(instance) : {};
 
   // group 1: key, [group 3: n [, group 5: type]]
-  var keyRegex = /([a-zA-Z]*)(\(([0-9]*)(\,\s*([a-zA-Z]*))?\))?/;
-  var context = this.context;
-  var knownFactoryProducts = {
+  let keyRegex = /([a-zA-Z]*)(\(([0-9]*)(\,\s*([a-zA-Z]*))?\))?/;
+  const context = this.context;
+  let knownFactoryProducts = {
     BufferLevel: _handlers_BufferLevelHandler_js__WEBPACK_IMPORTED_MODULE_0__["default"],
     DVBErrors: _handlers_DVBErrorsHandler_js__WEBPACK_IMPORTED_MODULE_1__["default"],
     HttpList: _handlers_HttpListHandler_js__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -5602,7 +5610,7 @@ function MetricsHandlerFactory(config) {
       handler.initialize(matches[1], reportingController, matches[3], matches[5]);
     } catch (e) {
       handler = null;
-      logger.error("MetricsHandlerFactory: Could not create handler for type ".concat(matches[1], " with args ").concat(matches[3], ", ").concat(matches[5], " (").concat(e.message, ")"));
+      logger.error(`MetricsHandlerFactory: Could not create handler for type ${matches[1]} with args ${matches[3]}, ${matches[5]} (${e.message})`);
     }
     return handler;
   }
@@ -5672,16 +5680,14 @@ __webpack_require__.r(__webpack_exports__);
 
 function BufferLevelHandler(config) {
   config = config || {};
-  var instance, reportingController, n, name, interval, lastReportedTime;
-  var context = this.context;
-  var handlerHelpers = (0,_utils_HandlerHelpers_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
-  var storedVOs = [];
-  var metricsConstants = config.metricsConstants;
+  let instance, reportingController, n, name, interval, lastReportedTime;
+  let context = this.context;
+  let handlerHelpers = (0,_utils_HandlerHelpers_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
+  let storedVOs = [];
+  const metricsConstants = config.metricsConstants;
   function getLowestBufferLevelVO() {
     try {
-      return Object.keys(storedVOs).map(function (key) {
-        return storedVOs[key];
-      }).reduce(function (a, b) {
+      return Object.keys(storedVOs).map(key => storedVOs[key]).reduce((a, b) => {
         return a.level < b.level ? a : b;
       });
     } catch (e) {
@@ -5689,7 +5695,7 @@ function BufferLevelHandler(config) {
     }
   }
   function intervalCallback() {
-    var vo = getLowestBufferLevelVO();
+    let vo = getLowestBufferLevelVO();
     if (vo) {
       if (lastReportedTime !== vo.t) {
         lastReportedTime = vo.t;
@@ -5779,9 +5785,9 @@ __webpack_require__.r(__webpack_exports__);
 
 function DVBErrorsHandler(config) {
   config = config || {};
-  var instance, reportingController;
-  var eventBus = config.eventBus;
-  var metricsConstants = config.metricsConstants;
+  let instance, reportingController;
+  let eventBus = config.eventBus;
+  const metricsConstants = config.metricsConstants;
   function onInitialisationComplete() {
     // we only want to report this once per call to initialize
     eventBus.off(_MetricsReportingEvents_js__WEBPACK_IMPORTED_MODULE_0__["default"].METRICS_INITIALISATION_COMPLETE, onInitialisationComplete, this);
@@ -5867,7 +5873,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore
  */
 function GenericMetricHandler() {
-  var instance, metricName, reportingController;
+  let instance, metricName, reportingController;
   function initialize(name, rc) {
     metricName = name;
     reportingController = rc;
@@ -5944,10 +5950,10 @@ __webpack_require__.r(__webpack_exports__);
 
 function HttpListHandler(config) {
   config = config || {};
-  var instance, reportingController, n, type, name, interval;
-  var storedVos = [];
-  var handlerHelpers = (0,_utils_HandlerHelpers_js__WEBPACK_IMPORTED_MODULE_0__["default"])(this.context).getInstance();
-  var metricsConstants = config.metricsConstants;
+  let instance, reportingController, n, type, name, interval;
+  let storedVos = [];
+  let handlerHelpers = (0,_utils_HandlerHelpers_js__WEBPACK_IMPORTED_MODULE_0__["default"])(this.context).getInstance();
+  const metricsConstants = config.metricsConstants;
   function intervalCallback() {
     var vos = storedVos;
     if (vos.length) {
@@ -6045,16 +6051,16 @@ __webpack_require__.r(__webpack_exports__);
 
 function ReportingFactory(config) {
   config = config || {};
-  var knownReportingSchemeIdUris = {
+  const knownReportingSchemeIdUris = {
     'urn:dvb:dash:reporting:2014': _reporters_DVBReporting_js__WEBPACK_IMPORTED_MODULE_0__["default"]
   };
-  var context = this.context;
-  var instance;
-  var logger = config.debug ? config.debug.getLogger(instance) : {};
-  var metricsConstants = config.metricsConstants;
-  var mediaPlayerModel = config.mediaPlayerModel || {};
+  const context = this.context;
+  let instance;
+  const logger = config.debug ? config.debug.getLogger(instance) : {};
+  const metricsConstants = config.metricsConstants;
+  const mediaPlayerModel = config.mediaPlayerModel || {};
   function create(entry, rangeController) {
-    var reporting;
+    let reporting;
     try {
       reporting = knownReportingSchemeIdUris[entry.schemeIdUri](context).create({
         metricsConstants: metricsConstants,
@@ -6063,7 +6069,7 @@ function ReportingFactory(config) {
       reporting.initialize(entry, rangeController);
     } catch (e) {
       reporting = null;
-      logger.error("ReportingFactory: could not create Reporting with schemeIdUri ".concat(entry.schemeIdUri, " (").concat(e.message, ")"));
+      logger.error(`ReportingFactory: could not create Reporting with schemeIdUri ${entry.schemeIdUri} (${e.message})`);
     }
     return reporting;
   }
@@ -6137,13 +6143,13 @@ __webpack_require__.r(__webpack_exports__);
 
 function DVBReporting(config) {
   config = config || {};
-  var instance;
-  var context = this.context;
-  var metricSerialiser, customParametersModel, randomNumberGenerator, reportingPlayerStatusDecided, isReportingPlayer, reportingUrl, rangeController;
-  var USE_DRAFT_DVB_SPEC = true;
-  var allowPendingRequestsToCompleteOnReset = true;
-  var pendingRequests = [];
-  var metricsConstants = config.metricsConstants;
+  let instance;
+  let context = this.context;
+  let metricSerialiser, customParametersModel, randomNumberGenerator, reportingPlayerStatusDecided, isReportingPlayer, reportingUrl, rangeController;
+  let USE_DRAFT_DVB_SPEC = true;
+  let allowPendingRequestsToCompleteOnReset = true;
+  let pendingRequests = [];
+  const metricsConstants = config.metricsConstants;
   function setup() {
     metricSerialiser = (0,_utils_MetricSerialiser_js__WEBPACK_IMPORTED_MODULE_0__["default"])(context).getInstance();
     randomNumberGenerator = (0,_utils_RNG_js__WEBPACK_IMPORTED_MODULE_1__["default"])(context).getInstance();
@@ -6151,10 +6157,10 @@ function DVBReporting(config) {
     resetInitialSettings();
   }
   function doGetRequest(url, successCB, failureCB) {
-    var req = new XMLHttpRequest();
+    let req = new XMLHttpRequest();
     req.withCredentials = customParametersModel.getXHRWithCredentialsForType(metricsConstants.HTTP_REQUEST_DVB_REPORTING_TYPE);
-    var oncomplete = function oncomplete() {
-      var reqIndex = pendingRequests.indexOf(req);
+    const oncomplete = function () {
+      let reqIndex = pendingRequests.indexOf(req);
       if (reqIndex === -1) {
         return;
       } else {
@@ -6193,17 +6199,17 @@ function DVBReporting(config) {
       // This reporting mechanism operates by creating one HTTP GET
       // request for every entry in the top level list of the metric.
       vos.forEach(function (vo) {
-        var url = metricSerialiser.serialise(vo);
+        let url = metricSerialiser.serialise(vo);
 
         // this has been proposed for errata
         if (USE_DRAFT_DVB_SPEC && type !== metricsConstants.DVB_ERRORS) {
-          url = "metricname=".concat(type, "&").concat(url);
+          url = `metricname=${type}&${url}`;
         }
 
         // Take the value of the @reportingUrl attribute, append a
         // question mark ('?') character and then append the string
         // created in the previous step.
-        url = "".concat(reportingUrl, "?").concat(url);
+        url = `${reportingUrl}?${url}`;
 
         // Make an HTTP GET request to the URL contained within the
         // string created in the previous step.
@@ -6220,7 +6226,7 @@ function DVBReporting(config) {
     }
   }
   function initialize(entry, rc) {
-    var probability;
+    let probability;
     rangeController = rc;
     reportingUrl = entry.dvbReportingUrl;
 
@@ -6254,9 +6260,7 @@ function DVBReporting(config) {
   }
   function reset() {
     if (!allowPendingRequestsToCompleteOnReset) {
-      pendingRequests.forEach(function (req) {
-        return req.abort();
-      });
+      pendingRequests.forEach(req => req.abort());
       pendingRequests = [];
     }
     resetInitialSettings();
@@ -6324,18 +6328,18 @@ __webpack_require__.r(__webpack_exports__);
 
 function DVBErrorsTranslator(config) {
   config = config || {};
-  var instance, mpd;
-  var eventBus = config.eventBus;
-  var dashMetrics = config.dashMetrics;
-  var metricsConstants = config.metricsConstants;
+  let instance, mpd;
+  const eventBus = config.eventBus;
+  const dashMetrics = config.dashMetrics;
+  const metricsConstants = config.metricsConstants;
   //MediaPlayerEvents have been added to Events in MediaPlayer class
-  var Events = config.events;
+  const Events = config.events;
   function report(vo) {
-    var o = new _vo_DVBErrors_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    let o = new _vo_DVBErrors_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
     if (!mpd) {
       return;
     }
-    for (var key in vo) {
+    for (const key in vo) {
       if (vo.hasOwnProperty(key)) {
         o[key] = vo[key];
       }
@@ -6394,8 +6398,8 @@ function DVBErrorsTranslator(config) {
     }
   }
   function onPlaybackError(e) {
-    var reason = e.error ? e.error.code : 0;
-    var errorcode;
+    let reason = e.error ? e.error.code : 0;
+    let errorcode;
     switch (reason) {
       case MediaError.MEDIA_ERR_NETWORK:
         errorcode = _vo_DVBErrors_js__WEBPACK_IMPORTED_MODULE_0__["default"].CONNECTION_ERROR;
@@ -6427,8 +6431,8 @@ function DVBErrorsTranslator(config) {
     eventBus.off(_MetricsReportingEvents_js__WEBPACK_IMPORTED_MODULE_1__["default"].BECAME_REPORTING_PLAYER, onBecameReporter, instance);
   }
   instance = {
-    initialize: initialize,
-    reset: reset
+    initialize,
+    reset
   };
   return instance;
 }
@@ -6487,8 +6491,8 @@ __webpack_require__.r(__webpack_exports__);
  */
 function HandlerHelpers() {
   return {
-    reconstructFullMetricName: function reconstructFullMetricName(key, n, type) {
-      var mn = key;
+    reconstructFullMetricName: function (key, n, type) {
+      let mn = key;
       if (n) {
         mn += '(' + n;
         if (type && type.length) {
@@ -6498,7 +6502,7 @@ function HandlerHelpers() {
       }
       return mn;
     },
-    validateN: function validateN(n_ms) {
+    validateN: function (n_ms) {
       if (!n_ms) {
         throw new Error('missing n');
       }
@@ -6541,12 +6545,12 @@ __webpack_require__.r(__webpack_exports__);
 
 function ManifestParsing(config) {
   config = config || {};
-  var instance;
-  var adapter = config.adapter;
-  var constants = config.constants;
+  let instance;
+  let adapter = config.adapter;
+  const constants = config.constants;
   function getMetricsRangeStartTime(manifest, dynamic, range) {
-    var voPeriods, reportingStartTime;
-    var presentationStartTime = 0;
+    let voPeriods, reportingStartTime;
+    let presentationStartTime = 0;
     if (dynamic) {
       // For services with MPD@type='dynamic', the start time is
       // indicated in wall clock time by adding the value of this
@@ -6573,9 +6577,9 @@ function ManifestParsing(config) {
     return reportingStartTime;
   }
   function getMetrics(manifest) {
-    var metrics = [];
+    let metrics = [];
     if (manifest && manifest.Metrics) {
-      manifest.Metrics.forEach(function (metric) {
+      manifest.Metrics.forEach(metric => {
         var metricEntry = new _vo_Metrics_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
         var isDynamic = adapter.getIsDynamic(manifest);
         if (metric.hasOwnProperty('metrics')) {
@@ -6584,7 +6588,7 @@ function ManifestParsing(config) {
           return;
         }
         if (metric.Range) {
-          metric.Range.forEach(function (range) {
+          metric.Range.forEach(range => {
             var rangeEntry = new _vo_Range_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
             rangeEntry.starttime = getMetricsRangeStartTime(manifest, isDynamic, range);
             if (range.hasOwnProperty('duration')) {
@@ -6599,7 +6603,7 @@ function ManifestParsing(config) {
           });
         }
         if (metric.Reporting) {
-          metric.Reporting.forEach(function (reporting) {
+          metric.Reporting.forEach(reporting => {
             var reportingEntry = new _vo_Reporting_js__WEBPACK_IMPORTED_MODULE_2__["default"]();
             if (reporting.hasOwnProperty(constants.SCHEME_ID_URI)) {
               reportingEntry.schemeIdUri = reporting.schemeIdUri;
@@ -6690,9 +6694,9 @@ function MetricSerialiser() {
   // of the DVBErrors metric each entry corresponds to an "error event"
   // described in clause 10.8.4) the Player shall:
   function serialise(metric) {
-    var pairs = [];
-    var obj = [];
-    var key, value;
+    let pairs = [];
+    let obj = [];
+    let key, value;
 
     // Take each (key, value) pair from the metric entry and create a
     // string consisting of the name of the key, followed by an equals
@@ -6717,7 +6721,7 @@ function MetricSerialiser() {
           }
           obj = [];
           value.forEach(function (v) {
-            var isBuiltIn = Object.prototype.toString.call(v).slice(8, -1) !== 'Object';
+            let isBuiltIn = Object.prototype.toString.call(v).slice(8, -1) !== 'Object';
             obj.push(isBuiltIn ? v : serialise(v));
           });
           value = obj.map(encodeURIComponent).join(',');
@@ -6796,17 +6800,17 @@ __webpack_require__.r(__webpack_exports__);
 function RNG() {
   // check whether secure random numbers are available. if not, revert to
   // using Math.random
-  var crypto = window.crypto || window.msCrypto;
+  let crypto = window.crypto || window.msCrypto;
 
   // could just as easily use any other array type by changing line below
-  var ArrayType = Uint32Array;
-  var MAX_VALUE = Math.pow(2, ArrayType.BYTES_PER_ELEMENT * 8) - 1;
+  let ArrayType = Uint32Array;
+  let MAX_VALUE = Math.pow(2, ArrayType.BYTES_PER_ELEMENT * 8) - 1;
 
   // currently there is only one client for this code, and that only uses
   // a single random number per initialisation. may want to increase this
   // number if more consumers in the future
-  var NUM_RANDOM_NUMBERS = 10;
-  var randomNumbers, index, instance;
+  let NUM_RANDOM_NUMBERS = 10;
+  let randomNumbers, index, instance;
   function initialize() {
     if (crypto) {
       if (!randomNumbers) {
@@ -6817,7 +6821,7 @@ function RNG() {
     }
   }
   function rand(min, max) {
-    var r;
+    let r;
     if (!min) {
       min = 0;
     }
@@ -6857,12 +6861,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -6897,56 +6895,57 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @class
  * @ignore
  */
-var DVBErrors = /*#__PURE__*/_createClass(function DVBErrors() {
-  _classCallCheck(this, DVBErrors);
-  this.mpdurl = null;
-  // String - Absolute URL from which the MPD was originally
-  // retrieved (MPD updates will not change this value).
+class DVBErrors {
+  constructor() {
+    this.mpdurl = null;
+    // String - Absolute URL from which the MPD was originally
+    // retrieved (MPD updates will not change this value).
 
-  this.errorcode = null;
-  // String - The value of errorcode depends upon the type
-  // of error being reported. For an error listed in the
-  // ErrorType column below the value is as described in the
-  // Value column.
-  //
-  // ErrorType                                            Value
-  // ---------                                            -----
-  // HTTP error status code                               HTTP status code
-  // Unknown HTTP status code                             HTTP status code
-  // SSL connection failed                                "SSL" followed by SSL alert value
-  // DNS resolution failed                                "C00"
-  // Host unreachable                                     "C01"
-  // Connection refused                                   "C02"
-  // Connection error – Not otherwise specified           "C03"
-  // Corrupt media – ISO BMFF container cannot be parsed  "M00"
-  // Corrupt media – Not otherwise specified              "M01"
-  // Changing Base URL in use due to errors               "F00"
-  // Becoming an error reporting Player                   "S00"
+    this.errorcode = null;
+    // String - The value of errorcode depends upon the type
+    // of error being reported. For an error listed in the
+    // ErrorType column below the value is as described in the
+    // Value column.
+    //
+    // ErrorType                                            Value
+    // ---------                                            -----
+    // HTTP error status code                               HTTP status code
+    // Unknown HTTP status code                             HTTP status code
+    // SSL connection failed                                "SSL" followed by SSL alert value
+    // DNS resolution failed                                "C00"
+    // Host unreachable                                     "C01"
+    // Connection refused                                   "C02"
+    // Connection error – Not otherwise specified           "C03"
+    // Corrupt media – ISO BMFF container cannot be parsed  "M00"
+    // Corrupt media – Not otherwise specified              "M01"
+    // Changing Base URL in use due to errors               "F00"
+    // Becoming an error reporting Player                   "S00"
 
-  this.terror = null;
-  // Real-Time - Date and time at which error occurred in UTC,
-  // formatted as a combined date and time according to ISO 8601.
+    this.terror = null;
+    // Real-Time - Date and time at which error occurred in UTC,
+    // formatted as a combined date and time according to ISO 8601.
 
-  this.url = null;
-  // String - Absolute URL from which data was being requested
-  // when this error occurred. If the error report is in relation
-  // to corrupt media or changing BaseURL, this may be a null
-  // string if the URL from which the media was obtained or
-  // which led to the change of BaseURL is no longer known.
+    this.url = null;
+    // String - Absolute URL from which data was being requested
+    // when this error occurred. If the error report is in relation
+    // to corrupt media or changing BaseURL, this may be a null
+    // string if the URL from which the media was obtained or
+    // which led to the change of BaseURL is no longer known.
 
-  this.ipaddress = null;
-  // String - IP Address which the host name in "url" resolved to.
-  // If the error report is in relation to corrupt media or
-  // changing BaseURL, this may be a null string if the URL
-  // from which the media was obtained or which led to the
-  // change of BaseURL is no longer known.
+    this.ipaddress = null;
+    // String - IP Address which the host name in "url" resolved to.
+    // If the error report is in relation to corrupt media or
+    // changing BaseURL, this may be a null string if the URL
+    // from which the media was obtained or which led to the
+    // change of BaseURL is no longer known.
 
-  this.servicelocation = null;
-  // String - The value of the serviceLocation field in the
-  // BaseURL being used. In the event of this report indicating
-  // a change of BaseURL this is the value from the BaseURL
-  // being moved from.
-});
+    this.servicelocation = null;
+    // String - The value of the serviceLocation field in the
+    // BaseURL being used. In the event of this report indicating
+    // a change of BaseURL this is the value from the BaseURL
+    // being moved from.
+  }
+}
 DVBErrors.SSL_CONNECTION_FAILED_PREFIX = 'SSL';
 DVBErrors.DNS_RESOLUTION_FAILED = 'C00';
 DVBErrors.HOST_UNREACHABLE = 'C01';
@@ -6971,12 +6970,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7011,12 +7004,13 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @class
  * @ignore
  */
-var Metrics = /*#__PURE__*/_createClass(function Metrics() {
-  _classCallCheck(this, Metrics);
-  this.metrics = '';
-  this.Range = [];
-  this.Reporting = [];
-});
+class Metrics {
+  constructor() {
+    this.metrics = '';
+    this.Range = [];
+    this.Reporting = [];
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Metrics);
 
 /***/ }),
@@ -7032,12 +7026,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7072,15 +7060,16 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * @class
  * @ignore
  */
-var Range = /*#__PURE__*/_createClass(function Range() {
-  _classCallCheck(this, Range);
-  // as defined in ISO23009-1
-  this.starttime = 0;
-  this.duration = Infinity;
+class Range {
+  constructor() {
+    // as defined in ISO23009-1
+    this.starttime = 0;
+    this.duration = Infinity;
 
-  // for internal use
-  this._useWallClockTime = false;
-});
+    // for internal use
+    this._useWallClockTime = false;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Range);
 
 /***/ }),
@@ -7096,12 +7085,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7138,16 +7121,17 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  */
 
 // TS 103 285 Clause 10.12.3.3
-var DEFAULT_DVB_PROBABILITY = 1000;
-var Reporting = /*#__PURE__*/_createClass(function Reporting() {
-  _classCallCheck(this, Reporting);
-  this.schemeIdUri = '';
-  this.value = '';
+const DEFAULT_DVB_PROBABILITY = 1000;
+class Reporting {
+  constructor() {
+    this.schemeIdUri = '';
+    this.value = '';
 
-  // DVB Extensions
-  this.dvbReportingUrl = '';
-  this.dvbProbability = DEFAULT_DVB_PROBABILITY;
-});
+    // DVB Extensions
+    this.dvbReportingUrl = '';
+    this.dvbProbability = DEFAULT_DVB_PROBABILITY;
+  }
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Reporting);
 
 /***/ }),
@@ -7203,14 +7187,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var DEFAULT_XHR_WITH_CREDENTIALS = false;
+const DEFAULT_XHR_WITH_CREDENTIALS = false;
 function CustomParametersModel() {
-  var instance, utcTimingSources, xhrWithCredentials, requestInterceptors, responseInterceptors, licenseRequestFilters, licenseResponseFilters, customCapabilitiesFilters, customInitialTrackSelectionFunction, customAbrRules;
-  var context = this.context;
-  var settings = (0,_core_Settings_js__WEBPACK_IMPORTED_MODULE_2__["default"])(context).getInstance();
+  let instance, utcTimingSources, xhrWithCredentials, requestInterceptors, responseInterceptors, licenseRequestFilters, licenseResponseFilters, customCapabilitiesFilters, customInitialTrackSelectionFunction, customAbrRules;
+  const context = this.context;
+  const settings = (0,_core_Settings_js__WEBPACK_IMPORTED_MODULE_2__["default"])(context).getInstance();
   function setup() {
     xhrWithCredentials = {
-      "default": DEFAULT_XHR_WITH_CREDENTIALS
+      default: DEFAULT_XHR_WITH_CREDENTIALS
     };
     _resetInitialSettings();
   }
@@ -7337,8 +7321,8 @@ function CustomParametersModel() {
    * @private
    */
   function _unregisterFilter(filters, filter) {
-    var index = -1;
-    filters.some(function (item, i) {
+    let index = -1;
+    filters.some((item, i) => {
       if (item === filter) {
         index = i;
         return true;
@@ -7356,7 +7340,7 @@ function CustomParametersModel() {
    * @return {number} rule number
    */
   function _findAbrCustomRuleIndex(rulename) {
-    var i;
+    let i;
     for (i = 0; i < customAbrRules.length; i++) {
       if (customAbrRules[i].rulename === rulename) {
         return i;
@@ -7378,7 +7362,7 @@ function CustomParametersModel() {
     if (typeof type !== 'string' || type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_4__["default"].RULES_TYPES.ABANDON_FRAGMENT_RULES && type !== _constants_Constants_js__WEBPACK_IMPORTED_MODULE_4__["default"].RULES_TYPES.QUALITY_SWITCH_RULES || typeof rulename !== 'string') {
       throw _constants_Constants_js__WEBPACK_IMPORTED_MODULE_4__["default"].BAD_ARGUMENT_ERROR;
     }
-    var index = _findAbrCustomRuleIndex(rulename);
+    let index = _findAbrCustomRuleIndex(rulename);
     if (index === -1) {
       // add rule
       customAbrRules.push({
@@ -7400,7 +7384,7 @@ function CustomParametersModel() {
    */
   function removeAbrCustomRule(rulename) {
     if (rulename) {
-      var index = _findAbrCustomRuleIndex(rulename);
+      let index = _findAbrCustomRuleIndex(rulename);
       //if no rulename custom rule has been found, do nothing
       if (index !== -1) {
         // remove rule
@@ -7486,7 +7470,7 @@ function CustomParametersModel() {
    */
   function addUTCTimingSource(schemeIdUri, value) {
     removeUTCTimingSource(schemeIdUri, value); //check if it already exists and remove if so.
-    var vo = new _dash_vo_UTCTiming_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
+    let vo = new _dash_vo_UTCTiming_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
     vo.schemeIdUri = schemeIdUri;
     vo.value = value;
     utcTimingSources.push(vo);
@@ -7526,12 +7510,12 @@ function CustomParametersModel() {
    * Add the default timing source to the list
    */
   function restoreDefaultUTCTimingSources() {
-    var defaultUtcTimingSource = settings.get().streaming.utcSynchronization.defaultTimingSource;
+    let defaultUtcTimingSource = settings.get().streaming.utcSynchronization.defaultTimingSource;
     addUTCTimingSource(defaultUtcTimingSource.scheme, defaultUtcTimingSource.value);
   }
   function setXHRWithCredentialsForType(type, value) {
     if (!type) {
-      Object.keys(xhrWithCredentials).forEach(function (key) {
+      Object.keys(xhrWithCredentials).forEach(key => {
         setXHRWithCredentialsForType(key, value);
       });
     } else {
@@ -7539,41 +7523,41 @@ function CustomParametersModel() {
     }
   }
   function getXHRWithCredentialsForType(type) {
-    var useCreds = xhrWithCredentials[type];
-    return useCreds === undefined ? xhrWithCredentials["default"] : useCreds;
+    const useCreds = xhrWithCredentials[type];
+    return useCreds === undefined ? xhrWithCredentials.default : useCreds;
   }
   instance = {
-    getCustomInitialTrackSelectionFunction: getCustomInitialTrackSelectionFunction,
-    setCustomInitialTrackSelectionFunction: setCustomInitialTrackSelectionFunction,
-    resetCustomInitialTrackSelectionFunction: resetCustomInitialTrackSelectionFunction,
-    getLicenseResponseFilters: getLicenseResponseFilters,
-    getLicenseRequestFilters: getLicenseRequestFilters,
-    getCustomCapabilitiesFilters: getCustomCapabilitiesFilters,
-    registerCustomCapabilitiesFilter: registerCustomCapabilitiesFilter,
-    registerLicenseResponseFilter: registerLicenseResponseFilter,
-    registerLicenseRequestFilter: registerLicenseRequestFilter,
-    unregisterCustomCapabilitiesFilter: unregisterCustomCapabilitiesFilter,
-    unregisterLicenseResponseFilter: unregisterLicenseResponseFilter,
-    unregisterLicenseRequestFilter: unregisterLicenseRequestFilter,
-    addAbrCustomRule: addAbrCustomRule,
-    removeAllAbrCustomRule: removeAllAbrCustomRule,
-    removeAbrCustomRule: removeAbrCustomRule,
-    getAbrCustomRules: getAbrCustomRules,
-    addRequestInterceptor: addRequestInterceptor,
-    addResponseInterceptor: addResponseInterceptor,
-    removeRequestInterceptor: removeRequestInterceptor,
-    removeResponseInterceptor: removeResponseInterceptor,
-    getRequestInterceptors: getRequestInterceptors,
-    getResponseInterceptors: getResponseInterceptors,
-    addUTCTimingSource: addUTCTimingSource,
-    removeUTCTimingSource: removeUTCTimingSource,
-    getUTCTimingSources: getUTCTimingSources,
-    clearDefaultUTCTimingSources: clearDefaultUTCTimingSources,
-    restoreDefaultUTCTimingSources: restoreDefaultUTCTimingSources,
-    setXHRWithCredentialsForType: setXHRWithCredentialsForType,
-    getXHRWithCredentialsForType: getXHRWithCredentialsForType,
-    setConfig: setConfig,
-    reset: reset
+    getCustomInitialTrackSelectionFunction,
+    setCustomInitialTrackSelectionFunction,
+    resetCustomInitialTrackSelectionFunction,
+    getLicenseResponseFilters,
+    getLicenseRequestFilters,
+    getCustomCapabilitiesFilters,
+    registerCustomCapabilitiesFilter,
+    registerLicenseResponseFilter,
+    registerLicenseRequestFilter,
+    unregisterCustomCapabilitiesFilter,
+    unregisterLicenseResponseFilter,
+    unregisterLicenseRequestFilter,
+    addAbrCustomRule,
+    removeAllAbrCustomRule,
+    removeAbrCustomRule,
+    getAbrCustomRules,
+    addRequestInterceptor,
+    addResponseInterceptor,
+    removeRequestInterceptor,
+    removeResponseInterceptor,
+    getRequestInterceptors,
+    getResponseInterceptors,
+    addUTCTimingSource,
+    removeUTCTimingSource,
+    getUTCTimingSources,
+    clearDefaultUTCTimingSources,
+    restoreDefaultUTCTimingSources,
+    setXHRWithCredentialsForType,
+    getXHRWithCredentialsForType,
+    setConfig,
+    reset
   };
   setup();
   return instance;
@@ -7630,10 +7614,10 @@ __webpack_require__.r(__webpack_exports__);
 
 function CustomTimeRanges(/*config*/
 ) {
-  var customTimeRangeArray = [];
-  var length = 0;
+  let customTimeRangeArray = [];
+  let length = 0;
   function add(start, end) {
-    var i;
+    let i;
 
     // eslint-disable-next-line curly
     for (i = 0; i < this.customTimeRangeArray.length && start > this.customTimeRangeArray[i].start; i++);
@@ -7653,7 +7637,7 @@ function CustomTimeRanges(/*config*/
     this.length = 0;
   }
   function remove(start, end) {
-    for (var i = 0; i < this.customTimeRangeArray.length; i++) {
+    for (let i = 0; i < this.customTimeRangeArray.length; i++) {
       if (start <= this.customTimeRangeArray[i].start && end >= this.customTimeRangeArray[i].end) {
         //      |--------------Range i-------|
         //|---------------Range to remove ---------------|
@@ -7693,8 +7677,8 @@ function CustomTimeRanges(/*config*/
     this.length = this.customTimeRangeArray.length;
   }
   function mergeRanges(rangeIndex1, rangeIndex2) {
-    var range1 = this.customTimeRangeArray[rangeIndex1];
-    var range2 = this.customTimeRangeArray[rangeIndex2];
+    let range1 = this.customTimeRangeArray[rangeIndex1];
+    let range2 = this.customTimeRangeArray[rangeIndex2];
     if (range1.start <= range2.start && range2.start <= range1.end && range1.end <= range2.end) {
       //|-----------Range1----------|
       //                    |-----------Range2----------|
@@ -7765,7 +7749,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   checkRange: () => (/* binding */ checkRange)
 /* harmony export */ });
 /* harmony import */ var _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/Constants.js */ "./src/streaming/constants/Constants.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7798,12 +7781,12 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
  */
 
 function checkParameterType(parameter, type) {
-  if (_typeof(parameter) !== type) {
+  if (typeof parameter !== type) {
     throw _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].BAD_ARGUMENT_ERROR;
   }
 }
 function checkInteger(parameter) {
-  var isInt = parameter !== null && !isNaN(parameter) && parameter % 1 === 0;
+  const isInt = parameter !== null && !isNaN(parameter) && parameter % 1 === 0;
   if (!isInt) {
     throw _constants_Constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].BAD_ARGUMENT_ERROR + ' : argument is not an integer';
   }
@@ -7833,12 +7816,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   HTTPRequest: () => (/* binding */ HTTPRequest),
 /* harmony export */   HTTPRequestTrace: () => (/* binding */ HTTPRequestTrace)
 /* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
-function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 /**
  * The copyright in this software is being made available under the BSD License,
  * included below. This software may be subject to other third party and contributor
@@ -7875,141 +7852,142 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
  * by Metrics Reporting code.
  * @ignore
  */
-var HTTPRequest = /*#__PURE__*/_createClass(
-/**
- * @class
- */
-function HTTPRequest() {
-  _classCallCheck(this, HTTPRequest);
+class HTTPRequest {
   /**
-   * Identifier of the TCP connection on which the HTTP request was sent.
-   * @public
+   * @class
    */
-  this.tcpid = null;
-  /**
-   * This is an optional parameter and should not be included in HTTP request/response transactions for progressive download.
-   * The type of the request:
-   * - MPD
-   * - XLink expansion
-   * - Initialization Fragment
-   * - Index Fragment
-   * - Media Fragment
-   * - Bitstream Switching Fragment
-   * - other
-   * @public
-   */
-  this.type = null;
-  /**
-   * The original URL (before any redirects or failures)
-   * @public
-   */
-  this.url = null;
-  /**
-   * The actual URL requested, if different from above
-   * @public
-   */
-  this.actualurl = null;
-  /**
-   * The contents of the byte-range-spec part of the HTTP Range header.
-   * @public
-   */
-  this.range = null;
-  /**
-   * Real-Time | The real time at which the request was sent.
-   * @public
-   */
-  this.trequest = null;
-  /**
-   * Real-Time | The real time at which the first byte of the response was received.
-   * @public
-   */
-  this.tresponse = null;
-  /**
-   * The HTTP response code.
-   * @public
-   */
-  this.responsecode = null;
-  /**
-   * The duration of the throughput trace intervals (ms), for successful requests only.
-   * @public
-   */
-  this.interval = null;
-  /**
-   * Throughput traces, for successful requests only.
-   * @public
-   */
-  this.trace = [];
-  /**
-   * The CMSD static and dynamic values retrieved from CMSD response headers.
-   * @public
-   */
-  this.cmsd = null;
+  constructor() {
+    /**
+     * Identifier of the TCP connection on which the HTTP request was sent.
+     * @public
+     */
+    this.tcpid = null;
+    /**
+     * This is an optional parameter and should not be included in HTTP request/response transactions for progressive download.
+     * The type of the request:
+     * - MPD
+     * - XLink expansion
+     * - Initialization Fragment
+     * - Index Fragment
+     * - Media Fragment
+     * - Bitstream Switching Fragment
+     * - other
+     * @public
+     */
+    this.type = null;
+    /**
+     * The original URL (before any redirects or failures)
+     * @public
+     */
+    this.url = null;
+    /**
+     * The actual URL requested, if different from above
+     * @public
+     */
+    this.actualurl = null;
+    /**
+     * The contents of the byte-range-spec part of the HTTP Range header.
+     * @public
+     */
+    this.range = null;
+    /**
+     * Real-Time | The real time at which the request was sent.
+     * @public
+     */
+    this.trequest = null;
+    /**
+     * Real-Time | The real time at which the first byte of the response was received.
+     * @public
+     */
+    this.tresponse = null;
+    /**
+     * The HTTP response code.
+     * @public
+     */
+    this.responsecode = null;
+    /**
+     * The duration of the throughput trace intervals (ms), for successful requests only.
+     * @public
+     */
+    this.interval = null;
+    /**
+     * Throughput traces, for successful requests only.
+     * @public
+     */
+    this.trace = [];
+    /**
+     * The CMSD static and dynamic values retrieved from CMSD response headers.
+     * @public
+     */
+    this.cmsd = null;
 
-  /**
-   * Type of stream ("audio" | "video" etc..)
-   * @public
-   */
-  this._stream = null;
-  /**
-   * Real-Time | The real time at which the request finished.
-   * @public
-   */
-  this._tfinish = null;
-  /**
-   * The duration of the media requests, if available, in seconds.
-   * @public
-   */
-  this._mediaduration = null;
-  /**
-   * The media segment quality
-   * @public
-   */
-  this._quality = null;
-  /**
-   * all the response headers from request.
-   * @public
-   */
-  this._responseHeaders = null;
-  /**
-   * The selected service location for the request. string.
-   * @public
-   */
-  this._serviceLocation = null;
-  /**
-   * The type of the loader that was used. Distinguish between fetch loader and xhr loader
-   */
-  this._fileLoaderType = null;
-  /**
-   * The values derived from the ResourceTimingAPI.
-   */
-  this._resourceTimingValues = null;
-});
+    /**
+     * Type of stream ("audio" | "video" etc..)
+     * @public
+     */
+    this._stream = null;
+    /**
+     * Real-Time | The real time at which the request finished.
+     * @public
+     */
+    this._tfinish = null;
+    /**
+     * The duration of the media requests, if available, in seconds.
+     * @public
+     */
+    this._mediaduration = null;
+    /**
+     * The media segment quality
+     * @public
+     */
+    this._quality = null;
+    /**
+     * all the response headers from request.
+     * @public
+     */
+    this._responseHeaders = null;
+    /**
+     * The selected service location for the request. string.
+     * @public
+     */
+    this._serviceLocation = null;
+    /**
+     * The type of the loader that was used. Distinguish between fetch loader and xhr loader
+     */
+    this._fileLoaderType = null;
+    /**
+     * The values derived from the ResourceTimingAPI.
+     */
+    this._resourceTimingValues = null;
+  }
+}
+
 /**
  * @classdesc This Object holds reference to the progress of the HTTPRequest.
  * @ignore
  */
-var HTTPRequestTrace = /*#__PURE__*/_createClass(
-/**
- * @class
- */
-function HTTPRequestTrace() {
-  _classCallCheck(this, HTTPRequestTrace);
+class HTTPRequestTrace {
   /**
-   * Real-Time | Measurement stream start.
-   * @public
+   * @class
    */
-  this.s = null;
-  /**
-   * Measurement stream duration (ms).
-   * @public
-   */
-  this.d = null;
-  /**
-   * List of integers counting the bytes received in each trace interval within the measurement stream.
-   * @public
-   */
-  this.b = [];
-});
+  constructor() {
+    /**
+     * Real-Time | Measurement stream start.
+     * @public
+     */
+    this.s = null;
+    /**
+     * Measurement stream duration (ms).
+     * @public
+     */
+    this.d = null;
+    /**
+     * List of integers counting the bytes received in each trace interval within the measurement stream.
+     * @public
+     */
+    this.b = [];
+  }
+}
 HTTPRequest.GET = 'GET';
 HTTPRequest.HEAD = 'HEAD';
 HTTPRequest.MPD_TYPE = 'MPD';
@@ -8041,29 +8019,19 @@ HTTPRequest.OTHER_TYPE = 'other';
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/amd define */
-/******/ 	(() => {
-/******/ 		__webpack_require__.amdD = function () {
-/******/ 			throw new Error('define cannot be used indirect');
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/amd options */
 /******/ 	(() => {
 /******/ 		__webpack_require__.amdO = {};
@@ -8094,15 +8062,6 @@ HTTPRequest.OTHER_TYPE = 'other';
 /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/node module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.nmd = (module) => {
-/******/ 			module.paths = [];
-/******/ 			if (!module.children) module.children = [];
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -8160,8 +8119,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function MetricsReporting() {
-  var context = this.context;
-  var instance, dvbErrorsTranslator;
+  let context = this.context;
+  let instance, dvbErrorsTranslator;
 
   /**
    * Create a MetricsCollectionController, and a DVBErrorsTranslator
@@ -8202,7 +8161,7 @@ function MetricsReporting() {
   return instance;
 }
 MetricsReporting.__dashjs_factory_name = 'MetricsReporting';
-var factory = dashjs.FactoryMaker.getClassFactory(MetricsReporting);
+const factory = dashjs.FactoryMaker.getClassFactory(MetricsReporting);
 factory.events = _MetricsReportingEvents_js__WEBPACK_IMPORTED_MODULE_1__["default"];
 dashjs.FactoryMaker.updateClassFactory(MetricsReporting.__dashjs_factory_name, factory);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (factory);

@@ -67,7 +67,6 @@ import Events from './events/Events.js';
  *            applyServiceDescription: true,
  *            applyProducerReferenceTime: true,
  *            applyContentSteering: true,
- *            eventControllerRefreshDelay: 100,
  *            enableManifestDurationMismatchFix: true,
  *            parseInbandPrft: false,
  *            enableManifestTimescaleMismatchFix: false,
@@ -76,6 +75,8 @@ import Events from './events/Events.js';
  *               supportedEssentialProperties: [
  *                   { schemeIdUri: Constants.FONT_DOWNLOAD_DVB_SCHEME },
  *                   { schemeIdUri: Constants.COLOUR_PRIMARIES_SCHEME_ID_URI, value: /1|5|6|7/ },
+ *                   { schemeIdUri: Constants.URL_QUERY_INFO_SCHEME },
+ *                   { schemeIdUri: Constants.EXT_URL_QUERY_INFO_SCHEME },
  *                   { schemeIdUri: Constants.MATRIX_COEFFICIENTS_SCHEME_ID_URI, value: /0|1|5|6/ },
  *                   { schemeIdUri: Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI, value: /1|6|13|14|15/ },
  *                   ...Constants.THUMBNAILS_SCHEME_ID_URIS.map(ep => { return { 'schemeIdUri': ep }; })
@@ -84,6 +85,10 @@ import Events from './events/Events.js';
  *               filterVideoColorimetryEssentialProperties: false,
  *               filterHDRMetadataFormatEssentialProperties: false
  *            },
+ *            events: {
+ *              eventControllerRefreshDelay: 100,
+ *              deleteEventMessageDataAfterEventStarted: true
+ *            }
  *            timeShiftBuffer: {
  *                calcFromSegmentTimeline: false,
  *                fallbackToSegmentTimeline: true
@@ -100,6 +105,7 @@ import Events from './events/Events.js';
  *                keepProtectionMediaKeys: false,
  *                ignoreEmeEncryptedEvent: false,
  *                detectPlayreadyMessageFormat: true,
+ *                ignoreKeyStatuses: false
  *            },
  *            buffer: {
  *                enableSeekDecorrelationFix: false,
@@ -119,7 +125,11 @@ import Events from './events/Events.js';
  *                avoidCurrentTimeRangePruning: false,
  *                useChangeType: true,
  *                mediaSourceDurationInfinity: true,
- *                resetSourceBuffersForTrackSwitch: false
+ *                resetSourceBuffersForTrackSwitch: false,
+ *                syntheticStallEvents: {
+ *                    enabled: false,
+ *                    ignoreReadyState: false
+ *                }
  *            },
  *            gaps: {
  *                jumpGaps: true,
@@ -172,7 +182,7 @@ import Events from './events/Events.js';
  *            lastBitrateCachingInfo: { enabled: true, ttl: 360000 },
  *            lastMediaSettingsCachingInfo: { enabled: true, ttl: 360000 },
  *            saveLastMediaSettingsForCurrentStreamingSession: true,
- *            cacheLoadThresholds: { video: 50, audio: 5 },
+ *            cacheLoadThresholds: { video: 10, audio: 5 },
  *            trackSwitchMode: {
  *                audio: Constants.TRACK_SWITCH_MODE_ALWAYS_REPLACE,
  *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
@@ -258,7 +268,7 @@ import Events from './events/Events.js';
  *                     useResourceTimingApi: true,
  *                     useNetworkInformationApi: {
  *                         xhr: false,
- *                         fetch: true
+ *                         fetch: false
  *                     },
  *                     useDeadTimeLatency: true,
  *                     bandwidthSafetyFactor: 0.9,
@@ -275,7 +285,8 @@ import Events from './events/Events.js';
  *                         throughputSlowHalfLifeSeconds: 8,
  *                         throughputFastHalfLifeSeconds: 3,
  *                         latencySlowHalfLifeCount: 2,
- *                         latencyFastHalfLifeCount: 1
+ *                         latencyFastHalfLifeCount: 1,
+ *                         weightDownloadTimeMultiplicationFactor: 0.0015
  *                     }
  *                 },
  *                 maxBitrate: {
@@ -303,7 +314,8 @@ import Events from './events/Events.js';
  *                rtpSafetyFactor: 5,
  *                mode: Constants.CMCD_MODE_QUERY,
  *                enabledKeys: ['br', 'd', 'ot', 'tb' , 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su' , 'bs', 'rtp' , 'cid', 'pr', 'sf', 'sid', 'st', 'v']
- *                includeInRequests: ['segment', 'mpd']
+ *                includeInRequests: ['segment', 'mpd'],
+ *                version: 1
  *            },
  *            cmsd: {
  *                enabled: false,
@@ -333,6 +345,16 @@ import Events from './events/Events.js';
  * Enable calculation of the DVR window for SegmentTimeline manifests based on the entries in \<SegmentTimeline\>.
  *  * @property {boolean} [fallbackToSegmentTimeline=true]
  * In case the MPD uses \<SegmentTimeline\ and no segment is found within the DVR window the DVR window is calculated based on the entries in \<SegmentTimeline\>.
+ */
+
+/**
+ * @typedef {Object} EventSettings
+ * @property {number} [eventControllerRefreshDelay=100]
+ * Interval timer used by the EventController to check if events need to be triggered or removed.
+ * @property {boolean} [deleteEventMessageDataAfterEventStarted=true]
+ * If this flag is enabled the EventController will delete the message data of events after they have been started. This is to save memory in case events have a long duration and need to be persisted in the EventController.
+ * Note: Applications will receive a copy of the original event data when they subscribe to an event. This copy contains the original message data and is not affected by this setting.
+ * Only if an event is dispatched for the second time (e.g. when the user seeks back) the message data will not be included in the dispatched event.
  */
 
 /**
@@ -411,7 +433,9 @@ import Events from './events/Events.js';
  * @property {boolean} [useAppendWindow=true]
  * Specifies if the appendWindow attributes of the MSE SourceBuffers should be set according to content duration from manifest.
  * @property {boolean} [setStallState=true]
- * Specifies if we fire manual waiting events once the stall threshold is reached
+ * Specifies if we fire manual waiting events once the stall threshold is reached.
+ * @property {module:Settings~SyntheticStallSettings} [syntheticStallEvents]
+ * Specifies if manual stall events are to be fired once the stall threshold is reached.
  * @property {boolean} [avoidCurrentTimeRangePruning=false]
  * Avoids pruning of the buffered range that contains the current playback time.
  *
@@ -433,6 +457,17 @@ import Events from './events/Events.js';
  * Configuration for audio media type of tracks.
  * @property {number|boolean|string} [video]
  * Configuration for video media type of tracks.
+ */
+
+/**
+ * @typedef {Object} module:Settings~SyntheticStallSettings
+ * @property {boolean} [enabled]
+ * Enables manual stall events and sets the playback rate to 0 once the stall threshold is reached.
+ * @property {boolean} [ignoreReadyState]
+ * Ignore the media element's ready state when entering or exiting a stall.
+ * Enable this when either of these scenarios still occur with synthetic stalls enabled:
+ * - If the buffer is empty, but playback is not stalled.
+ * - If playback resumes, but a playing event isn't reported.
  */
 
 /**
@@ -654,6 +689,9 @@ import Events from './events/Events.js';
  *
  * @property {boolean} [detectPlayreadyMessageFormat=true]
  * If set to true the player will use the raw unwrapped message from the Playready CDM
+ *
+ * @property {boolean} [ignoreKeyStatusest=false]
+ * If set to true the player will ignore the status of a key and try to play the corresponding track regardless whether the key is usable or not.
  */
 
 /**
@@ -804,7 +842,7 @@ import Events from './events/Events.js';
  * @property {boolean} [useResourceTimingApi=true]
  * If set to true the ResourceTimingApi is used to derive the download time and the number of downloaded bytes.
  * This option has no effect for low latency streaming as the download time equals the segment duration in most of the cases and therefor does not provide reliable values
- * @property {object} [useNetworkInformationApi = { xhr=false, fetch=true}]
+ * @property {object} [useNetworkInformationApi = { xhr=false, fetch=false}]
  * If set to true the NetworkInformationApi is used to derive the current throughput. Browser support is limited, only available in Chrome and Edge.
  * Applies to standard (XHR requests) and/or low latency streaming (Fetch API requests).
  * @property {boolean} [useDeadTimeLatency=true]
@@ -824,16 +862,19 @@ import Events from './events/Events.js';
  * - `increaseScale`: Increase sample size by one if the ratio of current and previous sample is higher or equal this value
  * - `maxMeasurementsToKeep`: Number of samples to keep before sliding samples out of the window
  * - `averageLatencySampleAmount`: Number of latency samples to use (sample size)
- * @property {object} [ewma={throughputSlowHalfLifeSeconds=8,throughputFastHalfLifeSeconds=3,latencySlowHalfLifeCount=2,latencyFastHalfLifeCount=1}]
+ * @property {object} [ewma={throughputSlowHalfLifeSeconds=8,throughputFastHalfLifeSeconds=3,latencySlowHalfLifeCount=2,latencyFastHalfLifeCount=1, weightDownloadTimeMultiplicationFactor=0.0015}]
  * When deriving the throughput based on the exponential weighted moving average these settings define:
  * - `throughputSlowHalfLifeSeconds`: Number by which the weight of the current throughput measurement is divided, see ThroughputModel._updateEwmaValues
  * - `throughputFastHalfLifeSeconds`: Number by which the weight of the current throughput measurement is divided, see ThroughputModel._updateEwmaValues
  * - `latencySlowHalfLifeCount`: Number by which the weight of the current latency is divided, see ThroughputModel._updateEwmaValues
  * - `latencyFastHalfLifeCount`: Number by which the weight of the current latency is divided, see ThroughputModel._updateEwmaValues
+ * - `weightDownloadTimeMultiplicationFactor`: This value is multiplied with the download time in milliseconds to derive the weight for the EWMA calculation.
  */
 
 /**
  * @typedef {Object} CmcdSettings
+ * @property {boolean} [applyParametersFromMpd=true]
+ * Set to true if dash.js should use the CMCD parameters defined in the MPD.
  * @property {boolean} [enable=false]
  * Enable or disable the CMCD reporting.
  * @property {string} [sid]
@@ -863,7 +904,11 @@ import Events from './events/Events.js';
  * @property {Array.<string>} [includeInRequests]
  * Specifies which HTTP GET requests shall carry parameters.
  *
- * If not specified this value defaults to ['segment'].
+ * If not specified this value defaults to ['segment', 'mpd].
+ * @property {number} [version=1]
+ * The version of the CMCD to use.
+ *
+ * If not specified this value defaults to 1.
  */
 
 /**
@@ -908,10 +953,6 @@ import Events from './events/Events.js';
  * Set to true if dash.js should use the parameters defined in ProducerReferenceTime elements in combination with ServiceDescription elements.
  * @property {boolean} [applyContentSteering=true]
  * Set to true if dash.js should apply content steering during playback.
- * @property {boolean} [applyParametersFromMpd=true]
- * Set to true if dash.js should use the cmcd parameters defined in MDP or js elements.
- * @property {number} [eventControllerRefreshDelay=100]
- * For multi-period streams, overwrite the manifest mediaPresentationDuration attribute with the sum of period durations if the manifest mediaPresentationDuration is greater than the sum of period durations
  * @property {boolean} [enableManifestDurationMismatchFix=true]
  * Overwrite the manifest segments base information timescale attributes with the timescale set in initialization segments
  * @property {boolean} [enableManifestTimescaleMismatchFix=false]
@@ -920,6 +961,7 @@ import Events from './events/Events.js';
  * Set to true if dash.js should parse inband prft boxes (ProducerReferenceTime) and trigger events.
  * @property {module:Settings~Metrics} metrics Metric settings
  * @property {module:Settings~LiveDelay} delay Live Delay settings
+ * @property {module:Settings~EventSettings} events Event settings
  * @property {module:Settings~TimeShiftBuffer} timeShiftBuffer TimeShiftBuffer settings
  * @property {module:Settings~Protection} protection DRM related settings
  * @property {module:Settings~Capabilities} capabilities Capability related settings
@@ -941,7 +983,7 @@ import Events from './events/Events.js';
  * The default expiration is one hour, defined in milliseconds.
  * @property {boolean} [saveLastMediaSettingsForCurrentStreamingSession=true]
  * Set to true if dash.js should save media settings from last selected track for incoming track selection during current streaming session.
- * @property {module:Settings~AudioVideoSettings} [cacheLoadThresholds={video: 50, audio: 5}]
+ * @property {module:Settings~AudioVideoSettings} [cacheLoadThresholds={video: 10, audio: 5}]
  * For a given media type, the threshold which defines if the response to a fragment request is coming from browser cache or not.
  * @property {module:Settings~AudioVideoSettings} [trackSwitchMode={video: "neverReplace", audio: "alwaysReplace"}]
  * For a given media type defines if existing segments in the buffer should be overwritten once the track is switched. For instance if the user switches the audio language the existing segments in the audio buffer will be replaced when setting this value to "alwaysReplace".
@@ -1051,7 +1093,6 @@ function Settings() {
             applyServiceDescription: true,
             applyProducerReferenceTime: true,
             applyContentSteering: true,
-            eventControllerRefreshDelay: 100,
             enableManifestDurationMismatchFix: true,
             parseInbandPrft: false,
             enableManifestTimescaleMismatchFix: false,
@@ -1060,13 +1101,21 @@ function Settings() {
                 supportedEssentialProperties: [
                     { schemeIdUri: Constants.FONT_DOWNLOAD_DVB_SCHEME },
                     { schemeIdUri: Constants.COLOUR_PRIMARIES_SCHEME_ID_URI, value: /1|5|6|7/ },
+                    { schemeIdUri: Constants.URL_QUERY_INFO_SCHEME },
+                    { schemeIdUri: Constants.EXT_URL_QUERY_INFO_SCHEME },
                     { schemeIdUri: Constants.MATRIX_COEFFICIENTS_SCHEME_ID_URI, value: /0|1|5|6/ },
                     { schemeIdUri: Constants.TRANSFER_CHARACTERISTICS_SCHEME_ID_URI, value: /1|6|13|14|15/ },
-                    ...Constants.THUMBNAILS_SCHEME_ID_URIS.map(ep => { return { 'schemeIdUri': ep }; })
+                    ...Constants.THUMBNAILS_SCHEME_ID_URIS.map(ep => {
+                        return { 'schemeIdUri': ep };
+                    })
                 ],
                 useMediaCapabilitiesApi: true,
                 filterVideoColorimetryEssentialProperties: false,
                 filterHDRMetadataFormatEssentialProperties: false
+            },
+            events: {
+                eventControllerRefreshDelay: 100,
+                deleteEventMessageDataAfterEventStarted: true
             },
             timeShiftBuffer: {
                 calcFromSegmentTimeline: false,
@@ -1084,10 +1133,11 @@ function Settings() {
                 keepProtectionMediaKeys: false,
                 ignoreEmeEncryptedEvent: false,
                 detectPlayreadyMessageFormat: true,
+                ignoreKeyStatuses: false
             },
             buffer: {
                 enableSeekDecorrelationFix: false,
-                fastSwitchEnabled: true,
+                fastSwitchEnabled: null,
                 flushBufferAtTrackSwitch: false,
                 reuseExistingSourceBuffers: true,
                 bufferPruningInterval: 10,
@@ -1103,7 +1153,11 @@ function Settings() {
                 avoidCurrentTimeRangePruning: false,
                 useChangeType: true,
                 mediaSourceDurationInfinity: true,
-                resetSourceBuffersForTrackSwitch: false
+                resetSourceBuffersForTrackSwitch: false,
+                syntheticStallEvents: {
+                    enabled: false,
+                    ignoreReadyState: false
+                }
             },
             gaps: {
                 jumpGaps: true,
@@ -1166,7 +1220,7 @@ function Settings() {
             },
             saveLastMediaSettingsForCurrentStreamingSession: true,
             cacheLoadThresholds: {
-                video: 50,
+                video: 10,
                 audio: 5
             },
             trackSwitchMode: {
@@ -1255,7 +1309,7 @@ function Settings() {
                     useResourceTimingApi: true,
                     useNetworkInformationApi: {
                         xhr: false,
-                        fetch: true
+                        fetch: false
                     },
                     useDeadTimeLatency: true,
                     bandwidthSafetyFactor: 0.9,
@@ -1306,7 +1360,8 @@ function Settings() {
                 rtpSafetyFactor: 5,
                 mode: Constants.CMCD_MODE_QUERY,
                 enabledKeys: Constants.CMCD_AVAILABLE_KEYS,
-                includeInRequests: ['segment', 'mpd']
+                includeInRequests: ['segment', 'mpd'],
+                version: 1
             },
             cmsd: {
                 enabled: false,

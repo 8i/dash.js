@@ -211,6 +211,9 @@ function Stream(config) {
             _initializeMedia(mediaSource, previousBufferSinks, representationsFromPreviousPeriod)
                 .then((bufferSinks) => {
                     isActive = true;
+                    if (representationsFromPreviousPeriod && representationsFromPreviousPeriod.length > 0) {
+                        startScheduleControllers();
+                    }
                     eventBus.trigger(Events.STREAM_ACTIVATED, {
                         streamInfo
                     });
@@ -556,6 +559,10 @@ function Stream(config) {
         if (textController) {
             textController.deactivateStream(streamInfo);
         }
+        if (thumbnailController) {
+            thumbnailController.reset();
+            thumbnailController = null;
+        }
         streamProcessors = [];
         isActive = false;
         hasFinishedBuffering = false;
@@ -626,6 +633,14 @@ function Stream(config) {
         if (segmentBlacklistController) {
             segmentBlacklistController.reset();
             segmentBlacklistController = null;
+        }
+
+        if (textController && streamInfo) {
+            textController.clearDataForStream(streamInfo.id);
+        }
+
+        if (mediaController && streamInfo) {
+            mediaController.clearDataForStream(streamInfo.id);
         }
 
         resetInitialSettings(keepBuffers);
@@ -1061,8 +1076,18 @@ function Stream(config) {
         return sp.getMediaInfo();
     }
 
+    function checkAndHandleCompletedBuffering() {
+        if (hasFinishedBuffering) {
+            return;
+        }
+        streamProcessors.forEach((streamProcessor) => {
+            streamProcessor.checkAndHandleCompletedBuffering();
+        })
+    }
+
     instance = {
         activate,
+        checkAndHandleCompletedBuffering,
         deactivate,
         getAdapter,
         getCurrentMediaInfoForType,

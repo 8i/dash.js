@@ -231,8 +231,16 @@ function ScheduleController(config) {
         if (!type || !currentRepresentation) {
             return true;
         }
+        let segmentDurationToAddToBufferLevel = currentRepresentation && currentRepresentation.segmentDuration && !isNaN(currentRepresentation.segmentDuration) ? currentRepresentation.segmentDuration : 0;
         const bufferLevel = dashMetrics.getCurrentBufferLevel(type);
-        return bufferLevel < getBufferTarget();
+        const bufferTarget = getBufferTarget();
+
+        // If the buffer target is smaller than the segment duration we do not take it into account. For low latency playback do not delay the buffering.
+        if (bufferTarget <= segmentDurationToAddToBufferLevel || playbackController.getLowLatencyModeEnabled() || (type === Constants.AUDIO && hasVideoTrack)) {
+            segmentDurationToAddToBufferLevel = 0;
+        }
+
+        return bufferLevel + segmentDurationToAddToBufferLevel < bufferTarget;
     }
 
     /**
@@ -319,10 +327,10 @@ function ScheduleController(config) {
                 const isLongFormContent = streamInfo.manifestInfo.duration >= settings.get().streaming.buffer.longFormContentDurationThreshold;
                 return isLongFormContent ? settings.get().streaming.buffer.bufferTimeAtTopQualityLongForm : settings.get().streaming.buffer.bufferTimeAtTopQuality;
             } else {
-                return mediaPlayerModel.getBufferTimeDefault();
+                return mediaPlayerModel.getBufferTimeDefaultUnadjusted();
             }
         } catch (e) {
-            return mediaPlayerModel.getBufferTimeDefault();
+            return mediaPlayerModel.getBufferTimeDefaultUnadjusted();
         }
     }
 

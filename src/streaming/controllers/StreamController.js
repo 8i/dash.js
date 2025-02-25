@@ -45,6 +45,7 @@ import DashJSError from '../vo/DashJSError.js';
 import Errors from '../../core/errors/Errors.js';
 import EventController from './EventController.js';
 import ConformanceViolationConstants from '../constants/ConformanceViolationConstants.js';
+import ExtUrlQueryInfoController from './ExtUrlQueryInfoController.js';
 import ProtectionEvents from '../protection/ProtectionEvents.js';
 import ProtectionErrors from '../protection/errors/ProtectionErrors.js';
 
@@ -60,7 +61,7 @@ function StreamController() {
         dashMetrics, mediaSourceController, timeSyncController, contentSteeringController, baseURLController,
         segmentBaseController, uriFragmentModel, abrController, throughputController, mediaController, eventController,
         initCache, errHandler, timelineConverter, streams, activeStream, protectionController, textController,
-        protectionData,
+        protectionData, extUrlQueryInfoController,
         autoPlay, isStreamSwitchingInProgress, hasMediaError, hasInitialisationError, mediaSource, videoModel,
         playbackController, serviceDescriptionController, mediaPlayerModel, customParametersModel, isPaused,
         initialPlayback, initialSteeringRequest, playbackEndedTimerInterval, bufferSinks, preloadingStreams, settings,
@@ -99,6 +100,7 @@ function StreamController() {
         });
         eventController.start();
 
+        extUrlQueryInfoController = ExtUrlQueryInfoController(context).getInstance();
 
         timeSyncController.setConfig({
             dashMetrics, baseURLController, errHandler, settings
@@ -878,10 +880,18 @@ function StreamController() {
      * @private
      */
     function _checkIfPrebufferingCanStart() {
-        // In multiperiod situations, we can start buffering the next stream
-        if (!activeStream || !activeStream.getHasFinishedBuffering()) {
+
+        if (!activeStream) {
             return;
         }
+
+        // Check if we are finished buffering. In case this is the case the prebuffering will be triggered automatically
+        if (!activeStream.getHasFinishedBuffering()) {
+            activeStream.checkAndHandleCompletedBuffering();
+            return;
+        }
+
+        // In case we have finished buffering already we can preload
         const upcomingStreams = _getNextStreams(activeStream);
         let i = 0;
 
@@ -1284,6 +1294,8 @@ function StreamController() {
 
                     let allUTCTimingSources = (!adapter.getIsDynamic()) ? manifestUTCTimingSources : manifestUTCTimingSources.concat(customParametersModel.getUTCTimingSources());
                     timeSyncController.attemptSync(allUTCTimingSources, adapter.getIsDynamic());
+
+                    extUrlQueryInfoController.createFinalQueryStrings(manifest);
                 });
         } else {
             hasInitialisationError = true;
@@ -1385,7 +1397,8 @@ function StreamController() {
         })
 
         if (!supportedMediaInfos || supportedMediaInfos.length === 0) {
-            errHandler.error(new DashJSError(Errors.NO_SUPPORTED_KEY_IDS, Errors.NO_SUPPORTED_KEY_IDS_MESSAGE));
+            const type = streamProcessor.getType();
+            errHandler.error(new DashJSError(Errors.NO_SUPPORTED_KEY_IDS, `Type: ${type}: ${Errors.NO_SUPPORTED_KEY_IDS_MESSAGE}`));
             return
         }
 

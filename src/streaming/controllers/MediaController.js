@@ -890,12 +890,21 @@ function MediaController() {
         };
     }
 
+    function clearDataForStream(streamId) {
+        if (tracks[streamId]) {
+            delete tracks[streamId];
+        }
+    }
+
+
     instance = {
         addTrack,
         areTracksEqual,
+        clearDataForStream,
         getCurrentTrackFor,
         getInitialSettings,
         getTracksFor,
+        getTracksWithHighestSelectionPriority,
         getTracksWithHighestBitrate,
         getTracksWithHighestEfficiency,
         getTracksWithWidestRange,

@@ -87,7 +87,7 @@ import Events from './events/Events.js';
  *            },
  *            events: {
  *              eventControllerRefreshDelay: 100,
- *              deleteEventMessageDataAfterEventStarted: true
+ *              deleteEventMessageDataTimeout: 10000
  *            }
  *            timeShiftBuffer: {
  *                calcFromSegmentTimeline: false,
@@ -120,6 +120,7 @@ import Events from './events/Events.js';
  *                bufferTimeDefault: 18,
  *                longFormContentDurationThreshold: 600,
  *                stallThreshold: 0.3,
+ *                lowLatencyStallThreshold: 0.3,
  *                useAppendWindow: true,
  *                setStallState: true,
  *                avoidCurrentTimeRangePruning: false,
@@ -188,7 +189,10 @@ import Events from './events/Events.js';
  *                video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
  *                mesh: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
  *            },
- *            selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
+ *            ignoreSelectionPriority: false,
+ *            prioritizeRoleMain: true,
+ *            assumeDefaultRoleAsMain: true,
+ *            selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_EFFICIENCY,
  *            fragmentRequestTimeout: 20000,
  *            fragmentRequestProgressTimeout: -1,
  *            manifestRequestTimeout: 10000,
@@ -351,10 +355,12 @@ import Events from './events/Events.js';
  * @typedef {Object} EventSettings
  * @property {number} [eventControllerRefreshDelay=100]
  * Interval timer used by the EventController to check if events need to be triggered or removed.
- * @property {boolean} [deleteEventMessageDataAfterEventStarted=true]
- * If this flag is enabled the EventController will delete the message data of events after they have been started. This is to save memory in case events have a long duration and need to be persisted in the EventController.
- * Note: Applications will receive a copy of the original event data when they subscribe to an event. This copy contains the original message data and is not affected by this setting.
- * Only if an event is dispatched for the second time (e.g. when the user seeks back) the message data will not be included in the dispatched event.
+ * @property {number} [deleteEventMessageDataTimeout=10000]
+ * If this value is larger than -1 the EventController will delete the message data attributes of events after they have been started and dispatched to the application.
+ * This is to save memory in case events have a long duration and need to be persisted in the EventController.
+ * This parameter defines the time in milliseconds between the start of an event and when the message data is deleted.
+ * If an event is dispatched for the second time (e.g. when the user seeks back) the message data will not be included in the dispatched event if it has been deleted already.
+ * Set this value to -1 to not delete any message data.
  */
 
 /**
@@ -430,6 +436,8 @@ import Events from './events/Events.js';
  * Initial buffer level before playback starts
  * @property {number} [stallThreshold=0.3]
  * Stall threshold used in BufferController.js to determine whether a track should still be changed and which buffer range to prune.
+ * @property {number} [lowLatencyStallThreshold=0.3]
+ * Low Latency stall threshold used in BufferController.js to determine whether a track should still be changed and which buffer range to prune.
  * @property {boolean} [useAppendWindow=true]
  * Specifies if the appendWindow attributes of the MSE SourceBuffers should be set according to content duration from manifest.
  * @property {boolean} [setStallState=true]
@@ -690,7 +698,7 @@ import Events from './events/Events.js';
  * @property {boolean} [detectPlayreadyMessageFormat=true]
  * If set to true the player will use the raw unwrapped message from the Playready CDM
  *
- * @property {boolean} [ignoreKeyStatusest=false]
+ * @property {boolean} [ignoreKeyStatuses=false]
  * If set to true the player will ignore the status of a key and try to play the corresponding track regardless whether the key is usable or not.
  */
 
@@ -954,9 +962,9 @@ import Events from './events/Events.js';
  * @property {boolean} [applyContentSteering=true]
  * Set to true if dash.js should apply content steering during playback.
  * @property {boolean} [enableManifestDurationMismatchFix=true]
- * Overwrite the manifest segments base information timescale attributes with the timescale set in initialization segments
+ * For multi-period streams, overwrite the manifest mediaPresentationDuration attribute with the sum of period durations if the manifest mediaPresentationDuration is greater than the sum of period durations
  * @property {boolean} [enableManifestTimescaleMismatchFix=false]
- * Defines the delay in milliseconds between two consecutive checks for events to be fired.
+ * Overwrite the manifest segments base information timescale attributes with the timescale set in initialization segments
  * @property {boolean} [parseInbandPrft=false]
  * Set to true if dash.js should parse inband prft boxes (ProducerReferenceTime) and trigger events.
  * @property {module:Settings~Metrics} metrics Metric settings
@@ -996,13 +1004,19 @@ import Events from './events/Events.js';
  * - Constants.TRACK_SWITCH_MODE_NEVER_REPLACE
  * Do not replace existing segments in the buffer
  *
- * @property {string} [selectionModeForInitialTrack="highestSelectionPriority"]
+ * @property {} [ignoreSelectionPriority: false]
+ * provides the option to disregard any signalled selectionPriority attribute. If disabled and if no initial media settings are set, track selection is accomplished as defined by selectionModeForInitialTrack.
+ *
+ * @property {} [prioritizeRoleMain: true]
+ * provides the option to disable prioritization of AdaptationSets with their Role set to Main
+ *
+ * @property {} [assumeDefaultRoleAsMain: true]
+ * when no Role descriptor is present, assume main per default
+ * 
+ * @property {string} [selectionModeForInitialTrack="highestEfficiency"]
  * Sets the selection mode for the initial track. This mode defines how the initial track will be selected if no initial media settings are set. If initial media settings are set this parameter will be ignored. Available options are:
  *
  * Possible values
- *
- * - Constants.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY
- * This mode makes the player select the track with the highest selectionPriority as defined in the manifest. If not selectionPriority is given we fallback to TRACK_SELECTION_MODE_HIGHEST_BITRATE. This mode is a default mode.
  *
  * - Constants.TRACK_SELECTION_MODE_HIGHEST_BITRATE
  * This mode makes the player select the track with a highest bitrate.
@@ -1115,7 +1129,7 @@ function Settings() {
             },
             events: {
                 eventControllerRefreshDelay: 100,
-                deleteEventMessageDataAfterEventStarted: true
+                deleteEventMessageDataTimeout: 10000
             },
             timeShiftBuffer: {
                 calcFromSegmentTimeline: false,
@@ -1148,6 +1162,7 @@ function Settings() {
                 bufferTimeDefault: 18,
                 longFormContentDurationThreshold: 600,
                 stallThreshold: 0.3,
+                lowLatencyStallThreshold: 0.3,
                 useAppendWindow: true,
                 setStallState: true,
                 avoidCurrentTimeRangePruning: false,
@@ -1228,7 +1243,10 @@ function Settings() {
                 video: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
                 mesh: Constants.TRACK_SWITCH_MODE_NEVER_REPLACE,
             },
-            selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_SELECTION_PRIORITY,
+            ignoreSelectionPriority: false,
+            prioritizeRoleMain: true,
+            assumeDefaultRoleAsMain: true,
+            selectionModeForInitialTrack: Constants.TRACK_SELECTION_MODE_HIGHEST_EFFICIENCY,
             fragmentRequestTimeout: 20000,
             fragmentRequestProgressTimeout: -1,
             manifestRequestTimeout: 10000,

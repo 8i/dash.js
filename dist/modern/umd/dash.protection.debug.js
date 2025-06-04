@@ -11,10 +11,10 @@
 return /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js":
-/*!****************************************************************************************!*\
-  !*** ./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js ***!
-  \****************************************************************************************/
+/***/ "./node_modules/path-browserify/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/path-browserify/index.js ***!
+  \***********************************************/
 /***/ (function(module) {
 
 "use strict";
@@ -483,15 +483,15 @@ module.exports = posix;
 
 /***/ }),
 
-/***/ "./node_modules/.pnpm/ua-parser-js@1.0.40/node_modules/ua-parser-js/src/ua-parser.js":
-/*!*******************************************************************************************!*\
-  !*** ./node_modules/.pnpm/ua-parser-js@1.0.40/node_modules/ua-parser-js/src/ua-parser.js ***!
-  \*******************************************************************************************/
+/***/ "./node_modules/ua-parser-js/src/ua-parser.js":
+/*!****************************************************!*\
+  !*** ./node_modules/ua-parser-js/src/ua-parser.js ***!
+  \****************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/////////////////////////////////////////////////////////////////////////////////
-/* UAParser.js v1.0.40
-   Copyright © 2012-2024 Faisal Salman <f@faisalman.com>
+/* UAParser.js v1.0.38
+   Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
    MIT License */ /*
                   Detect Browser, Engine, OS, CPU, and Device type/model from User-Agent data.
                   Supports browser & node.js environment. 
@@ -505,7 +505,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
   //////////////
   // Constants
   /////////////
-  var LIBVERSION = '1.0.40',
+  var LIBVERSION = '1.0.38',
     EMPTY = '',
     UNKNOWN = '?',
     FUNC_TYPE = 'function',
@@ -547,8 +547,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     ZEBRA = 'Zebra',
     FACEBOOK = 'Facebook',
     CHROMIUM_OS = 'Chromium OS',
-    MAC_OS = 'Mac OS',
-    SUFFIX_BROWSER = ' Browser';
+    MAC_OS = 'Mac OS';
 
   ///////////
   // Helper
@@ -662,7 +661,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
           return i === UNKNOWN ? undefined : i;
         }
       }
-      return map.hasOwnProperty('*') ? map['*'] : str;
+      return str;
     };
 
   ///////////////
@@ -714,25 +713,23 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     ], [VERSION, [NAME, OPERA]], [
     // Mixed
     /\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i // Baidu
-    ], [VERSION, [NAME, 'Baidu']], [/\b(?:mxbrowser|mxios|myie2)\/?([-\w\.]*)\b/i // Maxthon
-    ], [VERSION, [NAME, 'Maxthon']], [/(kindle)\/([\w\.]+)/i,
+    ], [VERSION, [NAME, 'Baidu']], [/(kindle)\/([\w\.]+)/i,
     // Kindle
-    /(lunascape|maxthon|netfront|jasmine|blazer|sleipnir)[\/ ]?([\w\.]*)/i,
-    // Lunascape/Maxthon/Netfront/Jasmine/Blazer/Sleipnir
+    /(lunascape|maxthon|netfront|jasmine|blazer)[\/ ]?([\w\.]*)/i,
+    // Lunascape/Maxthon/Netfront/Jasmine/Blazer
     // Trident based
-    /(avant|iemobile|slim(?:browser|boat|jet))[\/ ]?([\d\.]*)/i,
-    // Avant/IEMobile/SlimBrowser/SlimBoat/Slimjet
+    /(avant|iemobile|slim)\s?(?:browser)?[\/ ]?([\w\.]*)/i,
+    // Avant/IEMobile/SlimBrowser
     /(?:ms|\()(ie) ([\w\.]+)/i,
     // Internet Explorer
 
-    // Blink/Webkit/KHTML based                                         // Flock/RockMelt/Midori/Epiphany/Silk/Skyfire/Bolt/Iron/Iridium/PhantomJS/Bowser/QupZilla/Falkon
-    /(flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio|(?=comodo_)?dragon)\/([-\w\.]+)/i,
-    // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ//Vivaldi/DuckDuckGo/Klar/Helio/Dragon
-    /(heytap|ovi|115)browser\/([\d\.]+)/i,
-    // HeyTap/Ovi/115
+    // Webkit/KHTML based                                               // Flock/RockMelt/Midori/Epiphany/Silk/Skyfire/Bolt/Iron/Iridium/PhantomJS/Bowser/QupZilla/Falkon
+    /(flock|rockmelt|midori|epiphany|silk|skyfire|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|qq|duckduckgo)\/([-\w\.]+)/i,
+    // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ, aka ShouQ
+    /(heytap|ovi)browser\/([\d\.]+)/i,
+    // Heytap/Ovi
     /(weibo)__([\d\.]+)/i // Weibo
-    ], [NAME, VERSION], [/quark(?:pc)?\/([-\w\.]+)/i // Quark
-    ], [VERSION, [NAME, 'Quark']], [/\bddg\/([\w\.]+)/i // DuckDuckGo
+    ], [NAME, VERSION], [/\bddg\/([\w\.]+)/i // DuckDuckGo
     ], [VERSION, [NAME, 'DuckDuckGo']], [/(?:\buc? ?browser|(?:juc.+)ucweb)[\/ ]?([\w\.]+)/i // UCBrowser
     ], [VERSION, [NAME, 'UC' + BROWSER]], [/microm.+\bqbcore\/([\w\.]+)/i,
     // WeChat Desktop for Windows Built-in Browser
@@ -748,26 +745,23 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     ], [VERSION, [NAME, 'Coc Coc']], [/dolfin\/([\w\.]+)/i // Dolphin
     ], [VERSION, [NAME, 'Dolphin']], [/coast\/([\w\.]+)/i // Opera Coast
     ], [VERSION, [NAME, OPERA + ' Coast']], [/miuibrowser\/([\w\.]+)/i // MIUI Browser
-    ], [VERSION, [NAME, 'MIUI' + SUFFIX_BROWSER]], [/fxios\/([\w\.-]+)/i // Firefox for iOS
-    ], [VERSION, [NAME, FIREFOX]], [/\bqihoobrowser\/?([\w\.]*)/i // 360
-    ], [VERSION, [NAME, '360']], [/\b(qq)\/([\w\.]+)/i // QQ
-    ], [[NAME, /(.+)/, '$1Browser'], VERSION], [/(oculus|sailfish|huawei|vivo|pico)browser\/([\w\.]+)/i], [[NAME, /(.+)/, '$1' + SUFFIX_BROWSER], VERSION], [
-    // Oculus/Sailfish/HuaweiBrowser/VivoBrowser/PicoBrowser
+    ], [VERSION, [NAME, 'MIUI ' + BROWSER]], [/fxios\/([-\w\.]+)/i // Firefox for iOS
+    ], [VERSION, [NAME, FIREFOX]], [/\bqihu|(qi?ho?o?|360)browser/i // 360
+    ], [[NAME, '360 ' + BROWSER]], [/(oculus|sailfish|huawei|vivo)browser\/([\w\.]+)/i], [[NAME, /(.+)/, '$1 ' + BROWSER], VERSION], [
+    // Oculus/Sailfish/HuaweiBrowser/VivoBrowser
     /samsungbrowser\/([\w\.]+)/i // Samsung Internet
-    ], [VERSION, [NAME, SAMSUNG + ' Internet']], [/metasr[\/ ]?([\d\.]+)/i // Sogou Explorer
+    ], [VERSION, [NAME, SAMSUNG + ' Internet']], [/(comodo_dragon)\/([\w\.]+)/i // Comodo Dragon
+    ], [[NAME, /_/g, ' '], VERSION], [/metasr[\/ ]?([\d\.]+)/i // Sogou Explorer
     ], [VERSION, [NAME, 'Sogou Explorer']], [/(sogou)mo\w+\/([\d\.]+)/i // Sogou Mobile
     ], [[NAME, 'Sogou Mobile'], VERSION], [/(electron)\/([\w\.]+) safari/i,
     // Electron-based App
     /(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,
     // Tesla
-    /m?(qqbrowser|2345(?=browser|chrome|explorer))\w*[\/ ]?v?([\w\.]+)/i // QQ/2345
-    ], [NAME, VERSION], [/(lbbrowser|rekonq)/i,
-    // LieBao Browser/Rekonq
+    /m?(qqbrowser|2345Explorer)[\/ ]?([\w\.]+)/i // QQBrowser/2345 Browser
+    ], [NAME, VERSION], [/(lbbrowser)/i,
+    // LieBao Browser
     /\[(linkedin)app\]/i // LinkedIn App for iOS & Android
-    ], [NAME], [/ome\/([\w\.]+) \w* ?(iron) saf/i,
-    // Iron
-    /ome\/([\w\.]+).+qihu (360)[es]e/i // 360
-    ], [VERSION, NAME], [
+    ], [NAME], [
     // WebView
     /((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i // Facebook App for iOS & Android
     ], [[NAME, FACEBOOK], VERSION], [/(Klarna)\/([\w\.]+)/i,
@@ -797,14 +791,13 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     ], [NAME, [VERSION, strMapper, oldSafariMap]], [/(webkit|khtml)\/([\w\.]+)/i], [NAME, VERSION], [
     // Gecko based
     /(navigator|netscape\d?)\/([-\w\.]+)/i // Netscape
-    ], [[NAME, 'Netscape'], VERSION], [/(wolvic|librewolf)\/([\w\.]+)/i // Wolvic/LibreWolf
-    ], [NAME, VERSION], [/mobile vr; rv:([\w\.]+)\).+firefox/i // Firefox Reality
+    ], [[NAME, 'Netscape'], VERSION], [/mobile vr; rv:([\w\.]+)\).+firefox/i // Firefox Reality
     ], [VERSION, [NAME, FIREFOX + ' Reality']], [/ekiohf.+(flow)\/([\w\.]+)/i,
     // Flow
     /(swiftfox)/i,
     // Swiftfox
-    /(icedragon|iceweasel|camino|chimera|fennec|maemo browser|minimo|conkeror)[\/ ]?([\w\.\+]+)/i,
-    // IceDragon/Iceweasel/Camino/Chimera/Fennec/Maemo/Minimo/Conkeror
+    /(icedragon|iceweasel|camino|chimera|fennec|maemo browser|minimo|conkeror|klar)[\/ ]?([\w\.\+]+)/i,
+    // IceDragon/Iceweasel/Camino/Chimera/Fennec/Maemo/Minimo/Conkeror/Klar
     /(seamonkey|k-meleon|icecat|iceape|firebird|phoenix|palemoon|basilisk|waterfox)\/([-\w\.]+)$/i,
     // Firefox/SeaMonkey/K-Meleon/IceCat/IceApe/Firebird/Phoenix
     /(firefox)\/([\w\.]+)/i,
@@ -813,10 +806,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     // Mozilla
 
     // Other
-    /(polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|obigo|mosaic|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,
-    // Polaris/Lynx/Dillo/iCab/Doris/Amaya/w3m/NetSurf/Obigo/Mosaic/Go/ICE/UP.Browser
-    /(links) \(([\w\.]+)/i // Links
-    ], [NAME, [VERSION, /_/g, '.']], [/(cobalt)\/([\w\.]+)/i // Cobalt
+    /(polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|sleipnir|obigo|mosaic|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,
+    // Polaris/Lynx/Dillo/iCab/Doris/Amaya/w3m/NetSurf/Sleipnir/Obigo/Mosaic/Go/ICE/UP.Browser
+    /(links) \(([\w\.]+)/i,
+    // Links
+    /panasonic;(viera)/i // Panasonic Viera
+    ], [NAME, VERSION], [/(cobalt)\/([\w\.]+)/i // Cobalt
     ], [NAME, [VERSION, /master.|lts./, ""]]],
     cpu: [[/(?:(amd|x(?:(?:86|64)[-_])?|wow|win)64)[;\)]/i // AMD64 (x64)
     ], [[ARCHITECTURE, 'amd64']], [/(ia32(?=;))/i // IA32 (quicktime)
@@ -836,7 +831,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     /////////////////////////
 
     // Samsung
-    /\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i], [MODEL, [VENDOR, SAMSUNG], [TYPE, TABLET]], [/\b((?:s[cgp]h|gt|sm)-(?![lr])\w+|sc[g-]?[\d]+a?|galaxy nexus)/i, /samsung[- ]((?!sm-[lr])[-\w]+)/i, /sec-(sgh\w+)/i], [MODEL, [VENDOR, SAMSUNG], [TYPE, MOBILE]], [
+    /\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i], [MODEL, [VENDOR, SAMSUNG], [TYPE, TABLET]], [/\b((?:s[cgp]h|gt|sm)-\w+|sc[g-]?[\d]+a?|galaxy nexus)/i, /samsung[- ]([-\w]+)/i, /sec-(sgh\w+)/i], [MODEL, [VENDOR, SAMSUNG], [TYPE, MOBILE]], [
     // Apple
     /(?:\/|\()(ip(?:hone|od)[\w, ]*)(?:\/|;)/i // iPod/iPhone
     ], [MODEL, [VENDOR, APPLE], [TYPE, MOBILE]], [/\((ipad);[-\w\),; ]+apple/i,
@@ -844,10 +839,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     /applecoremedia\/[\w\.]+ \((ipad)/i, /\b(ipad)\d\d?,\d\d?[;\]].+ios/i], [MODEL, [VENDOR, APPLE], [TYPE, TABLET]], [/(macintosh);/i], [MODEL, [VENDOR, APPLE]], [
     // Sharp
     /\b(sh-?[altvz]?\d\d[a-ekm]?)/i], [MODEL, [VENDOR, SHARP], [TYPE, MOBILE]], [
-    // Honor
-    /(?:honor)([-\w ]+)[;\)]/i], [MODEL, [VENDOR, 'Honor'], [TYPE, MOBILE]], [
     // Huawei
-    /\b((?:ag[rs][23]?|bah2?|sht?|btv)-a?[lw]\d{2})\b(?!.+d\/s)/i], [MODEL, [VENDOR, HUAWEI], [TYPE, TABLET]], [/(?:huawei)([-\w ]+)[;\)]/i, /\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][012359c][adn]?)\b(?!.+d\/s)/i], [MODEL, [VENDOR, HUAWEI], [TYPE, MOBILE]], [
+    /\b((?:ag[rs][23]?|bah2?|sht?|btv)-a?[lw]\d{2})\b(?!.+d\/s)/i], [MODEL, [VENDOR, HUAWEI], [TYPE, TABLET]], [/(?:huawei|honor)([-\w ]+)[;\)]/i, /\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][012359c][adn]?)\b(?!.+d\/s)/i], [MODEL, [VENDOR, HUAWEI], [TYPE, MOBILE]], [
     // Xiaomi
     /\b(poco[\w ]+|m2\d{3}j\d\d[a-z]{2})(?: bui|\))/i,
     // Xiaomi POCO
@@ -859,7 +852,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     // Xiaomi Redmi
     /oid[^\)]+; (m?[12][0-389][01]\w{3,6}[c-y])( bui|; wv|\))/i,
     // Xiaomi Redmi 'numeric' models
-    /\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite|pro)?)(?: bui|\))/i // Xiaomi Mi
+    /\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite)?)(?: bui|\))/i // Xiaomi Mi
     ], [[MODEL, /_/g, ' '], [VENDOR, XIAOMI], [TYPE, MOBILE]], [/oid[^\)]+; (2\d{4}(283|rpbf)[cgl])( bui|\))/i,
     // Redmi Pad
     /\b(mi[-_ ]?(?:pad)(?:[\w_ ]+))(?: bui|\))/i // Mi Pad tablets
@@ -883,11 +876,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     ], [MODEL, [VENDOR, GOOGLE], [TYPE, TABLET]], [/droid.+; (pixel[\daxl ]{0,6})(?: bui|\))/i // Google Pixel
     ], [MODEL, [VENDOR, GOOGLE], [TYPE, MOBILE]], [
     // Sony
-    /droid.+; (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-a\w[4-7][12])(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i], [MODEL, [VENDOR, SONY], [TYPE, MOBILE]], [/sony tablet [ps]/i, /\b(?:sony)?sgp\w+(?: bui|\))/i], [[MODEL, 'Xperia Tablet'], [VENDOR, SONY], [TYPE, TABLET]], [
+    /droid.+ (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-a\w[4-7][12])(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i], [MODEL, [VENDOR, SONY], [TYPE, MOBILE]], [/sony tablet [ps]/i, /\b(?:sony)?sgp\w+(?: bui|\))/i], [[MODEL, 'Xperia Tablet'], [VENDOR, SONY], [TYPE, TABLET]], [
     // OnePlus
     / (kb2005|in20[12]5|be20[12][59])\b/i, /(?:one)?(?:plus)? (a\d0\d\d)(?: b|\))/i], [MODEL, [VENDOR, 'OnePlus'], [TYPE, MOBILE]], [
     // Amazon
-    /(alexa)webm/i, /(kf[a-z]{2}wi|aeo(?!bc)\w\w)( bui|\))/i,
+    /(alexa)webm/i, /(kf[a-z]{2}wi|aeo[c-r]{2})( bui|\))/i,
     // Kindle Fire without Silk / Echo Show
     /(kf[a-z]+)( bui|\)).+silk\//i // Kindle Fire HD
     ], [MODEL, [VENDOR, AMAZON], [TYPE, TABLET]], [/((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i // Fire Phone
@@ -906,32 +899,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     // ZTE
     /(zte)[- ]([\w ]+?)(?: bui|\/|\))/i, /(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)/i // Alcatel/GeeksPhone/Nexian/Panasonic/Sony
     ], [VENDOR, [MODEL, /_/g, ' '], [TYPE, MOBILE]], [
-    // TCL
-    /droid [\w\.]+; ((?:8[14]9[16]|9(?:0(?:48|60|8[01])|1(?:3[27]|66)|2(?:6[69]|9[56])|466))[gqswx])\w*(\)| bui)/i], [MODEL, [VENDOR, 'TCL'], [TYPE, TABLET]], [
-    // itel
-    /(itel) ((\w+))/i], [[VENDOR, lowerize], MODEL, [TYPE, strMapper, {
-      'tablet': ['p10001l', 'w7001'],
-      '*': 'mobile'
-    }]], [
     // Acer
     /droid.+; ([ab][1-7]-?[0178a]\d\d?)/i], [MODEL, [VENDOR, 'Acer'], [TYPE, TABLET]], [
     // Meizu
     /droid.+; (m[1-5] note) bui/i, /\bmz-([-\w]{2,})/i], [MODEL, [VENDOR, 'Meizu'], [TYPE, MOBILE]], [
     // Ulefone
     /; ((?:power )?armor(?:[\w ]{0,8}))(?: bui|\))/i], [MODEL, [VENDOR, 'Ulefone'], [TYPE, MOBILE]], [
-    // Energizer
-    /; (energy ?\w+)(?: bui|\))/i, /; energizer ([\w ]+)(?: bui|\))/i], [MODEL, [VENDOR, 'Energizer'], [TYPE, MOBILE]], [
-    // Cat
-    /; cat (b35);/i, /; (b15q?|s22 flip|s48c|s62 pro)(?: bui|\))/i], [MODEL, [VENDOR, 'Cat'], [TYPE, MOBILE]], [
-    // Smartfren
-    /((?:new )?andromax[\w- ]+)(?: bui|\))/i], [MODEL, [VENDOR, 'Smartfren'], [TYPE, MOBILE]], [
-    // Nothing
-    /droid.+; (a(?:015|06[35]|142p?))/i], [MODEL, [VENDOR, 'Nothing'], [TYPE, MOBILE]], [
     // MIXED
-    /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron|infinix|tecno|micromax|advan)[-_ ]?([-\w]*)/i,
-    // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron/Infinix/Tecno/Micromax/Advan
-    /; (imo) ((?!tab)[\w ]+?)(?: bui|\))/i,
-    // IMO
+    /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron|infinix|tecno)[-_ ]?([-\w]*)/i,
+    // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron
     /(hp) ([\w ]+\w)/i,
     // HP iPAQ
     /(asus)-?(\w+)/i,
@@ -943,9 +919,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     /(jolla)/i,
     // Jolla
     /(oppo) ?([\w ]+) bui/i // OPPO
-    ], [VENDOR, MODEL, [TYPE, MOBILE]], [/(imo) (tab \w+)/i,
-    // IMO
-    /(kobo)\s(ereader|touch)/i,
+    ], [VENDOR, MODEL, [TYPE, MOBILE]], [/(kobo)\s(ereader|touch)/i,
     // Kobo
     /(archos) (gamepad2?)/i,
     // Archos
@@ -1024,18 +998,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     // WEARABLES
     ///////////////////
 
-    /\b(sm-[lr]\d\d[05][fnuw]?s?)\b/i // Samsung Galaxy Watch
-    ], [MODEL, [VENDOR, SAMSUNG], [TYPE, WEARABLE]], [/((pebble))app/i // Pebble
+    /((pebble))app/i // Pebble
     ], [VENDOR, MODEL, [TYPE, WEARABLE]], [/(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i // Apple Watch
     ], [MODEL, [VENDOR, APPLE], [TYPE, WEARABLE]], [/droid.+; (glass) \d/i // Google Glass
-    ], [MODEL, [VENDOR, GOOGLE], [TYPE, WEARABLE]], [/droid.+; (wt63?0{2,3})\)/i], [MODEL, [VENDOR, ZEBRA], [TYPE, WEARABLE]], [
-    ///////////////////
-    // XR
-    ///////////////////
-
-    /droid.+; (glass) \d/i // Google Glass
-    ], [MODEL, [VENDOR, GOOGLE], [TYPE, WEARABLE]], [/(pico) (4|neo3(?: link|pro)?)/i // Pico
-    ], [VENDOR, MODEL, [TYPE, WEARABLE]], [/; (quest( \d| pro)?)/i // Oculus Quest
+    ], [MODEL, [VENDOR, GOOGLE], [TYPE, WEARABLE]], [/droid.+; (wt63?0{2,3})\)/i], [MODEL, [VENDOR, ZEBRA], [TYPE, WEARABLE]], [/(quest( \d| pro)?)/i // Oculus Quest
     ], [MODEL, [VENDOR, FACEBOOK], [TYPE, WEARABLE]], [
     ///////////////////
     // EMBEDDED
@@ -1055,12 +1021,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     ], [[TYPE, MOBILE]], [/(android[-\w\. ]{0,9});.+buil/i // Generic Android Device
     ], [MODEL, [VENDOR, 'Generic']]],
     engine: [[/windows.+ edge\/([\w\.]+)/i // EdgeHTML
-    ], [VERSION, [NAME, EDGE + 'HTML']], [/(arkweb)\/([\w\.]+)/i // ArkWeb
-    ], [NAME, VERSION], [/webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i // Blink
+    ], [VERSION, [NAME, EDGE + 'HTML']], [/webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i // Blink
     ], [VERSION, [NAME, 'Blink']], [/(presto)\/([\w\.]+)/i,
     // Presto
-    /(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna|servo)\/([\w\.]+)/i,
-    // WebKit/Trident/NetFront/NetSurf/Amaya/Lynx/w3m/Goanna/Servo
+    /(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna)\/([\w\.]+)/i,
+    // WebKit/Trident/NetFront/NetSurf/Amaya/Lynx/w3m/Goanna
     /ekioh(flow)\/([\w\.]+)/i,
     // Flow
     /(khtml|tasman|links)[\/ ]\(?([\w\.]+)/i,
@@ -1084,8 +1049,8 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
     // Mobile OSes
     /droid ([\w\.]+)\b.+(android[- ]x86|harmonyos)/i // Android-x86/HarmonyOS
     ], [VERSION, NAME], [
-    // Android/WebOS/QNX/Bada/RIM/Maemo/MeeGo/Sailfish OS/OpenHarmony
-    /(android|webos|qnx|bada|rim tablet os|maemo|meego|sailfish|openharmony)[-\/ ]?([\w\.]*)/i, /(blackberry)\w*\/([\w\.]*)/i,
+    // Android/WebOS/QNX/Bada/RIM/Maemo/MeeGo/Sailfish OS
+    /(android|webos|qnx|bada|rim tablet os|maemo|meego|sailfish)[-\/ ]?([\w\.]*)/i, /(blackberry)\w*\/([\w\.]*)/i,
     // Blackberry
     /(tizen|kaios)[\/ ]([\w\.]+)/i,
     // Tizen/KaiOS
@@ -1553,8 +1518,8 @@ const FactoryMaker = function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var path_browserify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path-browserify */ "./node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify/index.js");
-/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/.pnpm/ua-parser-js@1.0.40/node_modules/ua-parser-js/src/ua-parser.js");
+/* harmony import */ var path_browserify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! path-browserify */ "./node_modules/path-browserify/index.js");
+/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/ua-parser.js");
 /* harmony import */ var _streaming_constants_Constants_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../streaming/constants/Constants.js */ "./src/streaming/constants/Constants.js");
 /**
  * The copyright in this software is being made available under the BSD License,
